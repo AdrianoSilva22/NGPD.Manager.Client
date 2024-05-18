@@ -152,9 +152,25 @@ const Sidebar = (props) => {
                       <li>
                         <Link
                           href="/instituicao"
+                          className={`${"/instituicao" === pathName ? "active" : ""}`}
+                        >
+                          Listagem de Instituições
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/instituicao/register"
                           className={`${"/instituicao/register" === pathName ? "active" : ""}`}
                         >
                           Adicionar Instituição
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/instituicao/turma"
+                          className={`${"/instituicao/turma" === pathName ? "active" : ""}`}
+                        >
+                          Adicionar Turma
                         </Link>
                       </li>
                     </ul>
@@ -171,3 +187,4 @@ const Sidebar = (props) => {
   );
 };
 export default Sidebar;
+
