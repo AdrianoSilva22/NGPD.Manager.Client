@@ -7,16 +7,16 @@ export const EntityService = <T>(url: string) => {
         return apiService.post(`${url}`, entity);
     };
 
-    const updateEntity = (email: string, entity: T) => {
-        return apiService.put(`${url}/update ${email}`, entity);
+    const updateEntity = (entity: T) => {
+        return apiService.put(`${url}`, entity);
     };
 
     const getTotalEntities = () => {
         return apiService.get(`${url}`);
     };
 
-    const deleteEntity = (email: string) => {
-        return apiService.delete(`${url}?email=${email}`);
+    const deleteEntity = (id: string) => {
+        return apiService.delete(`${url}/${id}`);
     };
 
     return {

@@ -221,8 +221,8 @@ const Header = () => {
                   src={logoSmall}
                 />
                 <div className="user-text">
-                  <h6>Adriano Lindo</h6>
-                  <p className="text-muted mb-0">O Rei</p>
+                  <h6>Thiago</h6>
+                  <p className="text-muted mb-0">Mentor</p>
                 </div>
               </span>
             </Link>

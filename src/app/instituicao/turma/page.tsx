@@ -1,23 +1,26 @@
 'use client'
-import { Estudante, valorInicialEstudante } from "@/models/estudanteModel";
+import { Estudante } from "@/models/estudanteModel";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
-import { EstudanteService } from "@/service/estudante";
+import { Turma, valorInicialTurma } from "@/models/turmaModel";
+import { TurmaService } from "@/service/turma";
 import Link from "next/link";
 import { useState } from "react";
 
 
 
 export default function RegisterInstituicao() {
-    const [estudante, setEstudante] = useState<Estudante>(valorInicialEstudante);
-    const { registerEntity } = EstudanteService
+    const [turma, setTurma] = useState<Turma>(valorInicialTurma);
+    const [estudante, setEstudante] = useState<Estudante[]>();
+    const { registerEntity } = TurmaService
 
     const cadastrar = async () => {
         try {
-            await registerEntity(estudante)
-            setEstudante(valorInicialEstudante);
-            mensagemSucesso('Estudante cadastrado com sucesso!');
+            await registerEntity(turma)
+            setTurma(valorInicialTurma);
+            mensagemSucesso('Turma cadastrada com sucesso!');
         } catch (error) {
-            mensagemErro('Erro ao cadastrar Estudante');
+            console.error('Erro ao cadastrar Turma:', error);
+            mensagemErro('Erro ao cadastrar Turma');
         }
     };
 
@@ -33,7 +36,7 @@ export default function RegisterInstituicao() {
                                     <h3 className="page-title">Adicionar Instituição</h3>
                                     <ul className="breadcrumb">
                                         <li className="breadcrumb-item">
-                                            <Link href="/estudante">Listagem de Instituições/</Link>
+                                            <Link href="/instituicao">Listagem de Instituições/</Link>
                                         </li>
                                     </ul>
                                 </div>
@@ -46,20 +49,32 @@ export default function RegisterInstituicao() {
                                             <div className="row">
                                                 <div className="col-12 col-sm-4">
                                                     <div className="form-group local-forms">
-                                                        <label>Nome<span className="login-danger">*</span></label>
-                                                        <input type="text" className="form-control" value={estudante.name} onChange={(e) => setEstudante({ ...estudante, name: e.target.value })} />
+                                                        <label>Curso <span className="login-danger">*</span></label>
+                                                        <input type="text" className="form-control" value={turma.curso} onChange={(e) => setTurma({ ...turma, curso: e.target.value })} />
                                                     </div>
                                                 </div>
                                                 <div className="col-12 col-sm-4">
                                                     <div className="form-group local-forms">
-                                                        <label>Email<span className="login-danger">*</span></label>
-                                                        <input type="text" className="form-control" value={estudante.email} onChange={(e) => setEstudante({ ...estudante, email: e.target.value })} />
+                                                        <label>periodo da Turma <span className="login-danger">*</span></label>
+                                                        <input type="text" className="form-control" value={turma.periodo} onChange={(e) => setTurma({ ...turma, periodo: e.target.value })} />
                                                     </div>
                                                 </div>
                                                 <div className="col-12 col-sm-4">
                                                     <div className="form-group local-forms">
-                                                        <label>Id Turma<span className="login-danger">*</span></label>
-                                                        <input type="text" className="form-control" value={estudante.turmaId} onChange={(e) => setEstudante({ ...estudante, turmaId: e.target.value })} />
+                                                        <label>id_disponibilidade <span className="login-danger">*</span></label>
+                                                        <input type="text" className="form-control" value={turma.id_disponibilidade} onChange={(e) => setTurma({ ...turma, id_disponibilidade: e.target.value })} />
+                                                    </div>
+                                                </div>
+                                                <div className="col-12 col-sm-4">
+                                                    <div className="form-group local-forms">
+                                                        <label>id_instituicao <span className="login-danger">*</span></label>
+                                                        <input type="text" className="form-control" value={turma.id_instituicao} onChange={(e) => setTurma({ ...turma, id_instituicao: e.target.value })} />
+                                                    </div>
+                                                </div>
+                                                <div className="col-12 col-sm-4">
+                                                    <div className="form-group local-forms">
+                                                        <label>id_instituicao <span className="login-danger">*</span></label>
+                                                        {/* <input type="text" className="form-control" value={estudante} onChange={(e) => setTurma({ ...turma, listStudants: e.target.value })} /> */}
                                                     </div>
                                                 </div>
                                                 <div className="col-12">

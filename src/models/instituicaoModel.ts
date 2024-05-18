@@ -1,7 +1,7 @@
 
 export interface Instituicao {
     id: string
-    nome: string;
+    name: string;
     contato: string;
 }
 
@@ -19,7 +19,7 @@ export interface Page {
  export const valorInicialInstituicao: Instituicao = {
     id: '',
     contato: '',
-    nome: ''
+    name: ''
 }
 
 // export interface PaginationProps {

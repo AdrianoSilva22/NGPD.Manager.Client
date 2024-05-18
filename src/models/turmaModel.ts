@@ -1,15 +1,21 @@
 export interface Turma {
-    turmaId: string
-    curso: string
-    turno: string
-    periodo: string
-    instituicaoId: string
+    id_instituicao: string;
+    periodo: string;
+    turno: string;
+    curso: string;
+    id_disponibilidade: string;
+    listStudants: {
+        name: string;
+        email: string;
+    }[];
 }
 
+
 export const valorInicialTurma: Turma = {
-    turmaId: '',
-    curso: '',
-    turno: '',
+    id_instituicao: '',
     periodo: '',
-    instituicaoId: '',
-}
+    turno: '',
+    curso: '',
+    id_disponibilidade: '',
+    listStudants: []
+};

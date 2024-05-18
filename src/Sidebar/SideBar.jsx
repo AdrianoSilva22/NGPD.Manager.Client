@@ -5,7 +5,7 @@ import Scrollbars from "react-custom-scrollbars-2";
 
 const Sidebar = (props) => {
   const [isSideMenu, setSideMenu] = useState("");
-  
+
   const toggleSidebar = (value) => {
     console.log(value);
     setSideMenu(value);
@@ -62,8 +62,6 @@ const Sidebar = (props) => {
     });
   }, [])
 
-
-
   let { location } = props;
   let pathName = location ? location.pathName : '';
 
@@ -88,46 +86,75 @@ const Sidebar = (props) => {
                   <span>Main Menu</span>
                 </li>
                 <li
-                  className={`${"/turma" === pathName ||
-                    "/turma/register" === pathName
-                    ? "active submenu"
-                    : "submenu"
-                    }`}
+                  className={`${"/estudante" === pathName || "/estudante/register" === pathName ? "active submenu" : "submenu"}`}
                 >
                   <Link
                     href="#"
-                    className={isSideMenu == "turma" ? "subdrop" : ""}
+                    className={isSideMenu == "estudante" ? "subdrop" : ""}
                     onClick={() =>
                       toggleSidebar(
-                        isSideMenu == "turma" ? "" : "turma"
+                        isSideMenu == "estudante" ? "" : "estudante"
+                      )
+                    }
+                  >
+                    <i className="fas fa-building" /> <span> Estudantes </span>{" "}
+                    <span className="menu-arrow" />
+                  </Link>
+                  {isSideMenu == "estudante" ? (
+                    <ul
+                      style={{
+                        display: isSideMenu == "estudante" ? "block" : "none",
+                      }}
+                    >
+                      <li>
+                        <Link
+                          href="/estudante"
+                          className={`${"/estudante" === pathName ? "active" : ""}`}
+                        >
+                          Listagem de Estudantes
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/estudante/register"
+                          className={`${"/estudante/register" === pathName ? "active" : ""}`}
+                        >
+                          Adicionar Estudante
+                        </Link>
+                      </li>
+
+                    </ul>
+                  ) : (
+                    ""
+                  )}
+                </li>
+                <li
+                  className={`${"/instituicao" === pathName || "/instituicao/register" === pathName ? "active submenu" : "submenu"}`}
+                >
+                  <Link
+                    href="#"
+                    className={isSideMenu == "instituicao" ? "subdrop" : ""}
+                    onClick={() =>
+                      toggleSidebar(
+                        isSideMenu == "instituicao" ? "" : "instituicao"
                       )
                     }
                   >
                     <i className="fas fa-building" /> <span> Instituições </span>{" "}
                     <span className="menu-arrow" />
                   </Link>
-                  {isSideMenu == "turma" ? (
+                  {isSideMenu == "instituicao" ? (
                     <ul
                       style={{
-                        display: isSideMenu == "turma" ? "block" : "none",
+                        display: isSideMenu == "instituicao" ? "block" : "none",
                       }}
                     >
                       <li>
                         <Link
-                          href="/turma"
-                          className={`${"/turma" === pathName ? "active" : ""
-                            }`}
+                          href="/instituicao"
+                          className={`${"/instituicao/register" === pathName ? "active" : ""}`}
                         >
-                          ListagemInstituição
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="/turma/register"
-                          className={`${"/turma/register" === pathName ? "active" : ""
-                            }`}
-                        >
-                          AdicionarInstituição
+                          Adicionar Instituição
                         </Link>
                       </li>
                     </ul>
@@ -136,7 +163,6 @@ const Sidebar = (props) => {
                   )}
                 </li>
               </ul>
-              {/* /UI Interface */}
             </div>
           </div>
         </Scrollbars>
