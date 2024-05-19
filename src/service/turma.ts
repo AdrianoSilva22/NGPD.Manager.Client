@@ -1,4 +1,6 @@
 import { Turma } from "@/models/turmaModel";
 import { EntityService } from "./entityService/entityService";
 
-export const TurmaService = EntityService<Turma>("/instituicao/CadastraTurmaIes");
+export const TurmaServiceRegister = EntityService<Turma>("/Institution/CadastraTurmaIes");
+export const TurmaServiceDelete = EntityService<Turma>("/Institution/DeleteTurmaIes");
+export const TurmaServiceUpdate = EntityService<Turma>("/Institution/UpdateTurmaIes");

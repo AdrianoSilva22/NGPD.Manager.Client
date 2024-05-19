@@ -24,7 +24,7 @@ export default function InstituicoesPaginition() {
 
     useEffect(() => {
         const getPageInfo = async () => {
-            const url = `http://localhost:5293/api/v1/instituicao?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
+            const url = `http://localhost:5293/api/v1/institution?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
             try {
                 const pageInfoResponse = await apiService.get(url)
                 setPageInfo(pageInfoResponse.data)

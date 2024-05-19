@@ -154,7 +154,7 @@ const Sidebar = (props) => {
                           href="/instituicao"
                           className={`${"/instituicao" === pathName ? "active" : ""}`}
                         >
-                          Listagem de Instituições
+                          Listagem
                         </Link>
                       </li>
                       <li>
@@ -162,7 +162,7 @@ const Sidebar = (props) => {
                           href="/instituicao/register"
                           className={`${"/instituicao/register" === pathName ? "active" : ""}`}
                         >
-                          Adicionar Instituição
+                          Adicionar
                         </Link>
                       </li>
                       <li>
@@ -170,7 +170,23 @@ const Sidebar = (props) => {
                           href="/instituicao/turma"
                           className={`${"/instituicao/turma" === pathName ? "active" : ""}`}
                         >
+                          Listagem Turmas
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/instituicao/turma/register"
+                          className={`${"/instituicao/turma/register" === pathName ? "active" : ""}`}
+                        >
                           Adicionar Turma
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/instituicao/turma/update"
+                          className={`${"/instituicao/turma/update" === pathName ? "active" : ""}`}
+                        >
+                          Atualizar Turma
                         </Link>
                       </li>
                     </ul>

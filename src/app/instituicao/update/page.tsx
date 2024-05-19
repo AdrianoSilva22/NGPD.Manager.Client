@@ -12,12 +12,12 @@ import Header from '../../../components/Header/Header';
 export default function InstituicaoUpdate() {
     const [instituicao, setInstituicao] = useState<Instituicao>(valorInicialInstituicao)
     const searchParams = useSearchParams();
-  
+
     useEffect(() => {
         const instituicaoId = searchParams.get('instituicaoId') || '';
         const instituicaoNome = searchParams.get('instituicaoName') || '';
         const instituicaoContato = searchParams.get('instituicaoContato') || '';
-    
+
         setInstituicao({
             id: instituicaoId,
             name: instituicaoNome,
@@ -40,7 +40,6 @@ export default function InstituicaoUpdate() {
         }
     }
 
-   
     return (
         <>
             {instituicao ? (
