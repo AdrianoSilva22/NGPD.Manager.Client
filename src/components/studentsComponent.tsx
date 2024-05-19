@@ -1,5 +1,5 @@
 
-import { Empresa } from "@/models/EmpresaModel";
+import { Empresa } from "@/models/empresa";
 import { Student } from "@/models/estudanteModel";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { EmpresaService } from "@/service/empresa";

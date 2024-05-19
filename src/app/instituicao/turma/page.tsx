@@ -200,12 +200,12 @@ export default function InstituicoesPaginition() {
                                             pageCount={Math.ceil(pageInfo.totalCount / 15)}
                                             breakLabel="..."
                                             previousLabel={
-                                                < IconContext.Provider value={{ color: "#B8C1CC", size: "36px" }}>
+                                                < IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
                                                     <AiFillLeftCircle />
                                                 </IconContext.Provider>
                                             }
                                             nextLabel={
-                                                <IconContext.Provider value={{ color: "#B8C1CC", size: "36px" }}>
+                                                <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
                                                     <AiFillRightCircle />
                                                 </IconContext.Provider>
                                             }

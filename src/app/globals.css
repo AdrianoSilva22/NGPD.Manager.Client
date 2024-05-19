@@ -1429,12 +1429,17 @@ button.bg-danger:hover {
 .pagination > .active > span,
 .pagination > .active > span:focus,
 .pagination > .active > span:hover {
-	background-color: #3d5ee1;
+	/* background-color: #3d5ee1; */
 	border-color: #3d5ee1;
 }
 .pagination > li > a, 
 .pagination > li > span {
 	color: #3d5ee1;
+}
+
+.pagination {
+	position: absolute;
+	left: 50px;
 }
 .page-link:hover {
 	color: #3d5ee1;

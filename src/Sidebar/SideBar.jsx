@@ -189,6 +189,14 @@ const Sidebar = (props) => {
                           Atualizar Turma
                         </Link>
                       </li>
+                      <li>
+                        <Link
+                          href="/instituicao/turmaporto/register"
+                          className={`${"/instituicao/turma/update" === pathName ? "active" : ""}`}
+                        >
+                          Adicionar Turma Porto
+                        </Link>
+                      </li>
                     </ul>
                   ) : (
                     ""
