@@ -1,0 +1,40 @@
+.App {
+    display: flex;
+    font-family: sans-serif;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.pagination {
+    list-style: none;
+    height: 31.5px;
+    width: 31.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2px;
+    cursor: pointer;
+}
+
+.active {
+    box-sizing: border-box;
+    background-color: #1e50ff;
+    border-radius: 50%;
+}
+
+a {
+    padding: 12px;
+}
+
+.page-item {
+    list-style: none;
+    padding: 2px 12px;
+    height: 31.5px;
+    width: 31.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2px;
+}

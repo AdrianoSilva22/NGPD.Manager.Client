@@ -1,0 +1,41 @@
+{
+  "name": "sistema-residencia-ngpd-front",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.5.2",
+    "antd": "^5.17.0",
+    "axios": "^1.6.8",
+    "bootstrap": "^5.3.3",
+    "cors": "^2.8.5",
+    "feather-icons-react": "^0.7.0",
+    "jquery": "^3.7.1",
+    "next": "14.1.4",
+    "react": "^18",
+    "react-custom-scrollbars-2": "^4.5.0",
+    "react-dom": "^18",
+    "react-feather": "^2.0.10",
+    "react-icons": "^5.1.0",
+    "react-input-mask": "^2.0.4",
+    "react-paginate": "^8.2.0",
+    "react-query": "^3.39.3",
+    "react-router-dom": "^6.22.3",
+    "react-select": "^5.8.0",
+    "toastr": "^2.1.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/toastr": "^2.1.43",
+    "typescript": "^5"
+  }
+}
