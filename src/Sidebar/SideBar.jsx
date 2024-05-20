@@ -83,7 +83,7 @@ const Sidebar = (props) => {
             <div id="sidebar-menu" className="sidebar-menu">
               <ul>
                 <li className="menu-title">
-                  <span>Main Menu</span>
+                  <span> NGPD Menu</span>
                 </li>
                 <li
                   className={`${"/estudante" === pathName || "/estudante/register" === pathName ? "active submenu" : "submenu"}`}
@@ -97,7 +97,7 @@ const Sidebar = (props) => {
                       )
                     }
                   >
-                    <i className="fas fa-building" /> <span> Estudantes </span>{" "}
+                    <i className="fas fa-user-graduate" /> <span> Estudantes </span>{" "}
                     <span className="menu-arrow" />
                   </Link>
                   {isSideMenu == "estudante" ? (
@@ -111,7 +111,7 @@ const Sidebar = (props) => {
                           href="/estudante"
                           className={`${"/estudante" === pathName ? "active" : ""}`}
                         >
-                          Listagem de Estudantes
+                          Listagem 
                         </Link>
                       </li>
                       <li>
@@ -119,7 +119,7 @@ const Sidebar = (props) => {
                           href="/estudante/register"
                           className={`${"/estudante/register" === pathName ? "active" : ""}`}
                         >
-                          Adicionar Estudante
+                          Adicionar
                         </Link>
                       </li>
 
@@ -194,7 +194,57 @@ const Sidebar = (props) => {
                           href="/instituicao/turmaporto/register"
                           className={`${"/instituicao/turma/update" === pathName ? "active" : ""}`}
                         >
-                          Adicionar Turma Porto
+                          Adicionar 
+                        </Link>
+                      </li>
+                    </ul>
+                  ) :(
+                    ""
+                  )}
+                </li>
+                <li
+                  className={`${"/squad" === pathName || "/squad/register" === pathName ? "active submenu" : "submenu"}`}
+                >
+                  <Link
+                    href="#"
+                    className={isSideMenu == "squad" ? "subdrop" : ""}
+                    onClick={() =>
+                      toggleSidebar(
+                        isSideMenu == "squad" ? "" : "squad"
+                      )
+                    }
+                  >
+                    <i className="fas fa-users" /> <span> Squad </span>{" "}
+                    <span className="menu-arrow" />
+                  </Link>
+                  {isSideMenu == "squad" ? (
+                    <ul
+                      style={{
+                        display: isSideMenu == "squad" ? "block" : "none",
+                      }}
+                    >
+                      <li>
+                        <Link
+                          href="/squad"
+                          className={`${"/instituicao/update" === pathName ? "active" : ""}`}
+                        >
+                          Listar
+                        </Link>
+                      </li>                   
+                      <li>
+                        <Link
+                          href="/squad/register"
+                          className={`${"/instituicao/update" === pathName ? "active" : ""}`}
+                        >
+                          Adicionar
+                        </Link>
+                      </li>                   
+                      <li>
+                        <Link
+                          href="/squad/update"
+                          className={`${"/squad/register" === pathName ? "active" : ""}`}
+                        >
+                          Atualizar
                         </Link>
                       </li>
                     </ul>
