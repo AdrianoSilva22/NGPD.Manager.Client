@@ -30,10 +30,10 @@ export default function RegisterInstituicao() {
                         <div className="page-header">
                             <div className="row align-items-center">
                                 <div className="col">
-                                    <h3 className="page-title">Adicionar Instituição</h3>
+                                    <h3 className="page-title">Adicionar Estudante</h3>
                                     <ul className="breadcrumb">
                                         <li className="breadcrumb-item">
-                                            <Link href="/estudante">Listagem de Instituições/</Link>
+                                            <Link href="/estudante">Listagem de Estudantes/</Link>
                                         </li>
                                     </ul>
                                 </div>

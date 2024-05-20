@@ -56,8 +56,8 @@ export default function InstituicoesPaginition() {
             key: 'nome',
         },
         {
-            title: 'turmaId',
-            dataIndex: 'turmaId',
+            title: 'Turma',
+            dataIndex: 'turmaid',
             key: 'contato',
         },
         {
