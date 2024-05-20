@@ -2,7 +2,7 @@
 import { apiService } from "../apiService";
 
 export const EntityService = <T>(url: string) => {
-    
+
     const registerEntity = (entity: T) => {
         return apiService.post(`${url}`, entity);
     };
@@ -15,6 +15,10 @@ export const EntityService = <T>(url: string) => {
         return apiService.get(`${url}`);
     };
 
+    const getEntityById = (id: string) => {
+        return apiService.get(`${url}/${id}`);
+    };
+
     const deleteEntity = (id: string) => {
         return apiService.delete(`${url}?id=${id}`);
     };
@@ -24,5 +28,6 @@ export const EntityService = <T>(url: string) => {
         updateEntity,
         getTotalEntities,
         deleteEntity,
+        getEntityById,
     };
 }
