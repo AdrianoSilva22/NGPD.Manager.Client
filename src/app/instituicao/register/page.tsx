@@ -17,7 +17,7 @@ export default function RegisterInstituicao() {
             setInstituicao(valorInicialInstituicao);
             mensagemSucesso('Instituição cadastrado com sucesso!');
         } catch (error) {
-            console.error('Erro ao cadastrar aluno:', error);
+            console.error('Erro ao cadastrar Instituição:', error);
             mensagemErro('Erro ao cadastrar Instituição');
         }
     };
