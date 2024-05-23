@@ -1,46 +1,47 @@
 'use client'
-import { Disponibilidade } from "@/models/disponibilidadeTurma"
-import { Instituicao } from "@/models/instituicaoModel"
+import { Availability } from "@/models/AvailabilityClassIes"
+import { ClassIes, initialValueClassIes } from "@/models/ClassIes"
+import { Institution } from "@/models/institution"
 import { PropsOption } from "@/models/propsOption"
 import { mensagemErro, mensagemSucesso } from "@/models/toastr"
-import { Turma, valorInicialTurma } from "@/models/turmaModel"
 import { apiService } from "@/service/apiService"
 import axios from "axios"
 import Link from "next/link"
 import { ChangeEvent, useEffect, useState } from "react"
 import Select, { SingleValue } from "react-select"
 
-export default function RegisterInstituicao() {
-    const [turma, setTurma] = useState<Turma>(valorInicialTurma)
-    const [instituicoes, setInstituicoes] = useState<Instituicao[]>([])
-    const [disponibilidades, setDisponibilidades] = useState<Disponibilidade[]>([])
-
+export default function RegisterInstitution() {
+    const [classIes, setClassIes] = useState<ClassIes>(initialValueClassIes)
+    const [institutions, setInstitutions] = useState<Institution[]>([])
+    const [availabilities, setAvailabilities] = useState<Availability[]>([])
+  
     useEffect(() => {
-        const getInstituicoesAndDisponibilidade = async () => {
-            const instituicoes = (await apiService.get(`http://localhost:5293/api/v1/institution`)).data
-            const disponibilidade = await axios.create({
+        const getInstitutionsAndAvailabilities = async () => {
+            const institutions = (await apiService.get(`http://localhost:5293/api/v1/institution`)).data
+            
+            const availability = await axios.create({
                 baseURL: "http://localhost:5293"
             }).get(`/api/v1/Institution/turmas/disponibilidade`)
-            setInstituicoes(instituicoes.instituicao)
-            setDisponibilidades(disponibilidade.data.listDisponibilidade)
+            setInstitutions(institutions.institution)
+            setAvailabilities(availability.data.listAvailability)
         }
-        getInstituicoesAndDisponibilidade()
+        getInstitutionsAndAvailabilities()
     }, [])
 
-    const sendFormData = async (turma: Turma) => {
+    const sendFormData = async (classIes: ClassIes) => {
         const formData = new FormData()
     
-        if (turma.CsvFile ) {
-            formData.append('CsvFile', turma.CsvFile)
+        if (classIes.csvFile ) {
+            formData.append('csvFile', classIes.csvFile)
         }
-        formData.append('Curso', turma.Curso)
-        if (turma.InstitutionId) {
-            formData.append('InstitutionId', turma.InstitutionId)
+        formData.append('course', classIes.course)
+        if (classIes.institutionId) {
+            formData.append('InstitutionId', classIes.institutionId)
         }
-        formData.append('Periodo', turma.Periodo)
-        formData.append('Turno', turma.Turno)
-        if (turma.DisponibilidadeId) {
-            formData.append('DisponibilidadeId', turma.DisponibilidadeId)
+        formData.append('period', classIes.period)
+        formData.append('shift', classIes.shift)
+        if (classIes.availabilityId) {
+            formData.append('availabilityId', classIes.availabilityId)
         }
         
         try {
@@ -50,39 +51,39 @@ export default function RegisterInstituicao() {
                     'Content-Type': 'multipart/form-data',
                 },
             })
-            mensagemSucesso('Turma cadastrada com sucesso!')
-            setTurma(valorInicialTurma)
+            mensagemSucesso('Class registered successfully!')
+            setClassIes(initialValueClassIes)
         } catch (error) {
-            console.error('Erro ao cadastrar Turma:', error)
-            mensagemErro('Erro ao cadastrar Turma')
+            console.error('Erro ao registrar Turma:', error)
+            mensagemErro('Erro ao registrar Turma')
         }
     }
     
-    const instituicoesOptions = instituicoes.map(instituicao => ({
-        value: instituicao.id,
-        label: instituicao.name,
+    const institutionsOptions = institutions.map(institution => ({
+        value: institution.id,
+        label: institution.name,
     }))
-    const disponibilidadeOptions = disponibilidades.map(disponibilidade => ({
-        value: disponibilidade.id,
-        label: `${disponibilidade.diaSemana} - ${disponibilidade.horario_inicio} - ${disponibilidade.horario_fim}`,
+    const availabilityOptions = availabilities.map(availability => ({
+        value: availability.id,
+        label: `${availability.dayWeek} - ${availability.startTime} - ${availability.scheduleEnd}`,
     }))
 
-    const getValueSelectInstituicao = (selectedOption: SingleValue<PropsOption>) => {
-        const selectedInstituicao = instituicoes.find(inst => inst.id === selectedOption?.value) || null
-        setTurma({ ...turma, InstitutionId: selectedInstituicao?.id })
+    const getValueSelectInstitution = (selectedOption: SingleValue<PropsOption>) => {
+        const selectedInstitution = institutions.find(inst => inst.id === selectedOption?.value) || null
+        setClassIes({ ...classIes, institutionId: selectedInstitution?.id })
     }
-    const getValueSelectDisponibilidade = (selectedOption: SingleValue<PropsOption>) => {
-        const selectedDisponibilidade = disponibilidades.find(disp => disp.id === selectedOption?.value) || null
-        setTurma({ ...turma, DisponibilidadeId: selectedDisponibilidade?.id })
+    const getValueSelectAvailability = (selectedOption: SingleValue<PropsOption>) => {
+        const selectedAvailability = availabilities.find(disp => disp.id === selectedOption?.value) || null
+        setClassIes({ ...classIes, availabilityId: selectedAvailability?.id })
     }
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null
-        setTurma({ ...turma, CsvFile: file })
+        setClassIes({ ...classIes, csvFile: file })
     }
 
-    const cadastrar = async () => {
-        sendFormData(turma)
+    const register = async () => {
+        sendFormData(classIes)
     }
    
     return (
@@ -94,10 +95,10 @@ export default function RegisterInstituicao() {
                         <div className="page-header">
                             <div className="row align-items-center">
                                 <div className="col">
-                                    <h3 className="page-title">Adicionar Instituição</h3>
+                                    <h3 className="page-title">Add Institution</h3>
                                     <ul className="breadcrumb">
                                         <li className="breadcrumb-item">
-                                            <Link href="/instituicao">Listagem de Instituições/</Link>
+                                            <Link href="/institution">Institution Listing</Link>
                                         </li>
                                     </ul>
                                 </div>
@@ -111,19 +112,19 @@ export default function RegisterInstituicao() {
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
                                                     <label>Curso <span className="login-danger">*</span></label>
-                                                    <input type="text" className="form-control" value={turma.Curso} onChange={(e) => setTurma({ ...turma, Curso: e.target.value })} />
+                                                    <input type="text" className="form-control" value={classIes.course} onChange={(e) => setClassIes({ ...classIes, course: e.target.value })} />
                                                 </div>
                                             </div>
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
-                                                    <label>Periodo<span className="login-danger">*</span></label>
-                                                    <input type="text" className="form-control" value={turma.Periodo} onChange={(e) => setTurma({ ...turma, Periodo: e.target.value })} />
+                                                    <label>Ano de ingresso<span className="login-danger">*</span></label>
+                                                    <input type="text" className="form-control" value={classIes.period} onChange={(e) => setClassIes({ ...classIes, period: e.target.value })} />
                                                 </div>
                                             </div>
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
-                                                    <label>Turno <span className="login-danger">*</span></label>
-                                                    <input type="text" className="form-control" value={turma.Turno} onChange={(e) => setTurma({ ...turma, Turno: e.target.value })} />
+                                                    <label>Turno<span className="login-danger">*</span></label>
+                                                    <input type="text" className="form-control" value={classIes.shift} onChange={(e) => setClassIes({ ...classIes, shift: e.target.value })} />
                                                 </div>
                                             </div>
                                             <div className="col-12 col-sm-4">
@@ -133,9 +134,9 @@ export default function RegisterInstituicao() {
                                                     </label>
 
                                                     <Select
-                                                        className="w-100 local-forms  select"
-                                                        onChange={getValueSelectInstituicao}
-                                                        options={instituicoesOptions}
+                                                        className="w-100 local-forms select"
+                                                        onChange={getValueSelectInstitution}
+                                                        options={institutionsOptions}
                                                         placeholder="Selecione uma Instituição"
                                                     />
                                                 </div>
@@ -146,9 +147,9 @@ export default function RegisterInstituicao() {
                                                         Disponibilidade <span className="login-danger">*</span>
                                                     </label>
                                                     <Select
-                                                        className="w-100 local-forms  select"
-                                                        onChange={getValueSelectDisponibilidade}
-                                                        options={disponibilidadeOptions}
+                                                        className="w-100 local-forms select"
+                                                        onChange={getValueSelectAvailability}
+                                                        options={availabilityOptions}
                                                         placeholder="Selecione a Disponibilidade"
                                                     />
                                                 </div>
@@ -158,14 +159,14 @@ export default function RegisterInstituicao() {
                                                     <label>Anexe os Estudantes</label>
                                                     <div className="uplod">
                                                         <label className="file-upload image-upbtn mb-0">
-                                                            Escolha o Arquivo.csv <input type="file" onChange={handleFileChange} />
+                                                        Escolha o Arquivo.csv <input type="file" onChange={handleFileChange} />
                                                         </label>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="col-12">
                                                 <div className="student-submit">
-                                                    <button type="button" className="btn btn-primary" onClick={cadastrar}>Cadastrar</button>
+                                                    <button type="button" className="btn btn-primary" onClick={register}>Register</button>
                                                 </div>
                                             </div>
                                         </div>
