@@ -1,11 +1,13 @@
 'use client'
-import { Instituicao, Page } from "@/models/instituicaoModel";
+import { globalStateAtomId } from "@/atoms/atoms";
+import { Institution, Page } from "@/models/institution";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { apiService } from "@/service/apiService";
-import { InstituicaoService } from "@/service/instituicao";
+import { InstituitionServices } from "@/service/institution";
 import "@/styles/pagination.css";
 import { Table } from "antd";
 import FeatherIcon from "feather-icons-react";
+import { useAtom } from "jotai";
 import Link from 'next/link';
 import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
@@ -14,12 +16,13 @@ import ReactPaginate from "react-paginate";
 import SideBar from '../../Sidebar/SideBar';
 import Header, { default as Footer } from '../../components/Header/Header';
 
-export default function InstituicoesPaginition() {
+export default function InstitutionList() {
 
-    const [instituicoes, setInstituicoes] = useState<Instituicao[]>()
-    const { deleteEntity } = InstituicaoService
+    const [institutions, setInstitutions] = useState<Institution[]>()
+    const { deleteEntity } = InstituitionServices
     const [pageIndex, setPage] = useState(0)
     const [pageInfo, setPageInfo] = useState<Page>()
+    const [,SetGlobalStateAtomId] = useAtom(globalStateAtomId)
     const PAGE_SIZE = 15
 
     useEffect(() => {
@@ -28,7 +31,7 @@ export default function InstituicoesPaginition() {
             try {
                 const pageInfoResponse = await apiService.get(url)
                 setPageInfo(pageInfoResponse.data)
-                setInstituicoes(pageInfoResponse.data.instituicao)
+                setInstitutions(pageInfoResponse.data.institution)
             } catch (error) {
                 console.error(error);
             }
@@ -36,11 +39,11 @@ export default function InstituicoesPaginition() {
         getPageInfo()
     }, [pageIndex])
 
-    const deleteInstituicao = async (instituicao: Instituicao) => {
+    const deleteInstituicao = async (institution: Institution) => {
         try {
-            await deleteEntity(instituicao.id)
-            const filterInstituicoes = instituicoes?.filter(i => i.contato !== instituicao.contato)
-            setInstituicoes(filterInstituicoes)
+            await deleteEntity(institution.id)
+            const filterInstitutions = institutions?.filter(i => i.contact !== institution.contact)
+            setInstitutions(filterInstitutions)
             mensagemSucesso("instituição deletada com sucesso!")
         } catch (error) {
             console.log(error);
@@ -52,21 +55,21 @@ export default function InstituicoesPaginition() {
         {
             title: 'Nome',
             dataIndex: 'name',
-            key: 'nome',
+            key: 'name',
         },
         {
             title: 'Contato',
-            dataIndex: 'contato',
-            key: 'contato',
+            dataIndex: 'contact',
+            key: 'contact',
         },
         {
             title: 'Ações',
             key: 'acoes',
-            render: (instituicao: Instituicao) => (
+            render: (institution: Institution) => (
                 <>
 
                     <button id="button-delete" onClick={async () => {
-                        await deleteInstituicao(instituicao)
+                        await deleteInstituicao(institution)
                     }}>
                         <Link href="#" className="btn btn-sm bg-success-light me-2">
                             <i>
@@ -75,11 +78,15 @@ export default function InstituicoesPaginition() {
                         </Link>
                     </button>
 
-                    <Link href={{pathname:'/instituicao/update', query:{ instituicaoContato: instituicao.contato, instituicaoName: instituicao.name, instituicaoId: instituicao.id} }} className="btn btn-sm bg-danger-light">
-                        <i>
-                            <FeatherIcon icon="edit" size={18} />
-                        </i>
-                    </Link>
+                    <button id="button-update" onClick={() => {
+                        SetGlobalStateAtomId(institution.id)
+                    }}>
+                        <Link href={{ pathname: '/instituicao/update', }} className="btn btn-sm bg-danger-light">
+                            <i>
+                                <FeatherIcon icon="edit" size={18} />
+                            </i>
+                        </Link>
+                    </button>
 
                 </>
             ),
@@ -155,16 +162,9 @@ export default function InstituicoesPaginition() {
                                             <Table
 
                                                 pagination={false}
-                                                // pagination={{
-                                                //     total: pageInfo.instituicoes.length,
-                                                //     showSizeChanger: true,
-                                                //     showTotal: (total, range) =>
-                                                //         `visualizando ${range[0]} a ${range[1]}`,
-                                                //     onChange: handlePageChange,
-                                                // }}
                                                 columns={columTable}
-                                                dataSource={instituicoes}
-                                                rowKey={(instituicao: Instituicao) => instituicao.contato}
+                                                dataSource={institutions}
+                                                rowKey={(institution: Institution) => institution.contact}
                                             />
 
                                         </div>

@@ -1,4 +1,4 @@
-import { PaginationProps } from "@/models/instituicaoModel";
+import { PaginationProps } from "@/models/institution";
 import styles from "../../src/styles/Home.module.css";
 
 const Pagination = ({ items, currentPage, pageSize, onPageChange }: PaginationProps) => {

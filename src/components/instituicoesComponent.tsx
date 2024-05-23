@@ -1,7 +1,7 @@
 
-import { Instituicao } from "@/models/instituicaoModel";
+import { Instituicao } from "@/models/institution";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
-import { InstituicaoService } from "@/service/instituicao";
+import { InstituicaoService } from "@/service/institution";
 import { useState } from "react";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { VscArchive } from "react-icons/vsc";

@@ -1,13 +1,13 @@
 
-export interface Instituicao {
+export interface Institution {
     id: string
     name: string;
-    contato: string;
+    contact: string;
 }
 
 export interface Page {
     currentePage: number
-    instituicoes: Instituicao[]
+    institutions: Institution[]
     pageSize: number
     totalCount: number
     totalPages: number
@@ -16,9 +16,9 @@ export interface Page {
 
 
 
- export const valorInicialInstituicao: Instituicao = {
+ export const initialvalueInstitution: Institution = {
     id: '',
-    contato: '',
+    contact: '',
     name: ''
 }
 

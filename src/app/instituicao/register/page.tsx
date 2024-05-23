@@ -1,20 +1,18 @@
 'use client'
-import { Instituicao, valorInicialInstituicao } from "@/models/instituicaoModel";
+import { Institution, initialvalueInstitution } from "@/models/institution";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
-import { InstituicaoService } from "@/service/instituicao";
+import { InstituitionServices } from "@/service/institution";
 import Link from "next/link";
 import { useState } from "react";
 
-
-
 export default function RegisterInstituicao() {
-    const [instituicao, setInstituicao] = useState<Instituicao>(valorInicialInstituicao);
-    const { registerEntity } = InstituicaoService
+    const [institution, setInstituition] = useState<Institution>(initialvalueInstitution);
+    const { registerEntity } = InstituitionServices
 
     const cadastrar = async () => {
         try {
-            await registerEntity(instituicao)
-            setInstituicao(valorInicialInstituicao);
+            await registerEntity(institution)
+            setInstituition(initialvalueInstitution);
             mensagemSucesso('Instituição cadastrado com sucesso!');
         } catch (error) {
             console.error('Erro ao cadastrar Instituição:', error);
@@ -48,13 +46,13 @@ export default function RegisterInstituicao() {
                                                 <div className="col-12 col-sm-4">
                                                     <div className="form-group local-forms">
                                                         <label>Contato <span className="login-danger">*</span></label>
-                                                        <input type="text" className="form-control" value={instituicao.contato} onChange={(e) => setInstituicao({ ...instituicao, contato: e.target.value })} />
+                                                        <input type="text" className="form-control" value={institution.contact} onChange={(e) => setInstituition({ ...institution, contact: e.target.value })} />
                                                     </div>
                                                 </div>
                                                 <div className="col-12 col-sm-4">
                                                     <div className="form-group local-forms">
                                                         <label>Nome da Instituição <span className="login-danger">*</span></label>
-                                                        <input type="text" className="form-control" value={instituicao.name} onChange={(e) => setInstituicao({ ...instituicao, name: e.target.value })} />
+                                                        <input type="text" className="form-control" value={institution.name} onChange={(e) => setInstituition({ ...institution, name: e.target.value })} />
                                                     </div>
                                                 </div>
                                                 <div className="col-12">
