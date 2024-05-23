@@ -15,6 +15,7 @@
     "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
     "feather-icons-react": "^0.7.0",
+    "jotai": "^2.8.1",
     "jquery": "^3.7.1",
     "next": "14.1.4",
     "react": "^18",
