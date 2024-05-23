@@ -1,6 +1,6 @@
 
 import { Empresa } from "@/models/empresa";
-import { Student } from "@/models/estudanteModel";
+import { Student } from "@/models/student";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { EmpresaService } from "@/service/empresa";
 import saveRequestInCach from "@/utils/saveRequestInCache";

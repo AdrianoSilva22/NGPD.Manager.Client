@@ -1,51 +1,73 @@
 "use client"
 
-import { Estudante, valorInicialEstudante } from '@/models/estudanteModel';
-import { mensagemErro, mensagemSucesso } from '@/models/toastr';
-import { EstudanteService } from '@/service/estudante';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import SideBar from '../../../Sidebar/SideBar';
-import Header from '../../../components/Header/Header';
+import { globalStateAtomId } from '@/atoms/atoms'
+import { ClassIes } from '@/models/ClassIes'
+import { PropsOption } from '@/models/propsOption'
+import { Student, initialvalueStudent } from '@/models/student'
+import { mensagemErro, mensagemSucesso } from '@/models/toastr'
+import { apiService } from '@/service/apiService'
+import { StudentServices } from '@/service/student'
+import { useAtom } from 'jotai'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import Select, { SingleValue } from "react-select"
+import SideBar from '../../../Sidebar/SideBar'
+import Header from '../../../components/Header/Header'
 
-export default function EstudanteUpdate() {
-    const [estudante, setEstudante] = useState<Estudante>(valorInicialEstudante)
-    const searchParams = useSearchParams();
+export default function StudentUpdate() {
+    const [student, setStudent] = useState<Student>(initialvalueStudent)
+    const [globalStateId,] = useAtom(globalStateAtomId)
+    const { updateEntity, getEntityById } = StudentServices
+    const [listClassIes, setListClassIes] = useState<ClassIes[]>([])
+
+    const fetchListClassIes = async () => {
+        const responseListClassIes = (await apiService.get(`http://localhost:5293/api/v1/Institution/RetornaTurmaIesAll`)).data
+        setListClassIes(responseListClassIes.listClassIes)
+    }
+    
+const turmaOptions = listClassIes.map(classIes => ({
+    value: classIes.id,
+    label: `${classIes.course} - ${classIes.period} - ${classIes.shift}`,
+}))
+
+const getValueSelectTurma = (selectedOption: SingleValue<PropsOption>) => {
+    const selectedTurma = listClassIes.find(classIes => classIes.id === selectedOption?.value) || null
+    if(selectedTurma){
+        setStudent({ ...student, turmaId: selectedTurma?.id })
+    }
+}
+    
     useEffect(() => {
-        const estudanteId = searchParams.get('estudanteId') || '';
-        const turmaId = searchParams.get('turmaId') || '';
-        const estudanteEmail = searchParams.get('estudanteEmail') || '';
-        const estudanteName = searchParams.get('estudanteName') || '';
-
-        setEstudante({
-            id: estudanteId,
-            name: estudanteName,
-            email: estudanteEmail,
-            turmaId: turmaId
-        });
-    }, []);
-
-    const { updateEntity } = EstudanteService
+        const getStudentById = async (id: string) => {
+            try {
+                const resultGetStudentById = await getEntityById(id)
+                setStudent(resultGetStudentById.data)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        if (globalStateId != null) {
+            getStudentById(globalStateId)
+        }
+        fetchListClassIes()
+    }, [globalStateId]);
 
     const atualizar = async () => {
         try {
-            if (estudante) {
-                await updateEntity(estudante)
-                setEstudante(valorInicialEstudante)
+            if (student) {
+                await updateEntity(student)
+                setStudent(initialvalueStudent)
                 mensagemSucesso("Estudante atualizado com sucesso")
             }
         } catch (error) {
             console.log(error);
-            mensagemErro('erro ao atualizr')
+            mensagemErro('Erro ao atualizar estudante')
         }
     }
 
-
     return (
         <>
-            {estudante ? (
-
+            {student ? (
                 <div className="main-wrapper">
                     <Header />
                     <SideBar />
@@ -54,12 +76,12 @@ export default function EstudanteUpdate() {
                             <div className="page-header">
                                 <div className="row align-items-center">
                                     <div className="col">
-                                        <span className="page-title">Atualizar Instituição</span>
+                                        <span className="page-title">Atualizar Estudante</span>
                                         <ul className="breadcrumb">
                                             <li className="breadcrumb-item">
-                                                <Link href="/turma">Listagem de Instituições</Link>
+                                                <Link href="/turma">Listagem de Estudantes</Link>
                                             </li>
-                                            <li className="breadcrumb-item active"> Atualizar Instituição</li>
+                                            <li className="breadcrumb-item active"> Atualizar Estudante</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -72,57 +94,45 @@ export default function EstudanteUpdate() {
                                                 <div className="row">
                                                     <div className="col-12">
                                                         <h5 className="form-title">
-                                                            <span>Department Details</span>
+                                                            <span>Detalhes do Estudante</span>
                                                         </h5>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
                                                         <div className="form-group local-forms">
                                                             <label>
-                                                                Nome<span className="login-danger">*</span>
+                                                                Nome <span className="login-danger">*</span>
                                                             </label>
                                                             <input
                                                                 type="text"
                                                                 className="form-control"
-                                                                defaultValue={estudante.name}
-                                                                onChange={(e) => setEstudante({ ...estudante, name: e.target.value })} />
+                                                                value={student.name}
+                                                                onChange={(e) => setStudent({ ...student, name: e.target.value })} />
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-12 col-sm-4">
+                                                        <div className="form-group local-forms">
+                                                            <label>
+                                                                Turma <span className="login-danger">*</span>
+                                                            </label>
 
+                                                            <Select
+                                                                className="w-100 local-forms select"
+                                                                onChange={getValueSelectTurma}
+                                                                options={turmaOptions}
+                                                                placeholder="Selecione uma Turma"
+                                                            />
                                                         </div>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
                                                         <div className="form-group local-forms">
                                                             <label>
-                                                                Id <span className="login-danger">*</span>
+                                                                Contato <span className="login-danger">*</span>
                                                             </label>
                                                             <input
                                                                 type="text"
                                                                 className="form-control"
-                                                                defaultValue={estudante.id}
-                                                                onChange={(e) => setEstudante({ ...estudante, id: e.target.value })} />
-
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-12 col-sm-4">
-                                                        <div className="form-group local-forms">
-                                                            <label>
-                                                                TurmaId <span className="login-danger">*</span>
-                                                            </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                defaultValue={estudante.turmaId}
-                                                                onChange={(e) => setEstudante({ ...estudante, turmaId: e.target.value })} />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-12 col-sm-4">
-                                                        <div className="form-group local-forms">
-                                                            <label>
-                                                                Emaiç <span className="login-danger">*</span>
-                                                            </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                defaultValue={estudante.email}
-                                                                onChange={(e) => setEstudante({ ...estudante, email: e.target.value })} />
+                                                                value={student.contact}
+                                                                onChange={(e) => setStudent({ ...student, contact: e.target.value })} />
                                                         </div>
                                                     </div>
                                                     <div className="col-12">
@@ -138,10 +148,10 @@ export default function EstudanteUpdate() {
                             </div>
                         </div>
                     </div>
-
                 </div>
             ) : (
-                <div>Carregando...</div>)}
+                <div>Carregando...</div>
+            )}
         </>
     )
 }
