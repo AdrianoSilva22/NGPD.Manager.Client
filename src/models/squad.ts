@@ -1,14 +1,16 @@
 
 export interface Squad {
     id: string
-    turma: string | undefined
-    NameSquad: string
-    Studants: File | null
+    classSquad: string | undefined
+    nameSquad: string
+    studants: File | null
+    mentor: null | string
 }
 
-export const valorInicialSquad: Squad = {
+export const initialValueSquad: Squad = {
     id: '',
-    turma: '',
-    NameSquad: '',
-    Studants: null
+    classSquad: '',
+    nameSquad: '',
+    mentor: null,
+    studants: null
 };

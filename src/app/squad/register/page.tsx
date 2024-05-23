@@ -1,6 +1,6 @@
 'use client'
 import { PropsOption } from "@/models/propsOption"
-import { Squad, valorInicialSquad } from "@/models/squad"
+import { Squad, initialValueSquad } from "@/models/squad"
 import { mensagemErro, mensagemSucesso } from "@/models/toastr"
 import axios from "axios"
 import Link from "next/link"
@@ -8,17 +8,17 @@ import { ChangeEvent, useEffect, useState } from "react"
 import Select, { SingleValue } from "react-select"
 
 export default function RegisterInstituicao() {
-    const [squad, setSquad] = useState<Squad>(valorInicialSquad)
+    const [squad, setSquad] = useState<Squad>(initialValueSquad)
 
     const sendFormData = async (squad: Squad) => {
         const formData = new FormData()
 
-        if (squad.Studants && squad.turma && squad.NameSquad) {
-            if (squad.Studants !== null) {
-                formData.append('Studants', squad.Studants)
+        if (squad.studants && squad.classSquad && squad.nameSquad) {
+            if (squad.studants !== null) {
+                formData.append('studants', squad.studants)
             }
-            formData.append('NameSquad', squad.NameSquad)
-            formData.append('turma', squad.turma)
+            formData.append('nameSquad', squad.nameSquad)
+            formData.append('classSquad', squad.classSquad)
         }
 
         try {
@@ -29,25 +29,25 @@ export default function RegisterInstituicao() {
                 },
             })
             mensagemSucesso('squad cadastrada com sucesso!')
-            setSquad(valorInicialSquad)
+            setSquad(initialValueSquad)
         } catch (error) {
             console.error('Erro ao cadastrar squad:', error)
             mensagemErro('Erro ao cadastrar squad')
         }
     }
 
-    const turmasTemasOptions = [
+    const classThemesOptions = [
         { value: "KickOff", label: 'KickOff' },
         { value: "RiseUp", label: 'RiseUp' },
         { value: "GrowUp", label: 'GrowUp' },
     ];
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null
-        setSquad({ ...squad, Studants: file })
+        setSquad({ ...squad, studants: file })
     }
 
     const getValueSelectTurmaTema = (selectedTemaOption: SingleValue<PropsOption>) => {
-        setSquad({ ...squad, turma: selectedTemaOption?.value })
+        setSquad({ ...squad, classSquad: selectedTemaOption?.value })
     }
 
     const cadastrar = async () => {
@@ -85,7 +85,7 @@ export default function RegisterInstituicao() {
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
                                                     <label>Nome Squad <span className="login-danger">*</span></label>
-                                                    <input type="text" className="form-control" value={squad.NameSquad} onChange={(e) => setSquad({ ...squad, NameSquad: e.target.value })} />
+                                                    <input type="text" className="form-control" value={squad.nameSquad} onChange={(e) => setSquad({ ...squad, nameSquad: e.target.value })} />
                                                 </div>
                                             </div>
                                             <div className="col-12 col-sm-4">
@@ -97,7 +97,7 @@ export default function RegisterInstituicao() {
                                                     <Select
                                                         className="w-100 local-forms  select"
                                                         onChange={getValueSelectTurmaTema}
-                                                        options={turmasTemasOptions}
+                                                        options={classThemesOptions}
                                                         placeholder="Selecione o Tema"
                                                     />
                                                 </div>

@@ -1,11 +1,14 @@
 'use client'
-import { Instituicao, Page } from "@/models/instituicaoModel";
+import { globalStateAtomId } from "@/atoms/atoms";
+import { Page } from "@/models/institution";
+import { Squad } from "@/models/squad";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { apiService } from "@/service/apiService";
-import { InstituicaoService } from "@/service/instituicao";
+import { SquadServices } from "@/service/squad";
 import "@/styles/pagination.css";
 import { Table } from "antd";
 import FeatherIcon from "feather-icons-react";
+import { useAtom } from "jotai";
 import Link from 'next/link';
 import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
@@ -14,21 +17,25 @@ import ReactPaginate from "react-paginate";
 import SideBar from '../../Sidebar/SideBar';
 import Header, { default as Footer } from '../../components/Header/Header';
 
-export default function InstituicoesPaginition() {
+export default function squadsList() {
 
-    const [instituicoes, setInstituicoes] = useState<Instituicao[]>()
-    const { deleteEntity } = InstituicaoService
+    const [squads, setSquads] = useState<Squad[]>([])
+    const { deleteEntity } = SquadServices
     const [pageIndex, setPage] = useState(0)
     const [pageInfo, setPageInfo] = useState<Page>()
+    const [, SetGlobalStateAtomId] = useAtom(globalStateAtomId)
+    const [loading, setLoading] = useState(true);
+
     const PAGE_SIZE = 15
 
     useEffect(() => {
         const getPageInfo = async () => {
-            const url = `http://localhost:5293/api/v1/institution?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
+            const url = `http://localhost:5293/api/v1/Squad?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
             try {
                 const pageInfoResponse = await apiService.get(url)
                 setPageInfo(pageInfoResponse.data)
-                setInstituicoes(pageInfoResponse.data.instituicao)
+                setSquads(pageInfoResponse.data.listSquad)
+                setLoading(false);
             } catch (error) {
                 console.error(error);
             }
@@ -36,12 +43,12 @@ export default function InstituicoesPaginition() {
         getPageInfo()
     }, [pageIndex])
 
-    const deleteInstituicao = async (instituicao: Instituicao) => {
+    const deleteInstituicao = async (squad: Squad) => {
         try {
-            await deleteEntity(instituicao.id)
-            const filterInstituicoes = instituicoes?.filter(i => i.contato !== instituicao.contato)
-            setInstituicoes(filterInstituicoes)
-            mensagemSucesso("instituição deletada com sucesso!")
+            await deleteEntity(squad.id)
+            const filterSquads = squads?.filter(i => i.id !== squad.id)
+            setSquads(filterSquads)
+            mensagemSucesso("Squad deletado com sucesso!")
         } catch (error) {
             console.log(error);
             mensagemErro('Erro ao excluir Instituição');
@@ -52,21 +59,18 @@ export default function InstituicoesPaginition() {
         {
             title: 'Nome',
             dataIndex: 'name',
-            key: 'nome',
         },
         {
-            title: 'Contato',
-            dataIndex: 'contato',
-            key: 'contato',
+            title: 'Mentor',
+            dataIndex: 'mentor',
         },
         {
             title: 'Ações',
-            key: 'acoes',
-            render: (instituicao: Instituicao) => (
+            render: (squad: Squad) => (
                 <>
 
                     <button id="button-delete" onClick={async () => {
-                        await deleteInstituicao(instituicao)
+                        await deleteInstituicao(squad)
                     }}>
                         <Link href="#" className="btn btn-sm bg-success-light me-2">
                             <i>
@@ -75,12 +79,15 @@ export default function InstituicoesPaginition() {
                         </Link>
                     </button>
 
-                    <Link href={{pathname:'/instituicao/update', query:{ instituicaoContato: instituicao.contato, instituicaoName: instituicao.name, instituicaoId: instituicao.id} }} className="btn btn-sm bg-danger-light">
-                        <i>
-                            <FeatherIcon icon="edit" size={18} />
-                        </i>
-                    </Link>
-
+                    <button id="button-update" onClick={() => {
+                        SetGlobalStateAtomId(squad.id)
+                    }}>
+                        <Link href={{ pathname: '/squad/update', }} className="btn btn-sm bg-danger-light">
+                            <i>
+                                <FeatherIcon icon="edit" size={18} />
+                            </i>
+                        </Link>
+                    </button>
                 </>
             ),
         },
@@ -137,55 +144,61 @@ export default function InstituicoesPaginition() {
                             <div className="card card-table comman-shadow">
 
                                 <div className="card-body">
-                                    <div className="page-header">
-                                        <div className="row align-items-center">
-                                            <div className="col">
-                                                <h3 className="page-title">Instituições</h3>
+                                    {loading ? (
+                                        <div className="text-center">Carregando...</div>
+                                    ) : (
+                                        <>
+
+                                            <div className="page-header">
+                                                <div className="row align-items-center">
+                                                    <div className="col">
+                                                        <h3 className="page-title">Instituições</h3>
+                                                    </div>
+                                                    <div className="col-auhref text-end float-end ms-auhref download-grp">
+                                                        <Link href="/instituicao/register" className="btn btn-primary">
+                                                            <i className="fas fa-plus" />
+                                                        </Link>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="col-auhref text-end float-end ms-auhref download-grp">
-                                                <Link href="/instituicao/register" className="btn btn-primary">
-                                                    <i className="fas fa-plus" />
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {
-                                        pageInfo &&
-                                        <div className="table-responsive" >
-                                            <Table
+                                            {
+                                                pageInfo &&
+                                                <div className="table-responsive" >
+                                                    <Table
 
-                                                pagination={false}
-                                                columns={columTable}
-                                                dataSource={instituicoes}
-                                                rowKey={(instituicao: Instituicao) => instituicao.contato}
-                                            />
+                                                        pagination={false}
+                                                        columns={columTable}
+                                                        dataSource={squads}
+                                                        rowKey={(squad: Squad) => squad.id}
+                                                    />
 
-                                        </div>
+                                                </div>
 
-                                    }
-                                    {
-                                        pageInfo &&
-                                        <ReactPaginate
-                                            containerClassName={"pagination"}
-                                            pageClassName={"page-item"}
-                                            activeClassName={"active"}
-                                            onPageChange={(event) => setPage(event.selected)}
-                                            pageCount={Math.ceil(pageInfo.totalCount / 15)}
-                                            breakLabel="..."
-                                            previousLabel={
-                                                < IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                                    <AiFillLeftCircle />
-                                                </IconContext.Provider>
                                             }
-                                            nextLabel={
-                                                <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                                    <AiFillRightCircle />
-                                                </IconContext.Provider>
+                                            {
+                                                pageInfo &&
+                                                <ReactPaginate
+                                                    containerClassName={"pagination"}
+                                                    pageClassName={"page-item"}
+                                                    activeClassName={"active"}
+                                                    onPageChange={(event) => setPage(event.selected)}
+                                                    pageCount={Math.ceil(pageInfo.totalCount / 15)}
+                                                    breakLabel="..."
+                                                    previousLabel={
+                                                        < IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
+                                                            <AiFillLeftCircle />
+                                                        </IconContext.Provider>
+                                                    }
+                                                    nextLabel={
+                                                        <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
+                                                            <AiFillRightCircle />
+                                                        </IconContext.Provider>
+                                                    }
+                                                />
                                             }
-                                        />
-                                    }
+                                        </>
 
-
+                                    )}
                                 </div>
                             </div>
                         </div>
