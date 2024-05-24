@@ -6,8 +6,8 @@ import { ClassIes } from "@/models/ClassIes";
 import { Page } from "@/models/institution";
 import { Student } from "@/models/student";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
-import { ClassIesServiceDelete } from "@/service/ClassIes";
 import { apiService } from "@/service/apiService";
+import { StudentServices } from "@/service/student";
 import "@/styles/pagination.css";
 import { Table } from "antd";
 import { Footer } from "antd/es/layout/layout";
@@ -22,7 +22,7 @@ import ReactPaginate from "react-paginate";
 export default function InstituicoesPaginition() {
 
     const [students, setStudents] = useState<ClassIes[]>()
-    const { deleteEntity } = ClassIesServiceDelete
+    const { deleteEntity } = StudentServices
     const [pageIndex, setPage] = useState(0)
     const [pageInfo, setPageInfo] = useState<Page>()
     const [, SetGlobalStateAtomId] = useAtom(globalStateAtomId)
@@ -70,8 +70,24 @@ export default function InstituicoesPaginition() {
             dataIndex: 'contact',
         },
         {
-            title: 'instituição',
+            title: 'Instituição',
             dataIndex: 'turmaIes',
+            key: 'institutionName',
+            render: (turmaIes: ClassIes) => (
+                <div>
+                    {turmaIes.institution ? turmaIes.institution.name : 'N/A'}
+                </div>
+            ),
+        },
+        {
+            title: 'Turma',
+            dataIndex: 'turmaIes',
+            key: 'course',
+            render: (turmaIes: ClassIes) => (
+                <div>
+                {turmaIes.course || 'N/A'} - {turmaIes.shift || 'N/A'} - {turmaIes.period || 'N/A'}
+            </div>
+            ),
         },
         {
             title: 'Ações',
@@ -176,7 +192,7 @@ export default function InstituicoesPaginition() {
                                                             pagination={false}
                                                             columns={columTable}
                                                             dataSource={students}
-                                                            rowKey={(classIes: ClassIes) => classIes.id}
+                                                            rowKey={(student: ClassIes) => student.id}
                                                         />
                                                     </div>
                                                     <ReactPaginate
