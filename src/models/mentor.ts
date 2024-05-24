@@ -4,7 +4,7 @@ export interface Mentor {
     contact: string
 }
 
-export const valorInicialMentor: Mentor = {
+export const initialValueMentor: Mentor = {
     id: '',
     name: '',
     contact: ''
