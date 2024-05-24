@@ -1,3 +1,3 @@
 import { atom } from 'jotai';
 
-export const globalStateAtomId = atom<string | null>('');
+export const globalStateAtomId = atom<string >('');
