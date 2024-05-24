@@ -1,6 +1,7 @@
 'use client'
 import { globalStateAtomId } from "@/atoms/atoms";
 import { Page } from "@/models/institution";
+import { Mentor } from "@/models/mentor";
 import { Squad } from "@/models/squad";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { apiService } from "@/service/apiService";
@@ -23,7 +24,7 @@ export default function squadsList() {
     const { deleteEntity } = SquadServices
     const [pageIndex, setPage] = useState(0)
     const [pageInfo, setPageInfo] = useState<Page>()
-    const [, SetGlobalStateAtomId] = useAtom(globalStateAtomId)
+    const [use, SetGlobalStateAtomId] = useAtom(globalStateAtomId)
     const [loading, setLoading] = useState(true);
 
     const PAGE_SIZE = 15
@@ -63,6 +64,22 @@ export default function squadsList() {
         {
             title: 'Mentor',
             dataIndex: 'mentor',
+            render: (mentor: Mentor | null, squad: Squad) => (
+                <div>
+                    {mentor && mentor.name ? mentor.name : <>
+                        <button id="button-update" onClick={() => {
+                            SetGlobalStateAtomId(squad.id)
+                        }}>
+                            <Link href={{ pathname: '/squad/update', }} className="btn btn-sm bg-danger-light">
+                                <i>
+                                <FeatherIcon icon="plus" size={18} /> Alocar Mentor
+                                </i>
+                            </Link>
+                        </button>
+                    </>
+                    }
+                </div>
+            )
         },
         {
             title: 'Ações',

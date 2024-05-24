@@ -1,53 +1,68 @@
-"use client"
+"use client";
 
 import { globalStateAtomId } from '@/atoms/atoms';
-import { Institution, initialvalueInstitution } from '@/models/institution';
+import { Mentor } from '@/models/mentor';
+import { PropsOption } from '@/models/propsOption';
+import { Squad, initialValueSquad } from '@/models/squad';
 import { mensagemErro, mensagemSucesso } from '@/models/toastr';
-import { InstituitionServiceGetById, InstituitionServices } from '@/service/institution';
+import { apiService } from '@/service/apiService';
+import { SquadServiceUpdateMentor, SquadServices } from '@/service/squad';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import Select, { SingleValue } from "react-select";
 import SideBar from '../../../Sidebar/SideBar';
 import Header from '../../../components/Header/Header';
 
-export default function InstituicaoUpdate() {
-    const [institution, setInstitution] = useState<Institution>(initialvalueInstitution)
-    const [globalStateId,] = useAtom(globalStateAtomId)
-    const { getEntityById } = InstituitionServiceGetById
-    const { updateEntity } = InstituitionServices
-  
+export default function SquadUpdate() {
+    const [squad, setSquad] = useState<Squad>(initialValueSquad);
+    const [mentores, setMentores] = useState<Mentor[]>([]);
+    const [globalStateId] = useAtom(globalStateAtomId);
+    const { getEntityById } = SquadServices;
+    const { updateAlocationEntity } = SquadServiceUpdateMentor;
+
     useEffect(() => {
-        const getInstitutionById = async (id: string) => {
-            try {
-                const resultGetInstitutionById = await getEntityById(id)
-                setInstitution(resultGetInstitutionById.data)
-            } catch (error) {
-                console.error(error)
-            }
-        }
-        if (globalStateId != null) {
-            getInstitutionById(globalStateId)
-        }
+        setSquad((prevSquad) => ({ ...prevSquad, squadId: globalStateId }));
+        fetchMentores();
     }, []);
 
+    const fetchMentores = async () => {
+        try {
+            const responseMentores = (await apiService.get(`http://localhost:5293/api/v1/Mentor`)).data;
+            setMentores(responseMentores.mentor);
+        } catch (error) {
+            console.error('Erro ao buscar mentores:', error);
+        }
+    };
+
+    const mentoresOptions = mentores.map(mentor => ({
+        value: mentor.id,
+        label: mentor.name,
+    }));
+
+    const getValueSelectMentor = (selectedOption: SingleValue<PropsOption>) => {
+        const selectedMentor = mentores.find(mentor => mentor.id === selectedOption?.value) || null;
+        if (selectedMentor) {
+            setSquad((prevSquad) => ({ ...prevSquad, mentorId: selectedMentor.id }));
+        }
+    };
 
     const atualizar = async () => {
         try {
-            if (institution) {
-                await updateEntity(institution)
-                setInstitution(initialvalueInstitution)
-                mensagemSucesso("Instituição atualizada com sucesso")
+            if (squad) {
+                await updateAlocationEntity(squad.squadId, squad.mentorId);
+                setSquad(initialValueSquad);
+                mensagemSucesso("Instituição atualizada com sucesso");
             }
         } catch (error) {
-            console.log(error);
-            mensagemErro('erro ao atualizr')
+            console.error('Erro ao atualizar instituição:', error);
+            mensagemErro('Erro ao atualizar');
         }
-    }
+    };
 
     return (
         <>
-            {institution ? (
-
+            {squad ? (
                 <div className="main-wrapper">
                     <Header />
                     <SideBar />
@@ -80,26 +95,15 @@ export default function InstituicaoUpdate() {
                                                     <div className="col-12 col-sm-4">
                                                         <div className="form-group local-forms">
                                                             <label>
-                                                                Nome da Instituição <span className="login-danger">*</span>
+                                                                Turma <span className="login-danger">*</span>
                                                             </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                defaultValue={institution.name}
-                                                                onChange={(e) => setInstitution({ ...institution, name: e.target.value })} />
 
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-12 col-sm-4">
-                                                        <div className="form-group local-forms">
-                                                            <label>
-                                                                Email da Instituição <span className="login-danger">*</span>
-                                                            </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                defaultValue={institution.contact}
-                                                                onChange={(e) => setInstitution({ ...institution, contact: e.target.value })} />
+                                                            <Select
+                                                                className="w-100 local-forms select"
+                                                                onChange={getValueSelectMentor}
+                                                                options={mentoresOptions}
+                                                                placeholder="Selecione uma Turma"
+                                                            />
                                                         </div>
                                                     </div>
                                                     <div className="col-12">
@@ -115,10 +119,10 @@ export default function InstituicaoUpdate() {
                             </div>
                         </div>
                     </div>
-
                 </div>
             ) : (
-                <div>Carregando...</div>)}
+                <div>Carregando...</div>
+            )}
         </>
-    )
+    );
 }

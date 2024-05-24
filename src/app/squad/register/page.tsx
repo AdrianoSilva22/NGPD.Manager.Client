@@ -28,7 +28,7 @@ export default function RegisterInstituicao() {
                     'Content-Type': 'multipart/form-data',
                 },
             })
-            mensagemSucesso('squad cadastrada com sucesso!')
+            mensagemSucesso('squad cadastrado com sucesso!')
             setSquad(initialValueSquad)
         } catch (error) {
             console.error('Erro ao cadastrar squad:', error)

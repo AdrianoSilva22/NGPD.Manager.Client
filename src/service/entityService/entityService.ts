@@ -1,27 +1,32 @@
 
-import { apiService } from "../apiService";
+import { apiService } from "../apiService"
 
 export const EntityService = <T>(url: string) => {
 
     const registerEntity = (entity: T) => {
-        return apiService.post(`${url}`, entity);
-    };
+        return apiService.post(`${url}`, entity)
+    }
 
     const updateEntity = (entity: T) => {
-        return apiService.put(`${url}`, entity);
+        return apiService.put(`${url}`, entity)
+    }
+
+    const updateAlocationEntity = async (squadId: string, mentorId: string) => {
+        const updateUrl = `${url}?squadId=${squadId}&mentorId=${mentorId}`;
+        return apiService.put(updateUrl);
     };
 
     const getTotalEntities = () => {
-        return apiService.get(`${url}`);
-    };
+        return apiService.get(`${url}`)
+    }
 
     const getEntityById = (id: string) => {
-        return apiService.get(`${url}/${id}`);
-    };
+        return apiService.get(`${url}/${id}`)
+    }
 
     const deleteEntity = (id: string) => {
-        return apiService.delete(`${url}?id=${id}`);
-    };
+        return apiService.delete(`${url}?id=${id}`)
+    }
 
     return {
         registerEntity,
@@ -29,5 +34,6 @@ export const EntityService = <T>(url: string) => {
         getTotalEntities,
         deleteEntity,
         getEntityById,
-    };
+        updateAlocationEntity
+    }
 }
