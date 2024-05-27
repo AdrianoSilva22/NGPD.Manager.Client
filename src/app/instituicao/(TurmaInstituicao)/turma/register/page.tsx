@@ -1,4 +1,5 @@
 'use client'
+import { Input } from "@/components/stringInput"
 import { Availability } from "@/models/AvailabilityClassIes"
 import { ClassIes, initialValueClassIes } from "@/models/ClassIes"
 import { Institution } from "@/models/institution"
@@ -14,11 +15,11 @@ export default function RegisterInstitution() {
     const [classIes, setClassIes] = useState<ClassIes>(initialValueClassIes)
     const [institutions, setInstitutions] = useState<Institution[]>([])
     const [availabilities, setAvailabilities] = useState<Availability[]>([])
-  
+
     useEffect(() => {
         const getInstitutionsAndAvailabilities = async () => {
             const institutions = (await apiService.get(`http://localhost:5293/api/v1/institution`)).data
-            
+
             const availability = await axios.create({
                 baseURL: "http://localhost:5293"
             }).get(`/api/v1/Institution/turmas/disponibilidade`)
@@ -30,8 +31,8 @@ export default function RegisterInstitution() {
 
     const sendFormData = async (classIes: ClassIes) => {
         const formData = new FormData()
-    
-        if (classIes.csvFile ) {
+
+        if (classIes.csvFile) {
             formData.append('csvFile', classIes.csvFile)
         }
         formData.append('course', classIes.course)
@@ -43,9 +44,9 @@ export default function RegisterInstitution() {
         if (classIes.availabilityId) {
             formData.append('availabilityId', classIes.availabilityId)
         }
-        
+
         try {
-            
+
             await axios.post('http://localhost:5293/api/v1/Institution/CadastraTurmaIes', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -58,7 +59,7 @@ export default function RegisterInstitution() {
             mensagemErro('Erro ao registrar Turma')
         }
     }
-    
+
     const institutionsOptions = institutions.map(institution => ({
         value: institution.id,
         label: institution.name,
@@ -85,7 +86,7 @@ export default function RegisterInstitution() {
     const register = async () => {
         sendFormData(classIes)
     }
-   
+
     return (
         <>
 
@@ -95,10 +96,10 @@ export default function RegisterInstitution() {
                         <div className="page-header">
                             <div className="row align-items-center">
                                 <div className="col">
-                                    <h3 className="page-title">Add Institution</h3>
+                                    <h3 className="page-title">Adicionar TurmaIes</h3>
                                     <ul className="breadcrumb">
                                         <li className="breadcrumb-item">
-                                            <Link href="/institution">Institution Listing</Link>
+                                            <Link href="/instituicao/turma">Listagem de Turmas/</Link>
                                         </li>
                                     </ul>
                                 </div>
@@ -112,19 +113,25 @@ export default function RegisterInstitution() {
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
                                                     <label>Curso <span className="login-danger">*</span></label>
-                                                    <input type="text" className="form-control" value={classIes.course} onChange={(e) => setClassIes({ ...classIes, course: e.target.value })} />
+                                                    <Input
+                                                        value={classIes.course}
+                                                        onChange={(value: string) => setClassIes({ ...classIes, course: value })} />
                                                 </div>
                                             </div>
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
                                                     <label>Ano de ingresso<span className="login-danger">*</span></label>
-                                                    <input type="text" className="form-control" value={classIes.period} onChange={(e) => setClassIes({ ...classIes, period: e.target.value })} />
+                                                    <Input
+                                                        value={classIes.period}
+                                                        onChange={(value: string) => setClassIes({ ...classIes, period: value })} />
                                                 </div>
                                             </div>
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
                                                     <label>Turno<span className="login-danger">*</span></label>
-                                                    <input type="text" className="form-control" value={classIes.shift} onChange={(e) => setClassIes({ ...classIes, shift: e.target.value })} />
+                                                    <Input
+                                                        value={classIes.shift}
+                                                        onChange={(value: string) => setClassIes({ ...classIes, shift: value })} />
                                                 </div>
                                             </div>
                                             <div className="col-12 col-sm-4">
@@ -159,7 +166,7 @@ export default function RegisterInstitution() {
                                                     <label>Anexe os Estudantes</label>
                                                     <div className="uplod">
                                                         <label className="file-upload image-upbtn mb-0">
-                                                        Escolha o Arquivo.csv <input type="file" onChange={handleFileChange} />
+                                                            Escolha o Arquivo.csv <input type="file" onChange={handleFileChange} />
                                                         </label>
                                                     </div>
                                                 </div>

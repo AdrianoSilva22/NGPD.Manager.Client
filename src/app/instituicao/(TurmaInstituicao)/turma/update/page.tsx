@@ -2,6 +2,7 @@
 import Sidebar from '@/Sidebar/SideBar';
 import { globalStateAtomId } from '@/atoms/atoms';
 import Header from '@/components/Header/Header';
+import { Input } from '@/components/stringInput';
 import { Availability } from '@/models/AvailabilityClassIes';
 import { ClassIes, initialValueClassIes } from '@/models/ClassIes';
 import { Institution } from '@/models/institution';
@@ -94,12 +95,11 @@ export default function ClassUpdate() {
                             <div className="page-header">
                                 <div className="row align-items-center">
                                     <div className="col">
-                                        <span className="page-title">Atualize a Turma</span>
+                                        <span className="page-title">Atualizar</span>
                                         <ul className="breadcrumb">
                                             <li className="breadcrumb-item">
-                                                <Link href="/institution/class">listagem</Link>
+                                                <Link href="/institution/turma">Listagem de Turmas/</Link>
                                             </li>
-                                            <li className="breadcrumb-item active">Atualize a Turma</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -112,7 +112,7 @@ export default function ClassUpdate() {
                                                 <div className="row">
                                                     <div className="col-12">
                                                         <h5 className="form-title">
-                                                            <span>Class</span>
+                                                            <span>Atualizar Turma</span>
                                                         </h5>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
@@ -120,12 +120,9 @@ export default function ClassUpdate() {
                                                             <label>
                                                                 Curso <span className="login-danger">*</span>
                                                             </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                defaultValue={classIes.course}
-                                                                onChange={(e) => setClassIes({ ...classIes, course: e.target.value })}
-                                                            />
+                                                            <Input
+                                                                value={classIes.course}
+                                                                onChange={(value: string) => setClassIes({ ...classIes, course: value })} />
                                                         </div>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
@@ -133,12 +130,9 @@ export default function ClassUpdate() {
                                                             <label>
                                                                 Periodo <span className="login-danger">*</span>
                                                             </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                defaultValue={classIes.period}
-                                                                onChange={(e) => setClassIes({ ...classIes, period: e.target.value })}
-                                                            />
+                                                            <Input
+                                                                value={classIes.period}
+                                                                onChange={(value: string) => setClassIes({ ...classIes, period: value })} />
                                                         </div>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
@@ -146,12 +140,9 @@ export default function ClassUpdate() {
                                                             <label>
                                                                 Turno <span className="login-danger">*</span>
                                                             </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                defaultValue={classIes.shift}
-                                                                onChange={(e) => setClassIes({ ...classIes, shift: e.target.value })}
-                                                            />
+                                                            <Input
+                                                                value={classIes.shift}
+                                                                onChange={(value: string) => setClassIes({ ...classIes, shift: value })} />
                                                         </div>
                                                     </div>
                                                     <div className="col-12 col-sm-4">

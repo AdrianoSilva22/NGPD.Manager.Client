@@ -1,6 +1,8 @@
 "use client"
 
 import { globalStateAtomId } from '@/atoms/atoms'
+import { EmailInput } from '@/components/emailInput'
+import { Input } from '@/components/stringInput'
 import { ClassIes } from '@/models/ClassIes'
 import { PropsOption } from '@/models/propsOption'
 import { Student, initialvalueStudent } from '@/models/student'
@@ -24,19 +26,19 @@ export default function StudentUpdate() {
         const responseListClassIes = (await apiService.get(`http://localhost:5293/api/v1/Institution/RetornaTurmaIesAll`)).data
         setListClassIes(responseListClassIes.listClassIes)
     }
-    
-const turmaOptions = listClassIes.map(classIes => ({
-    value: classIes.id,
-    label: `${classIes.course} - ${classIes.period} - ${classIes.shift}`,
-}))
 
-const getValueSelectTurma = (selectedOption: SingleValue<PropsOption>) => {
-    const selectedTurma = listClassIes.find(classIes => classIes.id === selectedOption?.value) || null
-    if(selectedTurma){
-        setStudent({ ...student, turmaId: selectedTurma?.id })
+    const turmaOptions = listClassIes.map(classIes => ({
+        value: classIes.id,
+        label: `${classIes.course} - ${classIes.period} - ${classIes.shift}`,
+    }))
+
+    const getValueSelectTurma = (selectedOption: SingleValue<PropsOption>) => {
+        const selectedTurma = listClassIes.find(classIes => classIes.id === selectedOption?.value) || null
+        if (selectedTurma) {
+            setStudent({ ...student, turmaId: selectedTurma?.id })
+        }
     }
-}
-    
+
     useEffect(() => {
         const getStudentById = async (id: string) => {
             try {
@@ -102,11 +104,10 @@ const getValueSelectTurma = (selectedOption: SingleValue<PropsOption>) => {
                                                             <label>
                                                                 Nome <span className="login-danger">*</span>
                                                             </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
+                                                            <Input
                                                                 value={student.name}
-                                                                onChange={(e) => setStudent({ ...student, name: e.target.value })} />
+                                                                onChange={(value: string) => setStudent({ ...student, name: value })} />
+
                                                         </div>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
@@ -126,13 +127,13 @@ const getValueSelectTurma = (selectedOption: SingleValue<PropsOption>) => {
                                                     <div className="col-12 col-sm-4">
                                                         <div className="form-group local-forms">
                                                             <label>
-                                                                Contato <span className="login-danger">*</span>
+                                                                Email <span className="login-danger">*</span>
                                                             </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
+                                                            <EmailInput
                                                                 value={student.contact}
-                                                                onChange={(e) => setStudent({ ...student, contact: e.target.value })} />
+                                                                onChange={(value: string) => setStudent({ ...student, contact: value })}
+                                                            />
+
                                                         </div>
                                                     </div>
                                                     <div className="col-12">

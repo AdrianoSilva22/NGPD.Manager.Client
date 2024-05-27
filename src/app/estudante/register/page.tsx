@@ -1,4 +1,6 @@
 'use client'
+import { EmailInput } from "@/components/emailInput";
+import { Input } from "@/components/stringInput";
 import { ClassIes } from "@/models/ClassIes";
 import { PropsOption } from "@/models/propsOption";
 import { Student, initialvalueStudent } from "@/models/student";
@@ -15,15 +17,15 @@ export default function RegisterStudent() {
     const [listClassIes, setListClassIes] = useState<ClassIes[]>([])
     const { registerEntity } = StudentServices
 
-        useEffect(() => {
-            fetchListClassIes()
-        }, [])
+    useEffect(() => {
+        fetchListClassIes()
+    }, [])
 
-        const fetchListClassIes = async () => {
-            const responseListClassIes = (await apiService.get(`http://localhost:5293/api/v1/Institution/RetornaTurmaIesAll`)).data
-            setListClassIes(responseListClassIes.listClassIes)
-        }
-        
+    const fetchListClassIes = async () => {
+        const responseListClassIes = (await apiService.get(`http://localhost:5293/api/v1/Institution/RetornaTurmaIesAll`)).data
+        setListClassIes(responseListClassIes.listClassIes)
+    }
+
     const turmaOptions = listClassIes.map(classIes => ({
         value: classIes.id,
         label: `${classIes.course} - ${classIes.period} - ${classIes.shift}`,
@@ -31,7 +33,7 @@ export default function RegisterStudent() {
 
     const getValueSelectTurma = (selectedOption: SingleValue<PropsOption>) => {
         const selectedTurma = listClassIes.find(classIes => classIes.id === selectedOption?.value) || null
-        if(selectedTurma){
+        if (selectedTurma) {
             setStudent({ ...student, turmaId: selectedTurma?.id })
         }
     }
@@ -72,13 +74,18 @@ export default function RegisterStudent() {
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
                                                     <label>Nome <span className="login-danger">*</span></label>
-                                                    <input type="text" className="form-control" value={student.name} onChange={(e) => setStudent({ ...student, name: e.target.value })} />
+                                                    <Input
+                                                        value={student.name}
+                                                        onChange={(value: string) => setStudent({ ...student, name: value })} />
                                                 </div>
                                             </div>
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
                                                     <label>Email <span className="login-danger">*</span></label>
-                                                    <input type="text" className="form-control" value={student.contact} onChange={(e) => setStudent({ ...student, contact: e.target.value })} />
+                                                    <EmailInput
+                                                        value={student.contact}
+                                                        onChange={(value: string) => setStudent({ ...student, contact: value })}
+                                                    />
                                                 </div>
                                             </div>
                                             <div className="col-12 col-sm-4">

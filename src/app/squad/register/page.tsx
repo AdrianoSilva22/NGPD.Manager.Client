@@ -1,4 +1,5 @@
 'use client'
+import { Input } from "@/components/stringInput"
 import { PropsOption } from "@/models/propsOption"
 import { Squad, initialValueSquad } from "@/models/squad"
 import { mensagemErro, mensagemSucesso } from "@/models/toastr"
@@ -68,10 +69,10 @@ export default function RegisterInstituicao() {
                         <div className="page-header">
                             <div className="row align-items-center">
                                 <div className="col">
-                                    <h3 className="page-title">Adicionar Instituição</h3>
+                                    <h3 className="page-title">Adicionar Squad</h3>
                                     <ul className="breadcrumb">
                                         <li className="breadcrumb-item">
-                                            <Link href="/squad">Listagem/</Link>
+                                            <Link href="/squad">Listagem de Squads/</Link>
                                         </li>
                                     </ul>
                                 </div>
@@ -85,7 +86,9 @@ export default function RegisterInstituicao() {
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
                                                     <label>Nome Squad <span className="login-danger">*</span></label>
-                                                    <input type="text" className="form-control" value={squad.nameSquad} onChange={(e) => setSquad({ ...squad, nameSquad: e.target.value })} />
+                                                    <Input
+                                                        value={squad.nameSquad}
+                                                        onChange={(value: string) => setSquad({ ...squad, nameSquad: value })} />
                                                 </div>
                                             </div>
                                             <div className="col-12 col-sm-4">

@@ -121,7 +121,7 @@ export default function squadsList() {
                             <div className="row">
                                 <div className="col-sm-12">
                                     <div className="page-sub-header">
-                                        <h3 className="page-title">Instituições</h3>
+                                        <h3 className="page-title">Squads</h3>
                                     </div>
                                 </div>
                             </div>
@@ -169,7 +169,7 @@ export default function squadsList() {
                                             <div className="page-header">
                                                 <div className="row align-items-center">
                                                     <div className="col">
-                                                        <h3 className="page-title">Instituições</h3>
+                                                        <h3 className="page-title">Squads</h3>
                                                     </div>
                                                     <div className="col-auhref text-end float-end ms-auhref download-grp">
                                                         <Link href="/instituicao/register" className="btn btn-primary">

@@ -1,4 +1,6 @@
 'use client'
+import { EmailInput } from "@/components/emailInput";
+import { Input } from "@/components/stringInput";
 import { Institution, initialvalueInstitution } from "@/models/institution";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { InstituitionServices } from "@/service/institution";
@@ -22,7 +24,7 @@ export default function RegisterInstituicao() {
 
     return (
         <>
-            
+
             <div className="main-wrapper">
                 <div className="page-wrapper">
                     <div className="content container-fluid">
@@ -42,25 +44,30 @@ export default function RegisterInstituicao() {
                             <div className="col-sm-12">
                                 <div className="card">
                                     <div className="card-body">
-                                            <div className="row">
-                                                <div className="col-12 col-sm-4">
-                                                    <div className="form-group local-forms">
-                                                        <label>Contato <span className="login-danger">*</span></label>
-                                                        <input type="text" className="form-control" value={institution.contact} onChange={(e) => setInstituition({ ...institution, contact: e.target.value })} />
-                                                    </div>
-                                                </div>
-                                                <div className="col-12 col-sm-4">
-                                                    <div className="form-group local-forms">
-                                                        <label>Nome da Instituição <span className="login-danger">*</span></label>
-                                                        <input type="text" className="form-control" value={institution.name} onChange={(e) => setInstituition({ ...institution, name: e.target.value })} />
-                                                    </div>
-                                                </div>
-                                                <div className="col-12">
-                                                    <div className="student-submit">
-                                                        <button type="button" className="btn btn-primary" onClick={cadastrar}>Cadastrar</button>
-                                                    </div>
+                                        <div className="row">
+                                            <div className="col-12 col-sm-4">
+                                                <div className="form-group local-forms">
+                                                    <label>Nome da Instituição <span className="login-danger">*</span></label>
+                                                    <Input
+                                                        value={institution.name}
+                                                        onChange={(value: string) => setInstituition({ ...institution, name: value })} />
                                                 </div>
                                             </div>
+                                            <div className="col-12 col-sm-4">
+                                                <div className="form-group local-forms">
+                                                    <label>Email <span className="login-danger">*</span></label>
+                                                    <EmailInput
+                                                        value={institution.contact}
+                                                        onChange={(value: string) => setInstituition({ ...institution, contact: value })}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-12">
+                                                <div className="student-submit">
+                                                    <button type="button" className="btn btn-primary" onClick={cadastrar}>Cadastrar</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

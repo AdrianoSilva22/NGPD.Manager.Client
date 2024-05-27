@@ -1,6 +1,8 @@
 "use client"
 
 import { globalStateAtomId } from '@/atoms/atoms'
+import { EmailInput } from '@/components/emailInput'
+import { Input } from '@/components/stringInput'
 import { Institution, initialvalueInstitution } from '@/models/institution'
 import { mensagemErro, mensagemSucesso } from '@/models/toastr'
 import { InstituitionServiceGetById, InstituitionServices } from '@/service/institution'
@@ -15,7 +17,7 @@ export default function InstituicaoUpdate() {
     const [globalStateId,] = useAtom(globalStateAtomId)
     const { getEntityById } = InstituitionServiceGetById
     const { updateEntity } = InstituitionServices
-  
+
     useEffect(() => {
         const getInstitutionById = async (id: string) => {
             try {
@@ -56,12 +58,11 @@ export default function InstituicaoUpdate() {
                             <div className="page-header">
                                 <div className="row align-items-center">
                                     <div className="col">
-                                        <span className="page-title">Atualizar Instituição</span>
+                                        <span className="page-title">Atualizar </span>
                                         <ul className="breadcrumb">
                                             <li className="breadcrumb-item">
                                                 <Link href="/turma">Listagem de Instituições</Link>
                                             </li>
-                                            <li className="breadcrumb-item active"> Atualizar Instituição</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -74,7 +75,7 @@ export default function InstituicaoUpdate() {
                                                 <div className="row">
                                                     <div className="col-12">
                                                         <h5 className="form-title">
-                                                            <span>Department Details</span>
+                                                            <span>Atualizar Instituição</span>
                                                         </h5>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
@@ -82,12 +83,9 @@ export default function InstituicaoUpdate() {
                                                             <label>
                                                                 Nome da Instituição <span className="login-danger">*</span>
                                                             </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                defaultValue={institution.name}
-                                                                onChange={(e) => setInstitution({ ...institution, name: e.target.value })} />
-
+                                                            <Input
+                                                                value={institution.name}
+                                                                onChange={(value: string) => setInstitution({ ...institution, name: value})} />
                                                         </div>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
@@ -95,11 +93,10 @@ export default function InstituicaoUpdate() {
                                                             <label>
                                                                 Email da Instituição <span className="login-danger">*</span>
                                                             </label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                defaultValue={institution.contact}
-                                                                onChange={(e) => setInstitution({ ...institution, contact: e.target.value })} />
+                                                            <EmailInput
+                                                                value={institution.contact}
+                                                                onChange={(value: string) => setInstitution({ ...institution, contact: value })}
+                                                            />
                                                         </div>
                                                     </div>
                                                     <div className="col-12">

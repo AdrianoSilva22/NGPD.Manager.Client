@@ -71,12 +71,11 @@ export default function SquadUpdate() {
                             <div className="page-header">
                                 <div className="row align-items-center">
                                     <div className="col">
-                                        <span className="page-title">Atualizar Instituição</span>
+                                        <span className="page-title">Alocação</span>
                                         <ul className="breadcrumb">
                                             <li className="breadcrumb-item">
-                                                <Link href="/turma">Listagem de Instituições</Link>
+                                                <Link href="/squad">Listagem de Squads</Link>
                                             </li>
-                                            <li className="breadcrumb-item active"> Atualizar Instituição</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -89,20 +88,20 @@ export default function SquadUpdate() {
                                                 <div className="row">
                                                     <div className="col-12">
                                                         <h5 className="form-title">
-                                                            <span>Department Details</span>
+                                                            <span>Alocação de Mentor</span>
                                                         </h5>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
                                                         <div className="form-group local-forms">
                                                             <label>
-                                                                Turma <span className="login-danger">*</span>
+                                                                Mentor <span className="login-danger">*</span>
                                                             </label>
 
                                                             <Select
                                                                 className="w-100 local-forms select"
                                                                 onChange={getValueSelectMentor}
                                                                 options={mentoresOptions}
-                                                                placeholder="Selecione uma Turma"
+                                                                placeholder="Selecione um mentor"
                                                             />
                                                         </div>
                                                     </div>
