@@ -1,5 +1,5 @@
-export default function Home() {
-  return (
-   <div>TELA HOME</div>
-  )
+export default function Home(){
+return (
+  <div>...</div>
+)
 }
