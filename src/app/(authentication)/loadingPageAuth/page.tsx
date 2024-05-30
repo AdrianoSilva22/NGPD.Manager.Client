@@ -1,0 +1,57 @@
+'use client'
+import { TokenDecoded } from '@/models/tokenDecoded';
+import '@/styles/loadginPage.css';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
+import { Session } from 'next-auth';
+import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+
+const LoadingPage = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const sendTokenToBackend = async () => {
+      try {
+        const session: Session | null = await getSession();
+        if (session) {
+          const googleIdToken = session.id_token;
+          const backendResponse = await axios.post('http://localhost:5293/api/v1/Auth/login', { tokenId: googleIdToken })
+          const token = backendResponse.data.token
+          const decoded = jwtDecode(token) as TokenDecoded
+          Cookies.set('userRole', decoded.role)
+        } else {
+          console.error('Usuário não autenticado.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar token para o backend:', error);
+      }
+    };
+
+
+
+
+
+
+
+
+
+
+    sendTokenToBackend();
+    setTimeout(() => {
+      // Depois que o processo de carregamento for concluído,
+      // redireciona o usuário para a próxima página
+      router.push('/estudante');
+    }, 3000); // Tempo de simulação de 3 segundos
+  }, []);
+  
+  return (
+    <div className="loader-container">
+      <div className="loader"></div>
+      <p>Aguarde enquanto estamos processando sua autenticação...</p>
+    </div>
+  );
+};
+
+export default LoadingPage;
