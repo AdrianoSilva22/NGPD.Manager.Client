@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 import SideBar from '../../../Sidebar/SideBar'
 import Header from '../../../components/Header/Header'
 
-export default function InstituicaoUpdate() {
+export default function InstitutionUpdate() {
     const [institution, setInstitution] = useState<Institution>(initialvalueInstitution)
     const [globalStateId,] = useAtom(globalStateAtomId)
     const { getEntityById } = InstituitionServiceGetById
@@ -48,11 +48,11 @@ export default function InstituicaoUpdate() {
 
     return (
         <>
+            <Header />
+            <SideBar />
             {institution ? (
 
                 <div className="main-wrapper">
-                    <Header />
-                    <SideBar />
                     <div className="page-wrapper">
                         <div className="content container-fluid">
                             <div className="page-header">
@@ -85,7 +85,7 @@ export default function InstituicaoUpdate() {
                                                             </label>
                                                             <Input
                                                                 value={institution.name}
-                                                                onChange={(value: string) => setInstitution({ ...institution, name: value})} />
+                                                                onChange={(value: string) => setInstitution({ ...institution, name: value })} />
                                                         </div>
                                                     </div>
                                                     <div className="col-12 col-sm-4">

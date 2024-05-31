@@ -62,10 +62,10 @@ export default function SquadUpdate() {
 
     return (
         <>
+            <Header />
+            <SideBar />
             {squad ? (
                 <div className="main-wrapper">
-                    <Header />
-                    <SideBar />
                     <div className="page-wrapper">
                         <div className="content container-fluid">
                             <div className="page-header">

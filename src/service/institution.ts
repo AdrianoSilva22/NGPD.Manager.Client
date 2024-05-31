@@ -1,5 +1,5 @@
-import { Instituition } from "@/models/institution";
+import { Institution } from "@/models/institution";
 import { EntityService } from "./entityService/entityService";
 
-export const InstituitionServices = EntityService<Instituition>("/institution");
-export const InstituitionServiceGetById = EntityService<Instituition>("/institution/RetornaInstitutionId");
+export const InstituitionServices = EntityService<Institution>("/institution");
+export const InstituitionServiceGetById = EntityService<Institution>("/institution/RetornaInstitutionId");

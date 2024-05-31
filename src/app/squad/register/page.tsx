@@ -1,4 +1,6 @@
 'use client'
+import Sidebar from "@/Sidebar/SideBar"
+import Header from "@/components/Header/Header"
 import { Input } from "@/components/stringInput"
 import { PropsOption } from "@/models/propsOption"
 import { Squad, initialValueSquad } from "@/models/squad"
@@ -8,7 +10,7 @@ import Link from "next/link"
 import { ChangeEvent, useEffect, useState } from "react"
 import Select, { SingleValue } from "react-select"
 
-export default function RegisterInstituicao() {
+export default function SquadRegister() {
     const [squad, setSquad] = useState<Squad>(initialValueSquad)
 
     const sendFormData = async (squad: Squad) => {
@@ -62,7 +64,8 @@ export default function RegisterInstituicao() {
 
     return (
         <>
-
+            <Header />
+            <Sidebar />
             <div className="main-wrapper">
                 <div className="page-wrapper">
                     <div className="content container-fluid">

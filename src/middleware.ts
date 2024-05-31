@@ -22,5 +22,6 @@ export const config = {
         '/squad/:path*',
         '/empresa/:path*',
         '/mentor/:path*',
+        '/dashboard/:path*',
     ],
 };

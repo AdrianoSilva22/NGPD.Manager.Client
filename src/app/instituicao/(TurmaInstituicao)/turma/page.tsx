@@ -19,7 +19,7 @@ import { IconContext } from "react-icons";
 import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
 
-export default function InstituicoesPaginition() {
+export default function ClassesPaginition() {
 
     const [listClassIes, setListClassIes] = useState<ClassIes[]>()
     const { deleteEntity } = ClassIesServiceDelete
@@ -113,9 +113,9 @@ export default function InstituicoesPaginition() {
 
     return (
         <>
+            <Header />
+            <Sidebar />
             <div className="main-wrapper">
-                <Header />
-                <Sidebar />
                 <div className="page-wrapper">
                     <div className="content container-fluid">
                         <div className="page-header">

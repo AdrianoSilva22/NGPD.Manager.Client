@@ -1,4 +1,6 @@
 'use client'
+import Sidebar from "@/Sidebar/SideBar";
+import Header from "@/components/Header/Header";
 import { EmailInput } from "@/components/emailInput";
 import { Input } from "@/components/stringInput";
 import { ClassIes } from "@/models/ClassIes";
@@ -12,7 +14,7 @@ import { useEffect, useState } from "react";
 import Select, { SingleValue } from "react-select";
 
 
-export default function RegisterStudent() {
+export default function StudentRegister() {
     const [student, setStudent] = useState<Student>(initialvalueStudent)
     const [listClassIes, setListClassIes] = useState<ClassIes[]>([])
     const { registerEntity } = StudentServices
@@ -51,6 +53,8 @@ export default function RegisterStudent() {
 
     return (
         <>
+            <Header />
+            <Sidebar />
             <div className="main-wrapper">
                 <div className="page-wrapper">
                     <div className="content container-fluid">

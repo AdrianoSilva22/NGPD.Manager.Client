@@ -4,11 +4,11 @@ import { apiService } from "../apiService"
 export const EntityService = <T>(url: string) => {
 
     const registerEntity = (entity: T) => {
-        return apiService.post(`${url}`, entity)
+        return apiService.post<T>(`${url}`, entity)
     }
 
     const updateEntity = (entity: T) => {
-        return apiService.put(`${url}`, entity)
+        return apiService.put<T>(`${url}`, entity)
     }
 
     const updateAlocationEntity = async (squadId: string, mentorId: string) => {

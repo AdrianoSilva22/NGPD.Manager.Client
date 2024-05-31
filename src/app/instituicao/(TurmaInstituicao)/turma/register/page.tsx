@@ -1,4 +1,6 @@
 'use client'
+import Sidebar from "@/Sidebar/SideBar"
+import Header from "@/components/Header/Header"
 import { Input } from "@/components/stringInput"
 import { Availability } from "@/models/AvailabilityClassIes"
 import { ClassIes, initialValueClassIes } from "@/models/ClassIes"
@@ -11,7 +13,7 @@ import Link from "next/link"
 import { ChangeEvent, useEffect, useState } from "react"
 import Select, { SingleValue } from "react-select"
 
-export default function RegisterInstitution() {
+export default function InstitutionRegister() {
     const [classIes, setClassIes] = useState<ClassIes>(initialValueClassIes)
     const [institutions, setInstitutions] = useState<Institution[]>([])
     const [availabilities, setAvailabilities] = useState<Availability[]>([])
@@ -89,7 +91,8 @@ export default function RegisterInstitution() {
 
     return (
         <>
-
+            <Header />
+            <Sidebar />
             <div className="main-wrapper">
                 <div className="page-wrapper">
                     <div className="content container-fluid">

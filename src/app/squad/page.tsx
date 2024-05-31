@@ -1,4 +1,5 @@
 'use client'
+import Sidebar from "@/Sidebar/SideBar";
 import { globalStateAtomId } from "@/atoms/atoms";
 import { Page } from "@/models/institution";
 import { Mentor } from "@/models/mentor";
@@ -15,10 +16,9 @@ import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
-import SideBar from '../../Sidebar/SideBar';
 import Header, { default as Footer } from '../../components/Header/Header';
 
-export default function squadsList() {
+export default function SquadsPaginition() {
 
     const [squads, setSquads] = useState<Squad[]>([])
     const { deleteEntity } = SquadServices
@@ -112,9 +112,9 @@ export default function squadsList() {
 
     return (
         <>
+        <Header />
+          <Sidebar />
             <div className="main-wrapper">
-                <Header />
-                <SideBar />
                 <div className="page-wrapper">
                     <div className="content container-fluid">
                         <div className="page-header">

@@ -1,4 +1,6 @@
 'use client'
+import Sidebar from "@/Sidebar/SideBar";
+import Header from "@/components/Header/Header";
 import { EmailInput } from "@/components/emailInput";
 import { Input } from "@/components/stringInput";
 import { Institution, initialvalueInstitution } from "@/models/institution";
@@ -7,7 +9,7 @@ import { InstituitionServices } from "@/service/institution";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function RegisterInstituicao() {
+export default function InstitutionRegister() {
     const [institution, setInstituition] = useState<Institution>(initialvalueInstitution);
     const { registerEntity } = InstituitionServices
 
@@ -24,7 +26,8 @@ export default function RegisterInstituicao() {
 
     return (
         <>
-
+            <Header />
+            <Sidebar />
             <div className="main-wrapper">
                 <div className="page-wrapper">
                     <div className="content container-fluid">

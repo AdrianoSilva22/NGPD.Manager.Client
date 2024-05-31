@@ -1,8 +1,6 @@
 "use client"
 // import Footer from "@/components/footerCard";
 // import Header from "@/components/headerCard";
-import Sidebar from "@/Sidebar/SideBar";
-import Header from "@/components/Header/Header";
 import { queryClient } from "@/utils/queryClient";
 import '@fortawesome/fontawesome-free/css/all.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -29,8 +27,6 @@ export default function RootLayout({
     <QueryClientProvider client={queryClient}>
       <html lang="en">
         <body className={inter.className}>{children}
-          <Header />
-          <Sidebar />
         </body>
       </html>
     </QueryClientProvider>

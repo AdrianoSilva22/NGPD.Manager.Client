@@ -86,10 +86,10 @@ export default function ClassUpdate() {
 
     return (
         <>
+            <Header />
+            <Sidebar />
             {classIes ? (
                 <div className="main-wrapper">
-                    <Header />
-                    <Sidebar />
                     <div className="page-wrapper">
                         <div className="content container-fluid">
                             <div className="page-header">

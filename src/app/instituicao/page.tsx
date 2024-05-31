@@ -1,4 +1,5 @@
 'use client'
+import Sidebar from "@/Sidebar/SideBar";
 import { globalStateAtomId } from "@/atoms/atoms";
 import { Institution, Page } from "@/models/institution";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
@@ -13,22 +14,21 @@ import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
-import SideBar from '../../Sidebar/SideBar';
 import Header, { default as Footer } from '../../components/Header/Header';
 
-export default function InstitutionList() {
+export default function InstitutionsPaginition() {
 
     const [institutions, setInstitutions] = useState<Institution[]>()
     const { deleteEntity } = InstituitionServices
     const [pageIndex, setPage] = useState(0)
     const [pageInfo, setPageInfo] = useState<Page>()
-    const [,SetGlobalStateAtomId] = useAtom(globalStateAtomId)
+    const [, SetGlobalStateAtomId] = useAtom(globalStateAtomId)
     const PAGE_SIZE = 15
 
     useEffect(() => {
         const getPageInfo = async () => {
-            const url = `http://localhost:5293/api/v1/institution?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
             try {
+                const url = `http://localhost:5293/api/v1/institution?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
                 const pageInfoResponse = await apiService.get(url)
                 setPageInfo(pageInfoResponse.data)
                 setInstitutions(pageInfoResponse.data.institution)
@@ -95,9 +95,9 @@ export default function InstitutionList() {
 
     return (
         <>
+        <Header />
+          <Sidebar />
             <div className="main-wrapper">
-                <Header />
-                <SideBar />
                 <div className="page-wrapper">
                     <div className="content container-fluid">
                         <div className="page-header">
