@@ -1,9 +1,27 @@
+'use client'
 import logo from '@/assets/img/PortoDigital_2019.png';
 import logoSmall from '@/assets/img/transferir.jpeg';
+import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
+import { getSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 const Header = () => {
+
+  const [user, setUser] = useState()
+  const [userResponseBackend, setUserResponseBackend] = useState()
+  useEffect(() => {
+    const fetchDaraUser = async () => {
+      const session = await getSession()
+      setUser(session?.user)
+      const tokenUserInfoAuthenticate = Cookies.get('tokenUserInfo');
+      const tokenDecoded = jwtDecode(tokenUserInfoAuthenticate)
+      setUserResponseBackend(tokenDecoded)
+    }
+    fetchDaraUser()
+  }, []);
 
   const handlesidebar = () => {
     document.body.classList.toggle("mini-sidebar");
@@ -107,7 +125,7 @@ const Header = () => {
                   <li className="notification-message">
                     <Link href="#">
                       <div className="media d-flex">
-                        
+
                         <div className="media-body flex-grow-1">
                           <p className="noti-details">
                             <span className="noti-title">Carlson Tech</span> has
@@ -205,7 +223,7 @@ const Header = () => {
                                     <img src={headericon04} alt="" />
                                 </Link>
                             </li> */}
-          
+
           {/* User Menu */}
           <li className="nav-item dropdown has-arrow new-user-menus">
             <Link
@@ -217,12 +235,13 @@ const Header = () => {
                 <Image
                   className="rounded-circle"
                   width={31}
+                  height={31}
                   alt="Ryan Taylor"
-                  src={logoSmall}
+                  src={user?.image}
                 />
                 <div className="user-text">
-                  <h6>Thiago</h6>
-                  <p className="text-muted mb-0">Mentor</p>
+                  <h6>{user?.name}</h6>
+                  <p className="text-muted mb-0">{userResponseBackend?.role}</p>
                 </div>
               </span>
             </Link>
