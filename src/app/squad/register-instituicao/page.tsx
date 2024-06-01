@@ -1,64 +1,65 @@
 'use client'
-import Sidebar from "@/Sidebar/SideBar";
+import React, { useState, useEffect } from 'react';
 import { globalStateAtomId } from "@/atoms/atoms";
-import Header from "@/components/Header/Header";
-import { Availability } from "@/models/AvailabilityClassIes";
 import { ClassIes } from "@/models/ClassIes";
 import { Page } from "@/models/institution";
-import { mensagemErro, mensagemSucesso } from "@/models/toastr";
-import { ClassIesServiceDelete } from "@/service/ClassIes";
 import { apiService } from "@/service/apiService";
 import "@/styles/pagination.css";
-import { Table } from "antd";
-import { Footer } from "antd/es/layout/layout";
+import { Modal, Table } from "antd";
+import axios from "axios";
 import FeatherIcon from "feather-icons-react";
 import { useAtom } from "jotai";
-import Link from 'next/link';
-import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
+import { Availability } from '@/models/AvailabilityClassIes';
+import Sidebar from '@/Sidebar/SideBar';
+import Header from '@/components/Header/Header';
+import { Footer } from 'antd/es/layout/layout';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { Squad, initialValueSquad } from '@/models/squad';
 
-export default function ClassesPaginition() {
-
-    const [listClassIes, setListClassIes] = useState<ClassIes[]>()
-    const { deleteEntity } = ClassIesServiceDelete
-    const [pageIndex, setPage] = useState(0)
-    const [pageInfo, setPageInfo] = useState<Page>()
-    const [, SetGlobalStateAtomId] = useAtom(globalStateAtomId)
+export default function InstituicoesPaginition() {
+    const [listClassIes, setListClassIes] = useState<ClassIes[]>([]);
+    const [pageIndex, setPage] = useState(0);
+    const [pageInfo, setPageInfo] = useState<Page | null>(null);
+    const [, setGlobalStateAtomId] = useAtom(globalStateAtomId);
     const [loading, setLoading] = useState(true);
-    const PAGE_SIZE = 15
+    const [squadData, setSquadData] = useState<Squad>(initialValueSquad);
+    const PAGE_SIZE = 15;
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         const getPageInfo = async () => {
-            const url = `http://localhost:5293/api/v1/Institution/RetornaTurmaIesAll?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
+            const url = `http://localhost:5293/api/v1/Institution/RetornaTurmaIesAll?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`;
             try {
-                const pageInfoResponse = await apiService.get(url)
-                setPageInfo(pageInfoResponse.data)
-                setListClassIes(pageInfoResponse.data.listClassIes)
+                const pageInfoResponse = await apiService.get(url);
+                setPageInfo(pageInfoResponse.data);
+                setListClassIes(pageInfoResponse.data.listClassIes);
                 setLoading(false);
             } catch (error) {
                 console.error(error);
             }
-        }
-        getPageInfo()
-    }, [pageIndex])
+        };
+        getPageInfo();
+    }, [pageIndex]);
 
-    const deleteClassIes = async (classIes: ClassIes) => {
-        try {
-            if (listClassIes) {
-                await deleteEntity(classIes.id)
-                const filterlistClassIes = listClassIes.filter(i => i.id !== classIes.id)
-                setListClassIes(filterlistClassIes)
-                mensagemSucesso("Turma deletada com sucesso!")
-            }
-        } catch (error) {
-            console.log(error);
-            mensagemErro('Erro ao excluir Turma');
+  
+    // Use useEffect para extrair o parâmetro da URL quando a página carregar
+    useEffect(() => {
+        const classIesId = searchParams.get('classIesId');
+        if (classIesId) {
+            setSquadData(prevData => ({ ...prevData, classIesId }));
         }
-    };
+    }, [searchParams]);
 
     const columTable = [
+        {
+            title: 'Instituição',
+            dataIndex: 'institution',
+            render: (institution: { name: string }) => institution.name,
+        },
         {
             title: 'Curso',
             dataIndex: 'course',
@@ -72,7 +73,7 @@ export default function ClassesPaginition() {
             dataIndex: 'period',
         },
         {
-            title: 'disponibilidade',
+            title: 'Disponibilidade',
             dataIndex: 'availability',
             render: (availabilityClassIes: Availability) => (
                 <div>
@@ -85,27 +86,25 @@ export default function ClassesPaginition() {
             key: 'acoes',
             render: (classIes: ClassIes) => (
                 <>
-
-                    <button id="button-delete" onClick={async () => {
-                        await deleteClassIes(classIes)
-                    }}>
-                        <Link href="#" className="btn btn-sm bg-success-light me-2">
-                            <i>
-                                <FeatherIcon icon="trash" size={16} />
-                            </i>
-                        </Link>
-                    </button>
+                          <button id="button-update" onClick={() => {
+            setGlobalStateAtomId(classIes.id);
+        }}>
+            <Link href={{ pathname: '/squad/register-squad', query: { classIesId: classIes.id } }} className="btn btn-sm bg-danger-light">
+                <i>
+                    <FeatherIcon icon="user" size={18} />
+                </i>
+            </Link>
+        </button>
 
                     <button id="button-update" onClick={() => {
-                        SetGlobalStateAtomId(classIes.id)
-                    }}>
-                        <Link href={{ pathname: '/instituicao/turma/update', }} className="btn btn-sm bg-danger-light">
-                            <i>
-                                <FeatherIcon icon="edit" size={18} />
-                            </i>
-                        </Link>
-                    </button>
-
+            setGlobalStateAtomId(classIes.id);
+        }}>
+            <Link href={{ pathname: '/squad/register-turmacompleta', query: { classIesId: classIes.id } }} className="btn btn-sm bg-danger-light">
+                <i>
+                    <FeatherIcon icon="users" size={18} />
+                </i>
+            </Link>
+        </button>
                 </>
             ),
         },
@@ -113,9 +112,9 @@ export default function ClassesPaginition() {
 
     return (
         <>
-            <Header />
-            <Sidebar />
             <div className="main-wrapper">
+                <Header />
+                <Sidebar />
                 <div className="page-wrapper">
                     <div className="content container-fluid">
                         <div className="page-header">
@@ -131,27 +130,14 @@ export default function ClassesPaginition() {
                             <div className="row">
                                 <div className="col-lg-3 col-md-6">
                                     <div className="form-group">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Search by ID ..."
-                                        />
                                     </div>
                                 </div>
                                 <div className="col-lg-3 col-md-6">
                                     <div className="form-group">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Search by Name ..."
-                                        />
                                     </div>
                                 </div>
                                 <div className="col-lg-2">
                                     <div className="search-student-btn">
-                                        <button type="button" className="btn btn-primary">
-                                            Search
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -171,9 +157,6 @@ export default function ClassesPaginition() {
                                                         <h3 className="page-title">Turmas</h3>
                                                     </div>
                                                     <div className="col-auhref text-end float-end ms-auhref download-grp">
-                                                        <Link href="/instituicao/turma/register" className="btn btn-primary">
-                                                            <i className="fas fa-plus" />
-                                                        </Link>
                                                     </div>
                                                 </div>
                                             </div>
@@ -216,7 +199,7 @@ export default function ClassesPaginition() {
                 </div>
             </div>
             <Footer />
-           
         </>
-    )
+    );
 }
+

@@ -1,4 +1,5 @@
 'use client'
+
 import Sidebar from "@/Sidebar/SideBar";
 import { globalStateAtomId } from "@/atoms/atoms";
 import { Institution, Page } from "@/models/institution";
@@ -6,7 +7,7 @@ import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { apiService } from "@/service/apiService";
 import { InstituitionServices } from "@/service/institution";
 import "@/styles/pagination.css";
-import { Table } from "antd";
+import { Modal, Table } from "antd";
 import FeatherIcon from "feather-icons-react";
 import { useAtom } from "jotai";
 import Link from 'next/link';
@@ -17,13 +18,15 @@ import ReactPaginate from "react-paginate";
 import Header, { default as Footer } from '../../components/Header/Header';
 
 export default function InstitutionsPaginition() {
+    const [institutions, setInstitutions] = useState<Institution[]>();
+    const { deleteEntity } = InstituitionServices;
+    const [pageIndex, setPage] = useState(0);
+    const [pageInfo, setPageInfo] = useState<Page>();
+    const [] = useAtom(globalStateAtomId);
+    const PAGE_SIZE = 15;
+    const [isModalVisible, setIsModalVisible] = useState(false)
+    const [selectedInstituion, setSelectedInstituion] = useState<Institution | null>(null)
 
-    const [institutions, setInstitutions] = useState<Institution[]>()
-    const { deleteEntity } = InstituitionServices
-    const [pageIndex, setPage] = useState(0)
-    const [pageInfo, setPageInfo] = useState<Page>()
-    const [, SetGlobalStateAtomId] = useAtom(globalStateAtomId)
-    const PAGE_SIZE = 15
 
     useEffect(() => {
         const getPageInfo = async () => {
@@ -41,14 +44,31 @@ export default function InstitutionsPaginition() {
 
     const deleteInstituicao = async (institution: Institution) => {
         try {
-            await deleteEntity(institution.id)
-            const filterInstitutions = institutions?.filter(i => i.contact !== institution.contact)
-            setInstitutions(filterInstitutions)
-            mensagemSucesso("instituição deletada com sucesso!")
+            await deleteEntity(institution.id);
+            const filteredInstitutions = institutions?.filter(i => i.contact !== institution.contact);
+            setInstitutions(filteredInstitutions);
+            mensagemSucesso("Instituição deletada com sucesso!");
         } catch (error) {
             console.log(error);
             mensagemErro('Erro ao excluir Instituição');
         }
+    };
+    const showDeleteConfirm = (instituion: Institution) => {
+        setSelectedInstituion(instituion);
+        setIsModalVisible(true);
+    };
+
+    const handleOk = async () => {
+        if (selectedInstituion) {
+            await deleteInstituicao(selectedInstituion);
+        }
+        setIsModalVisible(false);
+        setSelectedInstituion(null);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+        setSelectedInstituion(null);
     };
 
     const columTable = [
@@ -67,31 +87,23 @@ export default function InstitutionsPaginition() {
             key: 'acoes',
             render: (institution: Institution) => (
                 <>
+                <button id="button-delete" onClick={() => showDeleteConfirm(institution)}>
+                    <Link href="#" className="btn btn-sm bg-success-light me-2">
+                        <i>
+                            <FeatherIcon icon="trash" size={16} />
+                        </i>
+                    </Link>
+                </button>
 
-                    <button id="button-delete" onClick={async () => {
-                        await deleteInstituicao(institution)
-                    }}>
-                        <Link href="#" className="btn btn-sm bg-success-light me-2">
-                            <i>
-                                <FeatherIcon icon="trash" size={16} />
-                            </i>
-                        </Link>
-                    </button>
-
-                    <button id="button-update" onClick={() => {
-                        SetGlobalStateAtomId(institution.id)
-                    }}>
-                        <Link href={{ pathname: '/instituicao/update', }} className="btn btn-sm bg-danger-light">
-                            <i>
-                                <FeatherIcon icon="edit" size={18} />
-                            </i>
-                        </Link>
-                    </button>
-
-                </>
-            ),
-        },
-    ];
+                <Link href={{ pathname: '/instituicao/update', query: { instituicaoContato: institution.contact, instituicaoName: institution.name, instituicaoId: institution.id } }} className="btn btn-sm bg-danger-light">
+                    <i>
+                        <FeatherIcon icon="edit" size={18} />
+                    </i>
+                </Link>
+            </>
+        ),
+    },
+];
 
     return (
         <>
@@ -204,6 +216,16 @@ export default function InstitutionsPaginition() {
             </div>
 
             <Footer />
+            <Modal
+                title="Confirmação de Exclusão"
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="Sim"
+                cancelText="Não"
+            >
+                <p>Você tem certeza que deseja excluir esta Instituicao?</p>
+            </Modal>
         </>
     )
 }

@@ -1,18 +1,19 @@
 
+
 export interface Squad {
     id: string
+    qtd: string
     classSquad: string | undefined
     nameSquad: string
-    studants: File | null
-    mentorId: string
-    squadId: string 
+    classIesId:string
+    mentor: null | string
 }
 
 export const initialValueSquad: Squad = {
     id: '',
     classSquad: '',
     nameSquad: '',
-    squadId: '',
-    mentorId: '',
-    studants: null
+    mentor: null,
+    qtd: "",
+    classIesId: ""
 };
