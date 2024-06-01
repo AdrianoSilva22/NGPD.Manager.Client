@@ -1,5 +1,4 @@
-import React from 'react'
-const Footer = () => {
+export default function Foooter() {
     return (
         <>
             <footer>
@@ -9,4 +8,3 @@ const Footer = () => {
     )
 }
 
-export default Footer
