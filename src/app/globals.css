@@ -2448,9 +2448,9 @@ div.dataTables_wrapper div.dataTables_length select {
 
 .header {
 	background-color: #fff;
+	position: fixed;
 	border-bottom: 1px solid #f3f3f4;
 	left: 0;
-	position: fixed;
 	right: 0;
 	top: 0;
 	z-index: 1001;
