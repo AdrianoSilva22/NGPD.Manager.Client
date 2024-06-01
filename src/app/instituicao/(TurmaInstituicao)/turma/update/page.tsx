@@ -1,7 +1,7 @@
 'use client'
-import Sidebar from '@/Sidebar/SideBar';
 import { globalStateAtomId } from '@/atoms/atoms';
 import Header from '@/components/Header/Header';
+import Sidebar from '@/components/Sidebar/SideBar';
 import { Input } from '@/components/stringInput';
 import { Availability } from '@/models/AvailabilityClassIes';
 import { ClassIes, initialValueClassIes } from '@/models/ClassIes';
@@ -9,8 +9,7 @@ import { Institution } from '@/models/institution';
 import { PropsOption } from '@/models/propsOption';
 import { mensagemErro, mensagemSucesso } from '@/models/toastr';
 import { ClassIesServiceGetById, ClassIesServiceUpdate } from '@/service/ClassIes';
-import { apiService } from '@/service/apiService';
-import axios from 'axios';
+import { apiService } from '@/service/apiService/apiService';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -42,10 +41,10 @@ export default function ClassUpdate() {
 
     const fetchInstitutionsAndAvailabilities = async () => {
         try {
-            const institutionsResponse = await apiService.get('http://localhost:5293/api/v1/institution');
-            const availabilitiesResponse = await axios.create({ baseURL: 'http://localhost:5293' }).get('/api/v1/Institution/turmas/Disponibilidade');
-            setInstitutions(institutionsResponse.data.institution);
-            setAvailabilities(availabilitiesResponse.data.listAvailability);
+            const institutions = (await apiService.get(`http://localhost:5293/api/v1/institution`)).data
+            const availability = await (await apiService.get((`http://localhost:5293/api/v1/Institution/turmas/disponibilidade`))).data
+            setInstitutions(institutions.institution)
+            setAvailabilities(availability.listAvailability)
         } catch (error) {
             console.error(error);
         }

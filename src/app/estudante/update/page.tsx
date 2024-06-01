@@ -7,14 +7,14 @@ import { ClassIes } from '@/models/ClassIes'
 import { PropsOption } from '@/models/propsOption'
 import { Student, initialvalueStudent } from '@/models/student'
 import { mensagemErro, mensagemSucesso } from '@/models/toastr'
-import { apiService } from '@/service/apiService'
+import { apiService } from '@/service/apiService/apiService'
 import { StudentServices } from '@/service/student'
 import { useAtom } from 'jotai'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import Select, { SingleValue } from "react-select"
-import SideBar from '../../../Sidebar/SideBar'
 import Header from '../../../components/Header/Header'
+import SideBar from '../../../components/Sidebar/SideBar'
 
 export default function StudentUpdate() {
     const [student, setStudent] = useState<Student>(initialvalueStudent)

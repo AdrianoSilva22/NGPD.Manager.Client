@@ -1,9 +1,9 @@
 'use client'
-import Sidebar from "@/Sidebar/SideBar";
 import { globalStateAtomId } from "@/atoms/atoms";
+import Sidebar from "@/components/Sidebar/SideBar";
 import { Institution, Page } from "@/models/institution";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
-import { apiService } from "@/service/apiService";
+import { apiService } from "@/service/apiService/apiService";
 import { InstituitionServices } from "@/service/institution";
 import "@/styles/pagination.css";
 import { Table } from "antd";

@@ -1,11 +1,11 @@
 'use client'
-import Sidebar from "@/Sidebar/SideBar";
 import { globalStateAtomId } from "@/atoms/atoms";
+import Sidebar from "@/components/Sidebar/SideBar";
 import { Page } from "@/models/institution";
 import { Mentor } from "@/models/mentor";
 import { Squad } from "@/models/squad";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
-import { apiService } from "@/service/apiService";
+import { apiService } from "@/service/apiService/apiService";
 import { SquadServices } from "@/service/squad";
 import "@/styles/pagination.css";
 import { Table } from "antd";

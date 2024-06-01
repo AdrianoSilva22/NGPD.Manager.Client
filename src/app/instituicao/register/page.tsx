@@ -1,6 +1,6 @@
 'use client'
-import Sidebar from "@/Sidebar/SideBar";
 import Header from "@/components/Header/Header";
+import Sidebar from "@/components/Sidebar/SideBar";
 import { EmailInput } from "@/components/emailInput";
 import { Input } from "@/components/stringInput";
 import { Institution, initialvalueInstitution } from "@/models/institution";

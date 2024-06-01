@@ -1,6 +1,6 @@
 'use client'
-import Sidebar from "@/Sidebar/SideBar";
 import Header from "@/components/Header/Header";
+import Sidebar from "@/components/Sidebar/SideBar";
 import { User } from "@/models/user";
 import { Session } from "next-auth";
 import { getSession } from "next-auth/react";
@@ -23,7 +23,7 @@ export default function Dashboard() {
             <div className="row">
                 <div className="col">
                     <h1 className="text-center">Olá {user?.name}, Seja Bem-vindo!</h1>
-                    <p className="text-center">Aqui está um resumo do seu dashboard.</p>
+                    <p className="text-center"> Núcleo de Gestão do Porto Digital.</p>
                 </div>
             </div>
             <div className="row">

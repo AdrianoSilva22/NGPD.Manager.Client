@@ -9,8 +9,8 @@ import { InstituitionServiceGetById, InstituitionServices } from '@/service/inst
 import { useAtom } from 'jotai'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import SideBar from '../../../Sidebar/SideBar'
 import Header from '../../../components/Header/Header'
+import SideBar from '../../../components/Sidebar/SideBar'
 
 export default function InstitutionUpdate() {
     const [institution, setInstitution] = useState<Institution>(initialvalueInstitution)

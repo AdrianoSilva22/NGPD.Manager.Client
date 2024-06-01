@@ -5,14 +5,14 @@ import { Mentor } from '@/models/mentor';
 import { PropsOption } from '@/models/propsOption';
 import { Squad, initialValueSquad } from '@/models/squad';
 import { mensagemErro, mensagemSucesso } from '@/models/toastr';
-import { apiService } from '@/service/apiService';
+import { apiService } from '@/service/apiService/apiService';
 import { SquadServiceUpdateMentor, SquadServices } from '@/service/squad';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Select, { SingleValue } from "react-select";
-import SideBar from '../../../Sidebar/SideBar';
 import Header from '../../../components/Header/Header';
+import SideBar from '../../../components/Sidebar/SideBar';
 
 export default function SquadUpdate() {
     const [squad, setSquad] = useState<Squad>(initialValueSquad);

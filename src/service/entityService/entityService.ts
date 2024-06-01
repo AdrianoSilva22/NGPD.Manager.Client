@@ -1,5 +1,5 @@
 
-import { apiService } from "../apiService"
+import { apiService } from "../apiService/apiService"
 
 export const EntityService = <T>(url: string) => {
 

@@ -1,14 +1,16 @@
 'use client'
-import Sidebar from "@/Sidebar/SideBar"
 import Header from "@/components/Header/Header"
+import Sidebar from "@/components/Sidebar/SideBar"
+import { PeriodoInput } from "@/components/periodoInput"
 import { Input } from "@/components/stringInput"
 import { Availability } from "@/models/AvailabilityClassIes"
 import { ClassIes, initialValueClassIes } from "@/models/ClassIes"
 import { Institution } from "@/models/institution"
 import { PropsOption } from "@/models/propsOption"
 import { mensagemErro, mensagemSucesso } from "@/models/toastr"
-import { apiService } from "@/service/apiService"
+import { apiService } from "@/service/apiService/apiService"
 import axios from "axios"
+import Cookies from 'js-cookie'
 import Link from "next/link"
 import { ChangeEvent, useEffect, useState } from "react"
 import Select, { SingleValue } from "react-select"
@@ -21,12 +23,9 @@ export default function InstitutionRegister() {
     useEffect(() => {
         const getInstitutionsAndAvailabilities = async () => {
             const institutions = (await apiService.get(`http://localhost:5293/api/v1/institution`)).data
-
-            const availability = await axios.create({
-                baseURL: "http://localhost:5293"
-            }).get(`/api/v1/Institution/turmas/disponibilidade`)
+            const availability = await (await apiService.get((`http://localhost:5293/api/v1/Institution/turmas/disponibilidade`))).data
             setInstitutions(institutions.institution)
-            setAvailabilities(availability.data.listAvailability)
+            setAvailabilities(availability.listAvailability)
         }
         getInstitutionsAndAvailabilities()
     }, [])
@@ -52,6 +51,7 @@ export default function InstitutionRegister() {
             await axios.post('http://localhost:5293/api/v1/Institution/CadastraTurmaIes', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${Cookies.get('tokenUserInfo')}`
                 },
             })
             mensagemSucesso('Class registered successfully!')
@@ -86,7 +86,7 @@ export default function InstitutionRegister() {
     }
 
     const register = async () => {
-        sendFormData(classIes)
+       await sendFormData(classIes)
     }
 
     return (
@@ -124,7 +124,7 @@ export default function InstitutionRegister() {
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
                                                     <label>Ano de ingresso<span className="login-danger">*</span></label>
-                                                    <Input
+                                                    <PeriodoInput
                                                         value={classIes.period}
                                                         onChange={(value: string) => setClassIes({ ...classIes, period: value })} />
                                                 </div>

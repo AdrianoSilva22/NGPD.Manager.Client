@@ -1,6 +1,6 @@
 'use client'
-import Sidebar from "@/Sidebar/SideBar"
 import Header from "@/components/Header/Header"
+import Sidebar from "@/components/Sidebar/SideBar"
 import { Input } from "@/components/stringInput"
 import { PropsOption } from "@/models/propsOption"
 import { Squad, initialValueSquad } from "@/models/squad"

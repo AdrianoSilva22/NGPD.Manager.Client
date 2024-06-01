@@ -1,13 +1,12 @@
 'use client'
-import Sidebar from "@/Sidebar/SideBar";
 import { globalStateAtomId } from "@/atoms/atoms";
 import Header from "@/components/Header/Header";
-import { Availability } from "@/models/AvailabilityClassIes";
+import Sidebar from "@/components/Sidebar/SideBar";
 import { ClassIes } from "@/models/ClassIes";
 import { Page } from "@/models/institution";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { ClassIesServiceDelete } from "@/service/ClassIes";
-import { apiService } from "@/service/apiService";
+import { apiService } from "@/service/apiService/apiService";
 import "@/styles/pagination.css";
 import { Table } from "antd";
 import { Footer } from "antd/es/layout/layout";
@@ -74,11 +73,7 @@ export default function ClassesPaginition() {
         {
             title: 'disponibilidade',
             dataIndex: 'availability',
-            render: (availabilityClassIes: Availability) => (
-                <div>
-                    {availabilityClassIes.dayWeek}: {availabilityClassIes.startTime} - {availabilityClassIes.scheduleEnd}
-                </div>
-            ),
+            
         },
         {
             title: 'Ações',
