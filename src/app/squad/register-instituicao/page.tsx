@@ -43,8 +43,6 @@ export default function InstituicoesPaginition() {
         getPageInfo();
     }, [pageIndex]);
 
-
-    // Use useEffect para extrair o parâmetro da URL quando a página carregar
     useEffect(() => {
         const classIesId = searchParams.get('classIesId');
         if (classIesId) {

@@ -87,23 +87,23 @@ const Sidebar = (props) => {
               <li className="menu-title">
                 <span> NGPD Menu</span>
               </li>
-              <li className={`${"/estudante" === pathName || "/estudante/register" === pathName ? "active submenu" : "submenu"}`}>
+              <li className={`${"/empresa" === pathName || "/empresa/register" === pathName ? "active submenu" : "submenu"}`}>
                 <Link
                   href="#"
-                  className={isSideMenu === "estudante" ? "subdrop" : ""}
-                  onClick={() => toggleSidebar(isSideMenu === "estudante" ? "" : "estudante")}
+                  className={isSideMenu === "empresa" ? "subdrop" : ""}
+                  onClick={() => toggleSidebar(isSideMenu === "empresa" ? "" : "empresa")}
                 >
-                  <i className="fas fa-user-graduate" /> <span> Estudantes </span> <span className="menu-arrow" />
+                  <i className="fas fa-city" /> <span> Empresas </span> <span className="menu-arrow" />
                 </Link>
-                {isSideMenu === "estudante" && (
-                  <ul style={{ display: isSideMenu === "estudante" ? "block" : "none" }}>
+                {isSideMenu === "empresa" && (
+                  <ul style={{ display: isSideMenu === "empresa" ? "block" : "none" }}>
                     <li>
-                      <Link href="/estudante" className={`${"/estudante" === pathName ? "active" : ""}`}>
+                      <Link href="/empresa" className={`${"/empresa" === pathName ? "active" : ""}`}>
                         Listagem
                       </Link>
                     </li>
                     <li>
-                      <Link href="/estudante/register" className={`${"/estudante/register" === pathName ? "active" : ""}`}>
+                      <Link href="/empresa/register" className={`${"/empresa/register" === pathName ? "active" : ""}`}>
                         Adicionar
                       </Link>
                     </li>
@@ -116,7 +116,7 @@ const Sidebar = (props) => {
                   className={isSideMenu === "instituicao" ? "subdrop" : ""}
                   onClick={() => toggleSidebar(isSideMenu === "instituicao" ? "" : "instituicao")}
                 >
-                  <i className="fas fa-building" /> <span> Instituições </span> <span className="menu-arrow" />
+                  <i className="fas fa-university" /> <span> Instituições </span> <span className="menu-arrow" />
                 </Link>
                 {isSideMenu === "instituicao" && (
                   <ul style={{ display: isSideMenu === "instituicao" ? "block" : "none" }}>
@@ -143,13 +143,13 @@ const Sidebar = (props) => {
                   </ul>
                 )}
               </li>
-              <li className={`${"/squad" === pathName || "/squad/register" === pathName ? "active submenu" : "submenu"}`}>
+              <li className={`${"/squad" === pathName || "/squad/register-instituicao" === pathName ? "active submenu" : "submenu"}`}>
                 <Link
                   href="#"
                   className={isSideMenu === "squad" ? "subdrop" : ""}
                   onClick={() => toggleSidebar(isSideMenu === "squad" ? "" : "squad")}
                 >
-                  <i className="fas fa-users" /> <span> Squad </span> <span className="menu-arrow" />
+                  <i className="fas fa-users" /> <span> Squads </span> <span className="menu-arrow" />
                 </Link>
                 {isSideMenu === "squad" && (
                   <ul style={{ display: isSideMenu === "squad" ? "block" : "none" }}>
@@ -159,7 +159,7 @@ const Sidebar = (props) => {
                       </Link>
                     </li>
                     <li>
-                      <Link href="/squad/register" className={`${"/squad/register" === pathName ? "active" : ""}`}>
+                      <Link href="/squad/register-instituicao" className={`${"/squad/register-instituicao" === pathName ? "active" : ""}`}>
                         Adicionar
                       </Link>
                     </li>

@@ -1,11 +1,11 @@
 export interface Empresa {
-    cnpj: string
-    company: string
+    id: string
+    name: string
     contact: string
 }
 
-export const valorInicialEmpresa: Empresa = {
-    cnpj: '',
-    company: '',
+export const initialValueEmpresa: Empresa = {
+    id: '',
+    name: '',
     contact: ''
 }
