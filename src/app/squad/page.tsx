@@ -172,7 +172,7 @@ export default function SquadsPaginition() {
                                                         <h3 className="page-title">Squads</h3>
                                                     </div>
                                                     <div className="col-auhref text-end float-end ms-auhref download-grp">
-                                                        <Link href="/instituicao/register" className="btn btn-primary">
+                                                        <Link href="/squad/register-instituicao" className="btn btn-primary">
                                                             <i className="fas fa-plus" />
                                                         </Link>
                                                     </div>

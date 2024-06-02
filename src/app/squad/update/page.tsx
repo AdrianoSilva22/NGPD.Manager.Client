@@ -50,7 +50,7 @@ export default function SquadUpdate() {
     const atualizar = async () => {
         try {
             if (squad) {
-                await updateAlocationEntity(squad.squadId, squad.mentorId);
+                await updateAlocationEntity(squad.id, squad.id);
                 setSquad(initialValueSquad);
                 mensagemSucesso("Instituição atualizada com sucesso");
             }
