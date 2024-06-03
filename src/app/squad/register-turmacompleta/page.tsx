@@ -14,9 +14,14 @@ export default function RegisterSquad() {
     const searchParams = useSearchParams();
 
     useEffect(() => {
+        
+    console.log(squadData);
+    }, [squadData]);
+
+    useEffect(() => {
         const classIesId = searchParams.get('classIesId');
         if (classIesId) {
-            setSquadData(prevData => ({ ...prevData, classIesId }));
+            setSquadData(prevData => ({ ...prevData, turmaIesId: classIesId }));
         }
     }, [searchParams]);
 
@@ -26,8 +31,8 @@ export default function RegisterSquad() {
                 ...squadData,
             });
             mensagemSucesso('Cadastro realizado com sucesso!');
-        } catch (error) {
-            mensagemErro('Erro ao cadastrar Squad');
+        } catch (error: any) {
+            mensagemErro(error.response.data.detail);
         }
     };
 
@@ -57,19 +62,14 @@ export default function RegisterSquad() {
                                         <div className="row">
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
-                                                    <label >Turma Ies <span className="login-danger">*</span></label>
-                                                    <input readOnly type="text" className="form-control" value={squadData.classIesId} onChange={(e) => setSquadData({ ...squadData, classIesId: e.target.value })} />
-                                                </div>
-                                            </div>
-                                            <div className="col-12 col-sm-4">
-                                                <div className="form-group local-forms">
-                                                    <label>ClassSquad <span className="login-danger">*</span></label>
+                                                    <label>Módulo <span className="login-danger">*</span></label>
                                                     <select
                                                         className="form-control"
                                                         value={squadData.classSquad}
                                                         onChange={(e) => setSquadData({ ...squadData, classSquad: e.target.value })}
                                                     >
 
+                                                        <option >Selecione um módulo</option>
                                                         <option value="Kick off">Kick off</option>
                                                         <option value="Grow up">Grow up</option>
                                                         <option value="Rise Up">Rise Up</option>
