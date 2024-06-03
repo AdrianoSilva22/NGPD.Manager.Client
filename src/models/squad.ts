@@ -3,7 +3,7 @@ export interface Squad {
     qtd: string
     classSquad: string | undefined
     nameSquad: string
-    classIesId:string
+    turmaIesId:string
     mentorId: string
 }
 
@@ -13,5 +13,5 @@ export const initialValueSquad: Squad = {
     nameSquad: '',
     mentorId: '',
     qtd: "",
-    classIesId: ""
+    turmaIesId: ""
 };

@@ -4,7 +4,6 @@ import Sidebar from "@/components/Sidebar/SideBar";
 import { Page } from "@/models/institution";
 import { Mentor } from "@/models/mentor";
 import { Squad } from "@/models/squad";
-import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { apiService } from "@/service/apiService/apiService";
 import { SquadServices } from "@/service/squad";
 import "@/styles/pagination.css";
@@ -28,7 +27,7 @@ export default function SquadsPaginition() {
     const [loading, setLoading] = useState(true);
 
     const PAGE_SIZE = 15
-
+    
     useEffect(() => {
         const getPageInfo = async () => {
             const url = `http://localhost:5293/api/v1/Squad?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
@@ -43,19 +42,7 @@ export default function SquadsPaginition() {
         }
         getPageInfo()
     }, [pageIndex])
-
-    const deleteInstituicao = async (squad: Squad) => {
-        try {
-            await deleteEntity(squad.id)
-            const filterSquads = squads?.filter(i => i.id !== squad.id)
-            setSquads(filterSquads)
-            mensagemSucesso("Squad deletado com sucesso!")
-        } catch (error) {
-            console.log(error);
-            mensagemErro('Erro ao excluir Instituição');
-        }
-    };
-
+    
     const columTable = [
         {
             title: 'Nome',
@@ -85,17 +72,6 @@ export default function SquadsPaginition() {
             title: 'Ações',
             render: (squad: Squad) => (
                 <>
-
-                    <button id="button-delete" onClick={async () => {
-                        await deleteInstituicao(squad)
-                    }}>
-                        <Link href="#" className="btn btn-sm bg-success-light me-2">
-                            <i>
-                                <FeatherIcon icon="trash" size={16} />
-                            </i>
-                        </Link>
-                    </button>
-
                     <button id="button-update" onClick={() => {
                         SetGlobalStateAtomId(squad.id)
                     }}>

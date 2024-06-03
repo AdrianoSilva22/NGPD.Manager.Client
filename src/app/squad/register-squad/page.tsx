@@ -4,7 +4,7 @@ import Header from "@/components/Header/Header";
 import Sidebar from "@/components/Sidebar/SideBar";
 import { Squad, initialValueSquad } from "@/models/squad";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
-import axios from "axios";
+import { apiService } from "@/service/apiService/apiService";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,24 +13,23 @@ export default function RegisterSquad() {
     const [squadData, setSquadData] = useState<Squad>(initialValueSquad);
     const searchParams = useSearchParams();
 
-
     useEffect(() => {
         const classIesId = searchParams.get('classIesId');
         if (classIesId) {
-            setSquadData(prevData => ({ ...prevData, classIesId }));
+            setSquadData(prevData => ({ ...prevData, turmaIesId: classIesId }));
         }
     }, [searchParams]);
 
     const cadastrarSquad = async () => {
         try {
-            await axios.post('http://localhost:5293/api/v1/Squad', {
+            await apiService.post('http://localhost:5293/api/v1/Squad', {
                 ...squadData,
                 qtd: squadData.qtd || 0,
             });
             mensagemSucesso('Cadastro realizado com sucesso!');
-        } catch (error) {
+        } catch (error: any) {
             console.error('Erro ao cadastrar Squad:', error);
-            mensagemErro('Erro ao cadastrar Squad');
+            mensagemErro(error.response.data.detail);
         }
     };
 
@@ -61,7 +60,7 @@ export default function RegisterSquad() {
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
                                                     <label >Turma Ies <span className="login-danger">*</span></label>
-                                                    <input readOnly type="text" className="form-control" value={squadData.classIesId} onChange={(e) => setSquadData({ ...squadData, classIesId: e.target.value })} />
+                                                    <input readOnly type="text" className="form-control" value={squadData.turmaIesId} onChange={(e) => setSquadData({ ...squadData, turmaIesId: e.target.value })} />
                                                 </div>
                                             </div>
                                             <div className="col-12 col-sm-4">
