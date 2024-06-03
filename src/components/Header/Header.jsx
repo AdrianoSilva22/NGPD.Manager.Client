@@ -68,6 +68,9 @@ const Header = () => {
             </button>
           </form>
         </div>
+        <Link href="#" className="mobile_btn" id="mobile_btn" onClick={() => handlesidebarmobilemenu()}>
+          <i className="fas fa-bars" />
+        </Link>
         <ul className="nav user-menu">
           <li className="nav-item dropdown has-arrow new-user-menus">
             <Link
