@@ -22,10 +22,11 @@ export default function EmpresasPaginition() {
     const { deleteEntity } = EmpresaService;
     const [pageIndex, setPage] = useState(0);
     const [pageInfo, setPageInfo] = useState<Page>();
-    const [] = useAtom(globalStateAtomId);
     const PAGE_SIZE = 15;
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [selectedEmpresa, setSelectedEmpresa] = useState<Empresa | null>(null)
+    const [, SetGlobalStateAtomId] = useAtom(globalStateAtomId)
+
 
     useEffect(() => {
         const getPageInfo = async () => {
@@ -94,11 +95,15 @@ export default function EmpresasPaginition() {
                     </Link>
                 </button>
 
-                <Link href={{ pathname: '/empresa/update', query: { empresaContact: empresa.contact, empresaName: empresa.name, empresaId: empresa.id } }} className="btn btn-sm bg-danger-light">
-                    <i>
-                        <FeatherIcon icon="edit" size={18} />
-                    </i>
-                </Link>
+                <button id="button-update" onClick={() => {
+                        SetGlobalStateAtomId(empresa.id)
+                    }}>
+                        <Link href={{ pathname: '/empresa/update', }} className="btn btn-sm bg-danger-light">
+                            <i>
+                                <FeatherIcon icon="edit" size={18} />
+                            </i>
+                        </Link>
+                    </button>
             </>
         ),
     },
