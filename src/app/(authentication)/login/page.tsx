@@ -1,12 +1,12 @@
 'use client'
+import NGPD from '@/assets/img/login-ngpd-logo.png';
 import { Session as NextAuthSession } from "next-auth";
-
+import { signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { FaGoogle } from "react-icons/fa";
 interface Session extends NextAuthSession {
   id_token: string;
 }
-
-import { signIn } from "next-auth/react";
-import { useEffect, useState } from "react";
 
 export default function Login() {
   const [isClient, setIsClient] = useState(false);
@@ -22,44 +22,43 @@ export default function Login() {
       console.error('Erro ao fazer login:', error);
     }
   };
-
   return (
     <>
-      {isClient && (
-        <div className="container mt-5">
-          <div className="row justify-content-center">
-            <div className="col-md-6">
-              <div className="card">
-                <div className="card-body">
-                  <div className="text-center mb-4">
-                    <h1>Acesse com o Google</h1>
-                  </div>
-                  <button className="btn-google btn btn-block" onClick={handleLogin}>
-                    Acesse com o Google
-                  </button>
+      <div className="main-wrapper login-body">
+        <div className="login-wrapper">
+          <div className="container">
+            <div className="loginbox">
+              <div className="login-right">
+                <div className="login-right-wrap">
+                  <h1 style={{ whiteSpace: "nowrap" }}>Bem-vindo ao Sistema NGPD!</h1>
+                  <p className="account-subtitle">
+                    Olá! Para ter acesso aos nossos diversos recursos, você terá que logar pelo Google. Clique no botão abaixo para fazer o login
+                  </p>
+
+                  {/* Form */}
+                  <form >
+                    <div className="form-group">
+                      <button
+                        className="btn btn-primary btn-block"
+                        type="button"
+                        onClick={handleLogin}>
+                        <FaGoogle style={{ marginRight: "10px" }} /> Login
+                      </button>
+                    </div>
+                  </form>
                 </div>
+              </div>
+              <div className="login-left">
+              <img
+                  src={NGPD.src}
+                  alt="NGPD Logo"
+                  className="img-fluid"
+                />
               </div>
             </div>
           </div>
-          <style jsx>{`
-            .btn-google {
-              background-color: #4285F4;
-              color: #fff;
-              border: none;
-              border-radius: 4px;
-              padding: 12px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              cursor: pointer;
-            }
-
-            .btn-google:hover {
-              background-color: #357ae8;
-            }
-          `}</style>
         </div>
-      )}
+      </div>
     </>
   );
-}
+};

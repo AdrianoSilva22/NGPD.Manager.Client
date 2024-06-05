@@ -3196,9 +3196,9 @@ footer p {
 
 .login-wrapper .loginbox .login-left {
 	align-items: center;
-	background: #18aefa;
+	background: #3a3a3a;
 	flex-direction: column;
-	justify-content: end;
+	justify-content: center;
 	width: 400px;
 	display: flex;
 	background-blend-mode: multiply;
@@ -3249,7 +3249,7 @@ footer p {
 	font-weight: 500;
 	position: absolute;
 	top: -10px;
-	left: 10px;
+	right: 10px;
 	background: #fff;
 	margin-bottom: 0;
 	padding: 0px 5px;
@@ -10382,6 +10382,20 @@ body[data-layout-mode=dark] .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-o
 	.top-nav-search {
 		display: none;
 	}
+
+	.login-content {
+		display: flex;
+	  }
+	  
+	  .login-left {
+		order: 2; /* Inverte a ordem da div .login-left */
+	  }
+	  
+	  .login-right {
+		order: 1; /* Inverte a ordem da div .login-right */
+	  }
+	  
+
 
 	.login-wrapper .loginbox .login-left {
 		padding: 80px 50px;
