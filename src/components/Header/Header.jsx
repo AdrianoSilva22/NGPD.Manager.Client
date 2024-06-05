@@ -79,11 +79,11 @@ const Header = () => {
               data-bs-toggle="dropdown"
             >
               <span className="user-img">
-                <Image
+                <img
                   className="rounded-circle"
                   width={31}
                   height={31}
-                  alt={user?.name}
+                  alt='Usuário'
                   src={user?.image || logoSmall}
                 />
                 <div className="user-text">
@@ -99,7 +99,7 @@ const Header = () => {
                     className="rounded-circle"
                     width={31}
                     height={31}
-                    alt={user?.name}
+                    alt='Usuário'
                     src={user?.image || logoSmall}
                   />
                 </div>

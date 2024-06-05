@@ -17,19 +17,22 @@ const Sidebar = (props) => {
 
     function handleMouseOver(e) {
       e.stopPropagation();
-      if (document.body.classList.contains('mini-sidebar') && document.querySelector('#toggle_btn').offsetParent !== null) {
-        var targ = e.target.closest('.sidebar');
-        if (targ) {
-          document.body.classList.add('expand-menu');
-          document.querySelectorAll('.subdrop + ul').forEach((ul) => ul.style.display = 'block');
-        } else {
-          document.body.classList.remove('expand-menu');
-          document.querySelectorAll('.subdrop + ul').forEach((ul) => ul.style.display = 'none');
+      if (typeof window !== 'undefined') {
+        const toggleBtn = document.querySelector('#toggle_btn');
+        if (toggleBtn && toggleBtn.offsetParent !== null) {
+          var targ = e.target.closest('.sidebar');
+          if (targ) {
+            document.body.classList.add('expand-menu');
+            document.querySelectorAll('.subdrop + ul').forEach((ul) => ul.style.display = 'block');
+          } else {
+            document.body.classList.remove('expand-menu');
+            document.querySelectorAll('.subdrop + ul').forEach((ul) => ul.style.display = 'none');
+          }
+          return false;
         }
-        return false;
       }
     }
-
+    
     document.addEventListener('mouseover', handleMouseOver);
 
     return () => {
