@@ -23,5 +23,7 @@ export const config = {
         '/empresa/:path*',
         '/mentor/:path*',
         '/dashboard/:path*',
+        '/mentor/:path*',
+        '/user/:path*',
     ],
 };
