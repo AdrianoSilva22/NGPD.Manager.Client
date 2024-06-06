@@ -3,6 +3,7 @@
 // import Header from "@/components/headerCard";
 import '@fortawesome/fontawesome-free/css/all.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'feather-icons-react/build/FeatherIcon';
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
