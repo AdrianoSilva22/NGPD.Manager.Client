@@ -65,7 +65,7 @@ export default function ClassUpdate() {
                             <div className="page-header">
                                 <div className="row align-items-center">
                                     <div className="col">
-                                        <span className="page-title">Registrar Usuário</span>
+                                        <span className="page-title">Registrar Funcionário</span>
                                         <ul className="breadcrumb">
                                             <li className="breadcrumb-item">
                                                 <Link href="/institution/turma"></Link>
@@ -82,7 +82,7 @@ export default function ClassUpdate() {
                                                 <div className="row">
                                                     <div className="col-12">
                                                         <h5 className="form-title">
-                                                            <span>Usuário</span>
+                                                            <span>Funcionário</span>
                                                         </h5>
                                                     </div>
                                                     <div className="col-12 col-sm-4">

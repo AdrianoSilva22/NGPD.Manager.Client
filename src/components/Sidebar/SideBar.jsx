@@ -169,6 +169,42 @@ const Sidebar = (props) => {
                   </ul>
                 )}
               </li>
+              <li className={`${"/mentor" === pathName || "/mentor" === pathName ? "active submenu" : "submenu"}`}>
+                <Link
+                  href="#"
+                  className={isSideMenu === "mentor" ? "subdrop" : ""}
+                  onClick={() => toggleSidebar(isSideMenu === "mentor" ? "" : "mentor")}
+                >
+                  <i className="fas fa-user fa-md" /> <span> Mentor </span> <span className="menu-arrow" />
+                </Link>
+                {isSideMenu === "mentor" && (
+                  <ul style={{ display: isSideMenu === "mentor" ? "block" : "none" }}>
+                    <li>
+                      <Link href="/mentor" className={`${"/mentor" === pathName ? "active" : ""}`}>
+                        Listar
+                      </Link>
+                    </li>
+                  </ul>
+                )}
+              </li>
+              <li className={`${"/user" === pathName || "/user" === pathName ? "active submenu" : "submenu"}`}>
+                <Link
+                  href="#"
+                  className={isSideMenu === "user" ? "subdrop" : ""}
+                  onClick={() => toggleSidebar(isSideMenu === "user" ? "" : "user")}
+                >
+                  <i className="fas fa-user-plus fa-md" /> <span> Funcionário </span> <span className="menu-arrow" />
+                </Link>
+                {isSideMenu === "user" && (
+                  <ul style={{ display: isSideMenu === "user" ? "block" : "none" }}>
+                    <li>
+                      <Link href="/user" className={`${"/user" === pathName ? "active" : ""}`}>
+                        Adicionar
+                      </Link>
+                    </li>
+                  </ul>
+                )}
+              </li>
             </ul>
           </div>
         </div>
