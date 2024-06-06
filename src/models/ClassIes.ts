@@ -1,5 +1,6 @@
 import { Availability } from "./AvailabilityClassIes"
 import { Institution } from "./institution"
+import { Student } from "./student"
 
 export interface ClassIes {
     id: string
@@ -11,6 +12,8 @@ export interface ClassIes {
     availabilityId: string | undefined
     institution: Institution | null
     availability: Availability | null
+    listStudant: Student[] | null
+
 }
 
 export const initialValueClassIes: ClassIes = {
@@ -22,5 +25,6 @@ export const initialValueClassIes: ClassIes = {
     csvFile: null,
     availabilityId: '',
     availability: null,
-    institution: null
+    institution: null,
+    listStudant: null
 }

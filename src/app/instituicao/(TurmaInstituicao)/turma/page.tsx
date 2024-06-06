@@ -73,7 +73,7 @@ export default function ClassesPaginition() {
         {
             title: 'disponibilidade',
             dataIndex: 'availability',
-            
+
         },
         {
             title: 'Ações',
@@ -100,7 +100,12 @@ export default function ClassesPaginition() {
                             </i>
                         </Link>
                     </button>
-
+                    
+                        <Link href={{ pathname: '/instituicao/turma/detalhes', query:{turmaId: classIes.id}}} className="btn btn-sm bg-danger-light">
+                            <i>
+                                <FeatherIcon icon="eye" size={20} />
+                            </i>
+                        </Link>
                 </>
             ),
         },
@@ -211,7 +216,7 @@ export default function ClassesPaginition() {
                 </div>
             </div>
             <Footer />
-           
+
         </>
     )
 }

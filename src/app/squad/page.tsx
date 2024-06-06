@@ -1,5 +1,6 @@
 'use client'
 import { globalStateAtomId } from "@/atoms/atoms";
+import Header from "@/components/Header/Header";
 import Sidebar from "@/components/Sidebar/SideBar";
 import { Page } from "@/models/institution";
 import { Mentor } from "@/models/mentor";
@@ -15,7 +16,6 @@ import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
-import Header, { default as Footer } from '../../components/Header/Header';
 
 export default function SquadsPaginition() {
 
@@ -88,7 +88,7 @@ export default function SquadsPaginition() {
 
     return (
         <>
-        <Header />
+         <Header />
           <Sidebar />
             <div className="main-wrapper">
                 <div className="page-wrapper">
@@ -201,8 +201,6 @@ export default function SquadsPaginition() {
                 </div>
 
             </div>
-
-            <Footer />
         </>
     )
 }
