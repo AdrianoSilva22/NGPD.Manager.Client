@@ -1,5 +1,12 @@
 export interface User {
   name: string;
-  email: string
-  image: string
+  contact: string
+  roleId: string | undefined
+}
+
+
+export const initialValueUser: User = {
+    name: '',
+    contact: '',
+    roleId: ''
 }
