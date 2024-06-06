@@ -1,7 +1,6 @@
 const rolePermissions: Record<string, RegExp[]> = {
   Mentor: [
     /^\/mentor.*/,
-    /^\/estudante.*/,
     /^\/squad.*/,
     /^\/dashboard.*/,
   ],

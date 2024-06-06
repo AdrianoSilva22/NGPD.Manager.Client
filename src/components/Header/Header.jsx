@@ -79,7 +79,7 @@ const Header = () => {
               data-bs-toggle="dropdown"
             >
               <span className="user-img">
-                <img
+                <Image
                   className="rounded-circle"
                   width={31}
                   height={31}
