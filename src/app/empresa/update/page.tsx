@@ -1,36 +1,34 @@
 "use client"
 
-import { globalStateAtomId } from '@/atoms/atoms'
 import { EmailInput } from '@/components/emailInput'
 import { Input } from '@/components/stringInput'
 import { Empresa, initialValueEmpresa } from '@/models/empresa'
 import { mensagemErro, mensagemSucesso } from '@/models/toastr'
 import { EmpresaService } from '@/service/empresa'
-import { useAtom } from 'jotai'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Header from '../../../components/Header/Header'
 import SideBar from '../../../components/Sidebar/SideBar'
 
 export default function EmpresaUpdate() {
     const [empresa, setEmpresa] = useState<Empresa>(initialValueEmpresa)
-    const [globalStateId,] = useAtom(globalStateAtomId)
     const { getEntityById, updateEntity } = EmpresaService
+    const searchParams = useSearchParams();
 
     useEffect(() => {
-        const getEmpresaById = async (id: string) => {
+        const fetchEmpresaById = async () => {
             try {
-                const resultGetEmpresaById = await getEntityById(id)
-                setEmpresa(resultGetEmpresaById.data)
+                const empresaId = searchParams.get('Id') as string;
+                const resultfetchEmpresaById = await getEntityById(empresaId);
+                setEmpresa(resultfetchEmpresaById.data);
             } catch (error) {
-                console.error(error)
-            }
-        }
-        if (globalStateId != null) {
-            getEmpresaById(globalStateId)
-        }
-    }, []);
+                console.error(error);
+            } 
+        };
 
+        fetchEmpresaById();
+    }, [searchParams]);
 
     const atualizar = async () => {
         try {

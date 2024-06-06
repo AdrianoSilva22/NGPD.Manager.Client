@@ -1,5 +1,4 @@
 'use client'
-import { globalStateAtomId } from "@/atoms/atoms";
 import Sidebar from "@/components/Sidebar/SideBar";
 import { Empresa } from "@/models/empresa";
 import { Page } from "@/models/institution";
@@ -9,7 +8,6 @@ import { EmpresaService } from "@/service/empresa";
 import "@/styles/pagination.css";
 import { Modal, Table } from "antd";
 import FeatherIcon from "feather-icons-react";
-import { useAtom } from "jotai";
 import Link from 'next/link';
 import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
@@ -25,8 +23,6 @@ export default function EmpresasPaginition() {
     const PAGE_SIZE = 15;
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [selectedEmpresa, setSelectedEmpresa] = useState<Empresa | null>(null)
-    const [, SetGlobalStateAtomId] = useAtom(globalStateAtomId)
-
 
     useEffect(() => {
         const getPageInfo = async () => {
@@ -95,15 +91,11 @@ export default function EmpresasPaginition() {
                     </Link>
                 </button>
 
-                <button id="button-update" onClick={() => {
-                        SetGlobalStateAtomId(empresa.id)
-                    }}>
-                        <Link href={{ pathname: '/empresa/update', }} className="btn btn-sm bg-danger-light">
+                        <Link href={{ pathname: '/empresa/update', query: { Id: empresa.id } }} className="btn btn-sm bg-danger-light">
                             <i>
                                 <FeatherIcon icon="edit" size={18} />
                             </i>
                         </Link>
-                    </button>
             </>
         ),
     },

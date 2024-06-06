@@ -1,5 +1,4 @@
 'use client'
-import { globalStateAtomId } from '@/atoms/atoms';
 import Header from '@/components/Header/Header';
 import Sidebar from '@/components/Sidebar/SideBar';
 import { Input } from '@/components/stringInput';
@@ -8,10 +7,10 @@ import { ClassIes, initialValueClassIes } from '@/models/ClassIes';
 import { Institution } from '@/models/institution';
 import { PropsOption } from '@/models/propsOption';
 import { mensagemErro, mensagemSucesso } from '@/models/toastr';
-import { ClassIesServiceGetById, ClassIesServiceUpdate } from '@/service/ClassIes';
+import { ClassIesServiceUpdate } from '@/service/ClassIes';
 import { apiService } from '@/service/apiService/apiService';
-import { useAtom } from 'jotai';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Select, { SingleValue } from "react-select";
 
@@ -19,25 +18,23 @@ export default function ClassUpdate() {
     const [classIes, setClassIes] = useState<ClassIes>(initialValueClassIes);
     const [institutions, setInstitutions] = useState<Institution[]>([]);
     const [availabilities, setAvailabilities] = useState<Availability[]>([]);
-    const [globalStateId] = useAtom(globalStateAtomId);
-    const { getEntityById } = ClassIesServiceGetById;
-    const { updateEntity } = ClassIesServiceUpdate;
+    const { updateEntity, getEntityById } = ClassIesServiceUpdate;
+
+    const searchParams = useSearchParams();
 
     useEffect(() => {
-        const fetchClassById = async (id: string) => {
+        const fetchClassById = async () => {
             try {
-                const response = await getEntityById(id);
-                setClassIes(response.data);
+                const classId = searchParams.get('Id') as string;
+                const resultfetchClassById = await getEntityById(classId);
+                setClassIes(resultfetchClassById.data);
             } catch (error) {
-                console.error('Error fetching class:', error);
+                console.error(error);
             }
         };
-
-        if (globalStateId) {
-            fetchClassById(globalStateId);
-        }
+        fetchClassById();
         fetchInstitutionsAndAvailabilities();
-    }, [globalStateId]);
+    }, [searchParams]);
 
     const fetchInstitutionsAndAvailabilities = async () => {
         try {

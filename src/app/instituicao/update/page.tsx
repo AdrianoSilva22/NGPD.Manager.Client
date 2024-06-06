@@ -1,37 +1,40 @@
 "use client"
 
-import { globalStateAtomId } from '@/atoms/atoms'
 import { EmailInput } from '@/components/emailInput'
 import { Input } from '@/components/stringInput'
 import { Institution, initialvalueInstitution } from '@/models/institution'
 import { mensagemErro, mensagemSucesso } from '@/models/toastr'
-import { InstituitionServiceGetById, InstituitionServices } from '@/service/institution'
-import { useAtom } from 'jotai'
+import { InstituitionServices } from '@/service/institution'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Header from '../../../components/Header/Header'
 import SideBar from '../../../components/Sidebar/SideBar'
 
 export default function InstitutionUpdate() {
     const [institution, setInstitution] = useState<Institution>(initialvalueInstitution)
-    const [globalStateId,] = useAtom(globalStateAtomId)
-    const { getEntityById } = InstituitionServiceGetById
-    const { updateEntity } = InstituitionServices
+    const { updateEntity, getEntityById } = InstituitionServices
+
+    const searchParams = useSearchParams();
 
     useEffect(() => {
-        const getInstitutionById = async (id: string) => {
-            try {
-                const resultGetInstitutionById = await getEntityById(id)
-                setInstitution(resultGetInstitutionById.data)
-            } catch (error) {
-                console.error(error)
-            }
-        }
-        if (globalStateId != null) {
-            getInstitutionById(globalStateId)
-        }
-    }, []);
+        console.log(institution);
+       
+    }, [institution]);
 
+    useEffect(() => {
+        const fetchInstitutionById = async () => {
+            try {
+                const institutionId = searchParams.get('Id') as string;
+                const resultfetchInstitutionById = await getEntityById(institutionId);
+                setInstitution(resultfetchInstitutionById.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchInstitutionById();
+    }, [searchParams]);
 
     const atualizar = async () => {
         try {

@@ -6,7 +6,7 @@ import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { apiService } from "@/service/apiService/apiService";
 import { InstituitionServices } from "@/service/institution";
 import "@/styles/pagination.css";
-import { Modal, Table } from "antd";
+import { Modal, Spin, Table } from "antd";
 import FeatherIcon from "feather-icons-react";
 import { useAtom } from "jotai";
 import Link from 'next/link';
@@ -21,21 +21,24 @@ export default function InstitutionsPaginition() {
     const { deleteEntity } = InstituitionServices;
     const [pageIndex, setPage] = useState(0);
     const [pageInfo, setPageInfo] = useState<Page>();
+    const [isLoading, setIsLoading] = useState(false);
     const [] = useAtom(globalStateAtomId);
     const PAGE_SIZE = 15;
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [selectedInstituion, setSelectedInstituion] = useState<Institution | null>(null)
 
-
     useEffect(() => {
         const getPageInfo = async () => {
             try {
+                setIsLoading(true); // Iniciar carregamento
                 const url = `http://localhost:5293/api/v1/institution?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
                 const pageInfoResponse = await apiService.get(url)
                 setPageInfo(pageInfoResponse.data)
                 setInstitutions(pageInfoResponse.data.institution)
             } catch (error) {
                 console.error(error);
+            } finally {
+                setIsLoading(false);
             }
         }
         getPageInfo()
@@ -52,6 +55,7 @@ export default function InstitutionsPaginition() {
             mensagemErro('Erro ao excluir Instituição');
         }
     };
+
     const showDeleteConfirm = (instituion: Institution) => {
         setSelectedInstituion(instituion);
         setIsModalVisible(true);
@@ -94,11 +98,11 @@ export default function InstitutionsPaginition() {
                     </Link>
                 </button>
 
-                <Link href={{ pathname: '/instituicao/update', query: { instituicaoContato: institution.contact, instituicaoName: institution.name, instituicaoId: institution.id } }} className="btn btn-sm bg-danger-light">
-                    <i>
-                        <FeatherIcon icon="edit" size={18} />
-                    </i>
-                </Link>
+                <Link href={{ pathname: '/instituicao/update', query: { Id: institution.id } }} className="btn btn-sm bg-danger-light">
+                            <i>
+                                <FeatherIcon icon="edit" size={18} />
+                            </i>
+                        </Link>
             </>
         ),
     },
@@ -168,52 +172,51 @@ export default function InstitutionsPaginition() {
                                         </div>
                                     </div>
                                     {
-                                        pageInfo &&
-                                        <div className="table-responsive" >
-                                            <Table
-
-                                                pagination={false}
-                                                columns={columTable}
-                                                dataSource={institutions}
-                                                rowKey={(institution: Institution) => institution.contact}
-                                            />
-
-                                        </div>
-
+                                        isLoading ? (
+                                            <div className="loading-spinner">
+                                                <Spin size="large" />
+                                            </div>
+                                        ) : (
+                                            pageInfo && (
+                                                <div className="table-responsive">
+                                                    <Table
+                                                        pagination={false}
+                                                        columns={columTable}
+                                                        dataSource={institutions}
+                                                        rowKey={(institution: Institution) => institution.contact}
+                                                    />
+                                                </div>
+                                            )
+                                        )
                                     }
                                     {
-                                        pageInfo &&
-                                        <ReactPaginate
-                                            containerClassName={"pagination"}
-                                            pageClassName={"page-item"}
-                                            activeClassName={"active"}
-                                            onPageChange={(event) => setPage(event.selected)}
-                                            pageCount={Math.ceil(pageInfo.totalCount / 15)}
-                                            breakLabel="..."
-                                            previousLabel={
-                                                < IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                                    <AiFillLeftCircle />
-                                                </IconContext.Provider>
-                                            }
-                                            nextLabel={
-                                                <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                                    <AiFillRightCircle />
-                                                </IconContext.Provider>
-                                            }
-                                        />
+                                        pageInfo && (
+                                            <ReactPaginate
+                                                containerClassName={"pagination"}
+                                                pageClassName={"page-item"}
+                                                activeClassName={"active"}
+                                                onPageChange={(event) => setPage(event.selected)}
+                                                pageCount={Math.ceil(pageInfo.totalCount / 15)}
+                                                breakLabel="..."
+                                                previousLabel={
+                                                    < IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
+                                                        <AiFillLeftCircle />
+                                                    </IconContext.Provider>
+                                                }
+                                                nextLabel={
+                                                    <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
+                                                        <AiFillRightCircle />
+                                                    </IconContext.Provider>
+                                                }
+                                            />
+                                        )
                                     }
-
-
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
-
             </div>
-
             <Footer />
             <Modal
                 title="Confirmação de Exclusão"

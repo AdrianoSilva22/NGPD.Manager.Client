@@ -1,5 +1,4 @@
 'use client'
-import { globalStateAtomId } from "@/atoms/atoms";
 import Header from "@/components/Header/Header";
 import Sidebar from "@/components/Sidebar/SideBar";
 import { ClassIes } from "@/models/ClassIes";
@@ -9,10 +8,9 @@ import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { apiService } from "@/service/apiService/apiService";
 import { StudentServices } from "@/service/student";
 import "@/styles/pagination.css";
-import { Table } from "antd";
+import { Modal, Table } from "antd";
 import { Footer } from "antd/es/layout/layout";
 import FeatherIcon from "feather-icons-react";
-import { useAtom } from "jotai";
 import Link from 'next/link';
 import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
@@ -25,8 +23,9 @@ export default function StudentsPaginition() {
     const { deleteEntity } = StudentServices
     const [pageIndex, setPage] = useState(0)
     const [pageInfo, setPageInfo] = useState<Page>()
-    const [, SetGlobalStateAtomId] = useAtom(globalStateAtomId)
     const [loading, setLoading] = useState(true);
+    const [isModalVisible, setIsModalVisible] = useState(false)
+    const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
     const PAGE_SIZE = 15
 
     useEffect(() => {
@@ -44,6 +43,11 @@ export default function StudentsPaginition() {
         getPageInfo()
     }, [pageIndex])
 
+    const showDeleteConfirm = (student: Student) => {
+        setSelectedStudent(student);
+        setIsModalVisible(true);
+    };
+
     const deleteStudent = async (student: Student) => {
         try {
             if (students) {
@@ -58,6 +62,19 @@ export default function StudentsPaginition() {
             student.contact
             student.name
         }
+    };
+
+    const handleOk = async () => {
+        if (selectedStudent) {
+            await deleteStudent(selectedStudent);
+        }
+        setIsModalVisible(false);
+        setSelectedStudent(null);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+        setSelectedStudent(null);
     };
 
     const columTable = [
@@ -94,25 +111,19 @@ export default function StudentsPaginition() {
             key: 'acoes',
             render: (student: Student) => (
                 <>
-                    <button id="button-delete" onClick={async () => {
-                        await deleteStudent(student)
-                    }}>
-                        <Link href="#" className="btn btn-sm bg-success-light me-2">
-                            <i>
-                                <FeatherIcon icon="trash" size={16} />
-                            </i>
-                        </Link>
-                    </button>
+                  <button id="button-delete" onClick={() => showDeleteConfirm(student)}>
+                    <Link href="#" className="btn btn-sm bg-success-light me-2">
+                        <i>
+                            <FeatherIcon icon="trash" size={16} />
+                        </i>
+                    </Link>
+                </button>
 
-                    <button id="button-update" onClick={() => {
-                        SetGlobalStateAtomId(student.id)
-                    }}>
-                        <Link href={{ pathname: '/estudante/update', }} className="btn btn-sm bg-danger-light">
+                <Link href={{ pathname: '/estudante/update', query: { Id: student.id } }} className="btn btn-sm bg-danger-light">
                             <i>
                                 <FeatherIcon icon="edit" size={18} />
                             </i>
                         </Link>
-                    </button>
 
                 </>
             ),
@@ -224,6 +235,16 @@ export default function StudentsPaginition() {
                 </div>
             </div>
             <Footer />
+            <Modal
+                title="Confirmação de Exclusão"
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="Sim"
+                cancelText="Não"
+            >
+                <p>Você tem certeza que deseja excluir esta Empresa?</p>
+            </Modal>
         </>
     )
 }

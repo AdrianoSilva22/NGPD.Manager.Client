@@ -23,7 +23,7 @@ export default function ClassesPagination() {
     useEffect(() => {
         const fetchClassById = async () => {
             try {
-                const classIesId = searchParams.get('turmaId') as string;
+                const classIesId = searchParams.get('Id') as string;
                 const response = await getEntityById(classIesId);
                 setListClassIes(response.data);
             } catch (error) {

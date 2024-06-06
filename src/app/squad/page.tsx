@@ -72,15 +72,11 @@ export default function SquadsPaginition() {
             title: 'Ações',
             render: (squad: Squad) => (
                 <>
-                    <button id="button-update" onClick={() => {
-                        SetGlobalStateAtomId(squad.id)
-                    }}>
-                        <Link href={{ pathname: '/squad/update', }} className="btn btn-sm bg-danger-light">
+                 <Link href={{ pathname: '/squad/update', query: { Id: squad.id } }} className="btn btn-sm bg-danger-light">
                             <i>
                                 <FeatherIcon icon="edit" size={18} />
                             </i>
                         </Link>
-                    </button>
                 </>
             ),
         },
@@ -196,8 +192,6 @@ export default function SquadsPaginition() {
                             </div>
                         </div>
                     </div>
-
-
                 </div>
 
             </div>

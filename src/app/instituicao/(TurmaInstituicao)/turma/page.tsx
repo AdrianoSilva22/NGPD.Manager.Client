@@ -8,7 +8,7 @@ import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { ClassIesServiceDelete } from "@/service/ClassIes";
 import { apiService } from "@/service/apiService/apiService";
 import "@/styles/pagination.css";
-import { Table } from "antd";
+import { Modal, Table } from "antd";
 import { Footer } from "antd/es/layout/layout";
 import FeatherIcon from "feather-icons-react";
 import { useAtom } from "jotai";
@@ -27,6 +27,8 @@ export default function ClassesPaginition() {
     const [, SetGlobalStateAtomId] = useAtom(globalStateAtomId)
     const [loading, setLoading] = useState(true);
     const PAGE_SIZE = 15
+    const [isModalVisible, setIsModalVisible] = useState(false)
+    const [selectedClassIes, setSelectedClassIes] = useState<ClassIes | null>(null)
 
     useEffect(() => {
         const getPageInfo = async () => {
@@ -57,6 +59,25 @@ export default function ClassesPaginition() {
         }
     };
 
+    const showDeleteConfirm = (classIes: ClassIes) => {
+        setSelectedClassIes(classIes);
+        setIsModalVisible(true);
+    };
+
+    const handleOk = async () => {
+        if (selectedClassIes) {
+            await deleteClassIes(selectedClassIes);
+        }
+        setIsModalVisible(false);
+        setSelectedClassIes(null);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+        setSelectedClassIes(null);
+    };
+
+
     const columTable = [
         {
             title: 'Curso',
@@ -81,9 +102,7 @@ export default function ClassesPaginition() {
             render: (classIes: ClassIes) => (
                 <>
 
-                    <button id="button-delete" onClick={async () => {
-                        await deleteClassIes(classIes)
-                    }}>
+                    <button id="button-delete" onClick={() => showDeleteConfirm(classIes)}>
                         <Link href="#" className="btn btn-sm bg-success-light me-2">
                             <i>
                                 <FeatherIcon icon="trash" size={16} />
@@ -100,12 +119,12 @@ export default function ClassesPaginition() {
                             </i>
                         </Link>
                     </button>
-                    
-                        <Link href={{ pathname: '/instituicao/turma/detalhes', query:{turmaId: classIes.id}}} className="btn btn-sm bg-danger-light">
-                            <i>
-                                <FeatherIcon icon="eye" size={20} />
-                            </i>
-                        </Link>
+
+                    <Link href={{ pathname: '/instituicao/turma/detalhes', query: { Id: classIes.id } }} className="btn btn-sm bg-danger-light">
+                        <i>
+                            <FeatherIcon icon="eye" size={20} />
+                        </i>
+                    </Link>
                 </>
             ),
         },
@@ -216,6 +235,16 @@ export default function ClassesPaginition() {
                 </div>
             </div>
             <Footer />
+            <Modal
+                title="Confirmação de Exclusão"
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="Sim"
+                cancelText="Não"
+            >
+                <p>Você tem certeza que deseja excluir esta Empresa?</p>
+            </Modal>
 
         </>
     )
