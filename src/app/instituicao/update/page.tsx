@@ -18,11 +18,6 @@ export default function InstitutionUpdate() {
     const searchParams = useSearchParams();
 
     useEffect(() => {
-        console.log(institution);
-       
-    }, [institution]);
-
-    useEffect(() => {
         const fetchInstitutionById = async () => {
             try {
                 const institutionId = searchParams.get('Id') as string;

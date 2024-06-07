@@ -23,7 +23,7 @@ export default function RegisterSquad() {
     useEffect(() => {
         const classIesId = searchParams.get('classIesId');
         if (classIesId) {
-            setSquadData(prevData => ({ ...prevData, turmaIesId: classIesId }));
+            setSquadData(prevData => ({ ...prevData, institutionClasseId: classIesId }));
         }
     }, [searchParams]);
 
@@ -69,8 +69,8 @@ export default function RegisterSquad() {
                                                     <label>Modulo<span className="login-danger">*</span></label>
                                                     <select
                                                         className="form-control"
-                                                        value={squadData.classSquad}
-                                                        onChange={(e) => setSquadData({ ...squadData, classSquad: e.target.value })}
+                                                        value={squadData.classModule}
+                                                        onChange={(e) => setSquadData({ ...squadData, classModule: e.target.value })}
                                                     >
                                                         <option >Selecione um módulo</option>
                                                         <option value="Kick off">Kick off</option>

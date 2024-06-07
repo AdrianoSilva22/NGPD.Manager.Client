@@ -1,7 +1,8 @@
 export interface Squad {
     id: string
     qtd: string
-    classSquad: string | undefined
+    institutionClasseId: string
+    classModule: string | undefined
     nameSquad: string
     turmaIesId:string
     mentorId: string
@@ -9,7 +10,8 @@ export interface Squad {
 
 export const initialValueSquad: Squad = {
     id: '',
-    classSquad: '',
+    institutionClasseId: '',
+    classModule: '',
     nameSquad: '',
     mentorId: '',
     qtd: "",

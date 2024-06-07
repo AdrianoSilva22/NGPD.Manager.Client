@@ -3,7 +3,6 @@ import Header from "@/components/Header/Header"
 import Sidebar from "@/components/Sidebar/SideBar"
 import { PeriodoInput } from "@/components/periodoInput"
 import { Input } from "@/components/stringInput"
-import { Availability } from "@/models/AvailabilityClassIes"
 import { ClassIes, initialValueClassIes } from "@/models/ClassIes"
 import { Institution } from "@/models/institution"
 import { PropsOption } from "@/models/propsOption"
@@ -18,16 +17,13 @@ import Select, { SingleValue } from "react-select"
 export default function InstitutionRegister() {
     const [classIes, setClassIes] = useState<ClassIes>(initialValueClassIes)
     const [institutions, setInstitutions] = useState<Institution[]>([])
-    const [availabilities, setAvailabilities] = useState<Availability[]>([])
 
     useEffect(() => {
-        const getInstitutionsAndAvailabilities = async () => {
+        const getInstitutions = async () => {
             const institutions = (await apiService.get(`http://localhost:5293/api/v1/institution`)).data
-            const availability = await (await apiService.get((`http://localhost:5293/api/v1/Institution/turmas/disponibilidade`))).data
             setInstitutions(institutions.institution)
-            setAvailabilities(availability.listAvailability)
         }
-        getInstitutionsAndAvailabilities()
+        getInstitutions()
     }, [])
 
     const sendFormData = async (classIes: ClassIes) => {
@@ -42,19 +38,16 @@ export default function InstitutionRegister() {
         }
         formData.append('period', classIes.period)
         formData.append('shift', classIes.shift)
-        if (classIes.availabilityId) {
-            formData.append('availabilityId', classIes.availabilityId)
-        }
-
+        formData.append('availabilities', JSON.stringify(classIes.availabilities));
         try {
 
-            await axios.post('http://localhost:5293/api/v1/Institution/CadastraTurmaIes', formData, {
+            await axios.post('http://localhost:5293/api/v1/Institution/TurmaIes/CadastraTurmaIes', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${Cookies.get('tokenUserInfo')}`
                 },
             })
-            mensagemSucesso('Class registered successfully!')
+            mensagemSucesso('Cadastrado com Sucesso')
             setClassIes(initialValueClassIes)
         } catch (error) {
             console.error('Erro ao registrar Turma:', error)
@@ -66,20 +59,12 @@ export default function InstitutionRegister() {
         value: institution.id,
         label: institution.name,
     }))
-    const availabilityOptions = availabilities.map(availability => ({
-        value: availability.id,
-        label: `${availability.dayWeek} - ${availability.startTime} - ${availability.scheduleEnd}`,
-    }))
 
     const getValueSelectInstitution = (selectedOption: SingleValue<PropsOption>) => {
         const selectedInstitution = institutions.find(inst => inst.id === selectedOption?.value) || null
         setClassIes({ ...classIes, institutionId: selectedInstitution?.id })
     }
-    const getValueSelectAvailability = (selectedOption: SingleValue<PropsOption>) => {
-        const selectedAvailability = availabilities.find(disp => disp.id === selectedOption?.value) || null
-        setClassIes({ ...classIes, availabilityId: selectedAvailability?.id })
-    }
-
+ 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null
         setClassIes({ ...classIes, csvFile: file })
@@ -148,19 +133,6 @@ export default function InstitutionRegister() {
                                                         onChange={getValueSelectInstitution}
                                                         options={institutionsOptions}
                                                         placeholder="Selecione uma Instituição"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="col-12 col-sm-4">
-                                                <div className="form-group local-forms">
-                                                    <label>
-                                                        Disponibilidade <span className="login-danger">*</span>
-                                                    </label>
-                                                    <Select
-                                                        className="w-100 local-forms select"
-                                                        onChange={getValueSelectAvailability}
-                                                        options={availabilityOptions}
-                                                        placeholder="Selecione a Disponibilidade"
                                                     />
                                                 </div>
                                             </div>

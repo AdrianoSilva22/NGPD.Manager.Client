@@ -32,7 +32,7 @@ export default function ClassesPaginition() {
 
     useEffect(() => {
         const getPageInfo = async () => {
-            const url = `http://localhost:5293/api/v1/Institution/RetornaTurmaIesAll?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
+            const url = `http://localhost:5293/api/v1/Institution/TurmaIes/GetAllTurmaIes?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
             try {
                 const pageInfoResponse = await apiService.get(url)
                 setPageInfo(pageInfoResponse.data)
@@ -90,11 +90,6 @@ export default function ClassesPaginition() {
         {
             title: 'Ano de Ingresso',
             dataIndex: 'period',
-        },
-        {
-            title: 'disponibilidade',
-            dataIndex: 'availability',
-
         },
         {
             title: 'Ações',

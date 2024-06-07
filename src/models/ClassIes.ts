@@ -1,4 +1,3 @@
-import { Availability } from "./AvailabilityClassIes"
 import { Institution } from "./institution"
 import { Student } from "./student"
 
@@ -11,7 +10,7 @@ export interface ClassIes {
     institutionId: string | undefined
     availabilityId: string | undefined
     institution: Institution | null
-    availability: Availability | null
+    availabilities: [] 
     listStudant: Student[] | null
 
 }
@@ -24,7 +23,7 @@ export const initialValueClassIes: ClassIes = {
     institutionId: '',
     csvFile: null,
     availabilityId: '',
-    availability: null,
+    availabilities: [],
     institution: null,
     listStudant: null
 }

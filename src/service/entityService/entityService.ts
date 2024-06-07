@@ -12,8 +12,18 @@ export const EntityService = <T>(url: string) => {
     }
 
     const updateAlocationEntity = async (squadId: string, mentorId: string) => {
-        const updateUrl = `${url}?squadId=${squadId}&mentorId=${mentorId}`;
-        return apiService.put(updateUrl);
+        const updateAlocationUrl = `${url}`; 
+
+        const entity = {
+            id: squadId,
+            email: mentorId
+        };
+
+        try {
+            return await apiService.put<T>(updateAlocationUrl, entity);
+        } catch (error) {
+            throw new Error(`Erro ao atualizar alocação: ${error}`);
+        }
     };
 
     const getTotalEntities = () => {

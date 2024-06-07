@@ -14,20 +14,20 @@ export default function RegisterSquad() {
     const searchParams = useSearchParams();
 
     useEffect(() => {
-        
-    console.log(squadData);
+
+        console.log(squadData);
     }, [squadData]);
 
     useEffect(() => {
         const classIesId = searchParams.get('classIesId');
         if (classIesId) {
-            setSquadData(prevData => ({ ...prevData, turmaIesId: classIesId }));
+            setSquadData(prevData => ({ ...prevData, institutionClasseId: classIesId }));
         }
     }, [searchParams]);
 
     const cadastrarSquadCompleto = async () => {
         try {
-            await apiService.post('http://localhost:5293/api/v1/Squad/squadCompleto', {
+            await apiService.post('http://localhost:5293/api/v1/Squad/SquadCompleto', {
                 ...squadData,
             });
             mensagemSucesso('Cadastro realizado com sucesso!');
@@ -65,8 +65,8 @@ export default function RegisterSquad() {
                                                     <label>Módulo <span className="login-danger">*</span></label>
                                                     <select
                                                         className="form-control"
-                                                        value={squadData.classSquad}
-                                                        onChange={(e) => setSquadData({ ...squadData, classSquad: e.target.value })}
+                                                        value={squadData.classModule}
+                                                        onChange={(e) => setSquadData({ ...squadData, classModule: e.target.value })}
                                                     >
 
                                                         <option >Selecione um módulo</option>
@@ -79,7 +79,8 @@ export default function RegisterSquad() {
                                             </div>
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
-                                                    {/* Outros campos podem ser adicionados aqui */}
+                                                    <label >Nome do Squad <span className="login-danger">*</span></label>
+                                                    <input type="text" className="form-control" value={squadData.nameSquad} onChange={(e) => setSquadData({ ...squadData, nameSquad: e.target.value })} />
                                                 </div>
                                             </div>
                                             <div className="col-12">

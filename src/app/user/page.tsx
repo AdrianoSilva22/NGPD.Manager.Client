@@ -46,11 +46,11 @@ export default function ClassUpdate() {
             if (user) {
                 await registerEntity(user);
                 setUser(initialValueUser);
-                mensagemSucesso('Turma Atualizada');
+                mensagemSucesso('Cadastrado com Sucesso');
             }
         } catch (error) {
-            console.error('Erro ao atualizar Turma:', error);
-            mensagemErro('Erro ao atualizar Turma');
+            console.error('Erro ao cadastrar:', error);
+            mensagemErro('Erro ao cadastrar');
         }
     };
 
