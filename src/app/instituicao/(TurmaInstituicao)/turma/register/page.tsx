@@ -15,24 +15,31 @@ import { ChangeEvent, useEffect, useState } from "react"
 import Select, { SingleValue } from "react-select"
 
 export default function InstitutionRegister() {
+
     const [classIes, setClassIes] = useState<ClassIes>(initialValueClassIes)
     const [institutions, setInstitutions] = useState<Institution[]>([])
+    const [loading, setLoading] = useState<boolean>(false)
 
     useEffect(() => {
         const getInstitutions = async () => {
-            const institutions = (await apiService.get(`http://localhost:5293/api/v1/institution`)).data
-            setInstitutions(institutions.institution)
+            try {
+                const institutions = (await apiService.get(`http://localhost:5293/api/v1/institution`)).data
+                setInstitutions(institutions.institution)
+            } catch (error) {
+                console.error('Error fetching institutions:', error);
+                mensagemErro('Erro ao buscar instituições');
+            }
         }
         getInstitutions()
     }, [])
 
     const sendFormData = async (classIes: ClassIes) => {
-        const formData = new FormData()
+        const formData = new FormData();
 
         if (classIes.csvFile) {
-            formData.append('csvFile', classIes.csvFile)
+            formData.append('csvFile', classIes.csvFile);
         }
-        formData.append('course', classIes.course)
+        formData.append('course', classIes.course);
         if (classIes.institutionId) {
             formData.append('InstitutionId', classIes.institutionId)
         }
@@ -40,20 +47,28 @@ export default function InstitutionRegister() {
         formData.append('shift', classIes.shift)
         formData.append('availabilities', JSON.stringify(classIes.availabilities));
         try {
-
+            const token = Cookies.get('tokenUserInfo');
+            if (!token) {
+                mensagemErro('Token de autenticação não encontrado');
+                return;
+            }
+            
+            setLoading(true);
             await axios.post('http://localhost:5293/api/v1/Institution/TurmaIes/CadastraTurmaIes', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${Cookies.get('tokenUserInfo')}`
+                    'Authorization': `Bearer ${token}`
                 },
             })
             mensagemSucesso('Cadastrado com Sucesso')
             setClassIes(initialValueClassIes)
         } catch (error) {
-            console.error('Erro ao registrar Turma:', error)
-            mensagemErro('Erro ao registrar Turma')
+            console.error('Erro ao registrar Turma:', error);
+            mensagemErro('Erro ao registrar Turma');
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
     const institutionsOptions = institutions.map(institution => ({
         value: institution.id,
@@ -66,13 +81,18 @@ export default function InstitutionRegister() {
     }
  
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null
-        setClassIes({ ...classIes, csvFile: file })
-    }
+        try {
+            const file = e.target.files?.[0] || null;
+            setClassIes({ ...classIes, csvFile: file });
+        } catch (error) {
+            console.error('Erro ao selecionar arquivo:', error);
+            mensagemErro('Erro ao selecionar arquivo');
+        }
+    };
 
     const register = async () => {
-       await sendFormData(classIes)
-    }
+        await sendFormData(classIes);
+    };
 
     return (
         <>
@@ -148,7 +168,9 @@ export default function InstitutionRegister() {
                                             </div>
                                             <div className="col-12">
                                                 <div className="student-submit">
-                                                    <button type="button" className="btn btn-primary" onClick={register}>Register</button>
+                                                    <button type="button" className="btn btn-primary" onClick={register} disabled={loading}>
+                                                        {loading ? 'Registrando...' : 'Registrar'}
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
