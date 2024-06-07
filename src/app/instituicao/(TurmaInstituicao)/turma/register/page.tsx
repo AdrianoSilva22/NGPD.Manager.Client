@@ -16,79 +16,67 @@ import { ChangeEvent, useEffect, useState } from "react"
 import Select, { SingleValue } from "react-select"
 
 export default function InstitutionRegister() {
-    const [classIes, setClassIes] = useState<ClassIes>(initialValueClassIes)
-    const [institutions, setInstitutions] = useState<Institution[]>([])
-    const [availabilities, setAvailabilities] = useState<Availability[]>([])
+    const [classIes, setClassIes] = useState<ClassIes>({
+        ...initialValueClassIes,
+        availabilities: [],
+    });
+    const [institutions, setInstitutions] = useState<Institution[]>([]);
 
     useEffect(() => {
         const getInstitutionsAndAvailabilities = async () => {
-            const institutions = (await apiService.get(`http://localhost:5293/api/v1/institution`)).data
-            const availability = await (await apiService.get((`http://localhost:5293/api/v1/Institution/turmas/disponibilidade`))).data
-            setInstitutions(institutions.institution)
-            setAvailabilities(availability.listAvailability)
-        }
-        getInstitutionsAndAvailabilities()
-    }, [])
+            const institutions = (await apiService.get(`http://localhost:5293/api/v1/institution`)).data;
+            setInstitutions(institutions.institution);
+        };
+        getInstitutionsAndAvailabilities();
+    }, []);
 
     const sendFormData = async (classIes: ClassIes) => {
-        const formData = new FormData()
+        const formData = new FormData();
 
         if (classIes.csvFile) {
-            formData.append('csvFile', classIes.csvFile)
+            formData.append('csvFile', classIes.csvFile);
         }
-        formData.append('course', classIes.course)
+        formData.append('course', classIes.course);
         if (classIes.institutionId) {
-            formData.append('InstitutionId', classIes.institutionId)
+            formData.append('InstitutionId', classIes.institutionId);
         }
-        formData.append('period', classIes.period)
-        formData.append('shift', classIes.shift)
-        if (classIes.availabilityId) {
-            formData.append('availabilityId', classIes.availabilityId)
-        }
+        formData.append('period', classIes.period);
+        formData.append('shift', classIes.shift);
+        formData.append('availabilities', Object(classIes.availabilities)); // Adiciona o campo de disponibilidade vazio
 
         try {
-
             await axios.post('http://localhost:5293/api/v1/Institution/CadastraTurmaIes', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${Cookies.get('tokenUserInfo')}`
                 },
-            })
-            mensagemSucesso('Class registered successfully!')
-            setClassIes(initialValueClassIes)
+            });
+            mensagemSucesso('Class registered successfully!');
+            setClassIes(initialValueClassIes);
         } catch (error) {
-            console.error('Erro ao registrar Turma:', error)
-            mensagemErro('Erro ao registrar Turma')
+            console.error('Erro ao registrar Turma:', error);
+            mensagemErro('Erro ao registrar Turma');
         }
-    }
+    };
 
     const institutionsOptions = institutions.map(institution => ({
         value: institution.id,
         label: institution.name,
-    }))
-    const availabilityOptions = availabilities.map(availability => ({
-        value: availability.id,
-        label: `${availability.dayWeek} - ${availability.startTime} - ${availability.scheduleEnd}`,
-    }))
+    }));
 
     const getValueSelectInstitution = (selectedOption: SingleValue<PropsOption>) => {
-        const selectedInstitution = institutions.find(inst => inst.id === selectedOption?.value) || null
-        setClassIes({ ...classIes, institutionId: selectedInstitution?.id })
-    }
-    const getValueSelectAvailability = (selectedOption: SingleValue<PropsOption>) => {
-        const selectedAvailability = availabilities.find(disp => disp.id === selectedOption?.value) || null
-        setClassIes({ ...classIes, availabilityId: selectedAvailability?.id })
-    }
+        const selectedInstitution = institutions.find(inst => inst.id === selectedOption?.value) || null;
+        setClassIes({ ...classIes, institutionId: selectedInstitution?.id });
+    };
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null
-        setClassIes({ ...classIes, csvFile: file })
-    }
+        const file = e.target.files?.[0] || null;
+        setClassIes({ ...classIes, csvFile: file });
+    };
 
     const register = async () => {
-       await sendFormData(classIes)
-    }
-
+       await sendFormData(classIes);
+    };
     return (
         <>
             <Header />
@@ -156,12 +144,7 @@ export default function InstitutionRegister() {
                                                     <label>
                                                         Disponibilidade <span className="login-danger">*</span>
                                                     </label>
-                                                    <Select
-                                                        className="w-100 local-forms select"
-                                                        onChange={getValueSelectAvailability}
-                                                        options={availabilityOptions}
-                                                        placeholder="Selecione a Disponibilidade"
-                                                    />
+                                                    
                                                 </div>
                                             </div>
                                             <div className="col-12 col-sm-4">

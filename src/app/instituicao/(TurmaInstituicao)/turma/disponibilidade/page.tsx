@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
-import Header, { default as Footer } from '../../components/Header/Header';
+import Header, { default as Footer } from '../../../../../components/Header/Header';
 import { Availability } from "@/models/AvailabilityClassIes";
 import { apiService } from "@/service/apiService/apiService";
 import { useTranslation } from 'react-i18next';
@@ -131,7 +131,7 @@ export default function AvailabilityPagination() {
                         </div>
                     </div>
                     
-                                    {
+                                  {
     pageInfo && (
         <div className="table table-stripped table-hover datatable">
             <Table
@@ -143,7 +143,7 @@ export default function AvailabilityPagination() {
             />
         </div>
     )
-}
+                                    }
 
                                     {
                                         pageInfo && (

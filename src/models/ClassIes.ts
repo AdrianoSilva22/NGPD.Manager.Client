@@ -11,7 +11,7 @@ export interface ClassIes {
     institutionId: string | undefined
     availabilityId: string | undefined
     institution: Institution | null
-    availability: Availability | null
+    availabilities: Availability | {}
     listStudant: Student[] | null
 
 }
@@ -24,7 +24,7 @@ export const initialValueClassIes: ClassIes = {
     institutionId: '',
     csvFile: null,
     availabilityId: '',
-    availability: null,
+    availabilities: {},
     institution: null,
     listStudant: null
 }
