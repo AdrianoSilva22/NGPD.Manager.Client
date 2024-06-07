@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import { globalStateAtomId } from "@/atoms/atoms";
 import Sidebar from "@/components/Sidebar/SideBar";
 import { Institution, Page } from "@/models/institution";
@@ -110,8 +110,8 @@ export default function InstitutionsPaginition() {
 
     return (
         <>
-        <Header />
-          <Sidebar />
+       <Header />
+            <Sidebar />
             <div className="main-wrapper">
                 <div className="page-wrapper">
                     <div className="content container-fluid">
@@ -119,7 +119,7 @@ export default function InstitutionsPaginition() {
                             <div className="row">
                                 <div className="col-sm-12">
                                     <div className="page-sub-header">
-                                        <h3 className="page-title">Instituições</h3>
+                                        <h3 className="page-title">Instituição</h3>
                                     </div>
                                 </div>
                             </div>
@@ -128,49 +128,28 @@ export default function InstitutionsPaginition() {
                             <div className="row">
                                 <div className="col-lg-3 col-md-6">
                                     <div className="form-group">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Search by ID ..."
-                                        />
+                                    <div className="search-student-btn">
+                                <Link    href="/instituicao/register">
+                                <button type="button" className="btn btn-primary">Incluir</button>
+                                </Link>
+                                </div>
                                     </div>
                                 </div>
                                 <div className="col-lg-3 col-md-6">
                                     <div className="form-group">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Search by Name ..."
-                                        />
+                                       
+                                    </div>
+                                </div>
+                                <div className="col-lg-3 col-md-6">
+                                    <div className="form-group">
+                                        
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-lg-2">
-                                <div className="search-student-btn">
-                                    <button type="button" className="btn btn-primary">
-                                        Search
-                                    </button>
-                                </div>
-                            </div>
+                            
+                            
                         </div>
                     </div>
-                    <div className="row">
-                        <div className="col-sm-12">
-                            <div className="card card-table comman-shadow">
-
-                                <div className="card-body">
-                                    <div className="page-header">
-                                        <div className="row align-items-center">
-                                            <div className="col">
-                                                <h3 className="page-title">Instituições</h3>
-                                            </div>
-                                            <div className="col-auhref text-end float-end ms-auhref download-grp">
-                                                <Link href="/instituicao/register" className="btn btn-primary">
-                                                    <i className="fas fa-plus" />
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
                                     {
                                         isLoading ? (
                                             <div className="loading-spinner">
@@ -213,10 +192,7 @@ export default function InstitutionsPaginition() {
                                     }
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+               
             <Footer />
             <Modal
                 title="Confirmação de Exclusão"

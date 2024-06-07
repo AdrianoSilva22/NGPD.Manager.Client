@@ -101,29 +101,17 @@ export default function SquadsPaginition() {
                         <div className="student-group-form">
                             <div className="row">
                                 <div className="col-lg-3 col-md-6">
-                                    <div className="form-group">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Search by ID ..."
-                                        />
-                                    </div>
+                                  
                                 </div>
                                 <div className="col-lg-3 col-md-6">
-                                    <div className="form-group">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Search by Name ..."
-                                        />
-                                    </div>
+                                   
                                 </div>
                             </div>
                             <div className="col-lg-2">
                                 <div className="search-student-btn">
-                                    <button type="button" className="btn btn-primary">
-                                        Search
-                                    </button>
+                                <Link    href="/squad/register-instituicao">
+                                    <button type="button" className="btn btn-primary">Incluir</button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -144,9 +132,7 @@ export default function SquadsPaginition() {
                                                         <h3 className="page-title">Squads</h3>
                                                     </div>
                                                     <div className="col-auhref text-end float-end ms-auhref download-grp">
-                                                        <Link href="/squad/register-instituicao" className="btn btn-primary">
-                                                            <i className="fas fa-plus" />
-                                                        </Link>
+                                                      
                                                     </div>
                                                 </div>
                                             </div>

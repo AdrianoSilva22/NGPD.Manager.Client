@@ -79,7 +79,8 @@ export default function RegisterSquad() {
                                             </div>
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
-                                                    {/* Outros campos podem ser adicionados aqui */}
+                                                <label >Nome do Squad <span className="login-danger">*</span></label>
+                                                <input type="text" className="form-control" value={squadData.nameSquad} onChange={(e) => setSquadData({ ...squadData, nameSquad: e.target.value })} />
                                                 </div>
                                             </div>
                                             <div className="col-12">

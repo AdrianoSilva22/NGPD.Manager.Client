@@ -26,33 +26,9 @@ export default function Dashboard() {
                     <p className="text-center"> Núcleo de Gestão do Porto Digital.</p>
                 </div>
             </div>
-            <div className="row">
-                <div className="col-md-4">
-                    <div className="card mb-4">
-                        <div className="card-body">
-                            <h5 className="card-title"></h5>
-                            <p className="card-text">...</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-4">
-                    <div className="card mb-4">
-                        <div className="card-body">
-                            <h5 className="card-title"></h5>
-                            <p className="card-text">...</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-4">
-                    <div className="card mb-4">
-                        <div className="card-body">
-                            <h5 className="card-title"></h5>
-                            <p className="card-text">...</p>
-                        </div>
-                    </div>
-                </div>
+        
             </div>
-        </div>
+    
     );
 
 }

@@ -37,7 +37,7 @@ export default function InstitutionRegister() {
                                     <h3 className="page-title">Adicionar Instituição</h3>
                                     <ul className="breadcrumb">
                                         <li className="breadcrumb-item">
-                                            <Link href="/turma">Listagem de Instituições/</Link>
+                                            <Link href="/instituicao/turma">Listagem de Instituições/</Link>
                                         </li>
                                     </ul>
                                 </div>
