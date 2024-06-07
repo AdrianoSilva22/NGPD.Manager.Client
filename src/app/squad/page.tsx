@@ -30,8 +30,22 @@ export default function SquadsPagination() {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<UserSession | undefined>();
     const [isAllocating, setIsAllocating] = useState(false);
+    const [session, setSession] = useState<any>(null);
 
     const PAGE_SIZE = 15;
+
+    useEffect(() => {
+        const fetchSession = async () => {
+            const userSession = await getSession();
+            if (userSession) {
+                setSession(userSession);
+            } else {
+                mensagemErro("Sessão não encontrada");
+            }
+        };
+
+        fetchSession();
+    }, []);
 
     useEffect(() => {
         const getPageInfo = async () => {
@@ -44,7 +58,7 @@ export default function SquadsPagination() {
             } catch (error) {
                 console.error(error);
             }
-        }
+        };
         getPageInfo();
     }, [pageIndex]);
 
@@ -54,7 +68,6 @@ export default function SquadsPagination() {
         setIsAllocating(true);
 
         try {
-            const session = await getSession();
             if (session) {
                 await updateAlocationEntity(squad.id, session.user.email);
                 mensagemSucesso("Sucesso ao alocar");
@@ -74,7 +87,7 @@ export default function SquadsPagination() {
         } finally {
             setIsAllocating(false);
         }
-    }
+    };
 
     const columTable = [
         {

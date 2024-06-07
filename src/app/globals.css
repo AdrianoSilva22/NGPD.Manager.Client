@@ -4455,10 +4455,10 @@ table.table-inbox tbody tr.checked {
 }
 
 .search-student-btn .btn-primary {
-	min-width: 135px;
+	min-width: 60px;
 	font-size: 14px;
 	font-weight: 700;
-	text-transform: uppercase;
+	
 	padding: 11px 15px;
 }
 

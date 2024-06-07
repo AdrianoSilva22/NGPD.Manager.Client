@@ -104,7 +104,7 @@ export default function EmpresasPaginition() {
     return (
         <>
         <Header />
-          <Sidebar />
+            <Sidebar />
             <div className="main-wrapper">
                 <div className="page-wrapper">
                     <div className="content container-fluid">
@@ -112,7 +112,7 @@ export default function EmpresasPaginition() {
                             <div className="row">
                                 <div className="col-sm-12">
                                     <div className="page-sub-header">
-                                        <h3 className="page-title">Empresas</h3>
+                                        <h3 className="page-title">Empresa</h3>
                                     </div>
                                 </div>
                             </div>
@@ -121,49 +121,28 @@ export default function EmpresasPaginition() {
                             <div className="row">
                                 <div className="col-lg-3 col-md-6">
                                     <div className="form-group">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Search by ID ..."
-                                        />
+                                    <div className="search-student-btn">
+                                <Link    href="/empresa/register">
+                                <button type="button" className="btn btn-primary">Incluir</button>
+                                </Link>
+                                </div>
                                     </div>
                                 </div>
                                 <div className="col-lg-3 col-md-6">
                                     <div className="form-group">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Search by Name ..."
-                                        />
+                                       
+                                    </div>
+                                </div>
+                                <div className="col-lg-3 col-md-6">
+                                    <div className="form-group">
+                                        
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-lg-2">
-                                <div className="search-student-btn">
-                                    <button type="button" className="btn btn-primary">
-                                        Search
-                                    </button>
-                                </div>
-                            </div>
+                            
+                            
                         </div>
                     </div>
-                    <div className="row">
-                        <div className="col-sm-12">
-                            <div className="card card-table comman-shadow">
-
-                                <div className="card-body">
-                                    <div className="page-header">
-                                        <div className="row align-items-center">
-                                            <div className="col">
-                                                <h3 className="page-title">Empresas</h3>
-                                            </div>
-                                            <div className="col-auhref text-end float-end ms-auhref download-grp">
-                                                <Link href="/empresa/register" className="btn btn-primary">
-                                                    <i className="fas fa-plus" />
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
                                     {
                                         pageInfo &&
                                         <div className="table-responsive" >
@@ -203,13 +182,7 @@ export default function EmpresasPaginition() {
 
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-
-                </div>
-
-            </div>
+                 
 
             <Footer />
             <Modal
