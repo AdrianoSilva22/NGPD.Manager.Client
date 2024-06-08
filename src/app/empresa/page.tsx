@@ -96,6 +96,12 @@ export default function EmpresasPaginition() {
                                 <FeatherIcon icon="edit" size={18} />
                             </i>
                         </Link>
+
+                        <Link href={{ pathname: '/empresa/disponibilidade', query: { Id: empresa.id } }} className="btn btn-sm bg-danger-light">
+                            <i>
+                                <FeatherIcon icon="clock" size={18} />
+                            </i>
+                        </Link>
             </>
         ),
     },

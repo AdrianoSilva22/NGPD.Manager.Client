@@ -1,4 +1,3 @@
-// AvailabilityPagination.tsx
 'use client'
 import { globalStateAtomId, institutionClassIdAtom } from "@/atoms/atoms";
 import Sidebar from "@/components/Sidebar/SideBar";
@@ -10,7 +9,7 @@ import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
-import Header, { default as Footer } from '../../../../../components/Header/Header';
+import Header, { default as Footer } from '../../../components/Header/Header';
 
 import { apiService } from "@/service/apiService/apiService";
 import { useTranslation } from 'react-i18next';
@@ -39,8 +38,6 @@ export default function AvailabilityPagination() {
         onChange: onSelectChange,
     };
 
-    
-
     useEffect(() => {
         const getPageInfo = async () => {
             try {
@@ -57,11 +54,19 @@ export default function AvailabilityPagination() {
 
     const handleUpdate = async () => {
         const selectedData = availability.filter(item => selectedRowKeys.includes(item.id));
+        const empresaId = searchParams.get('Id') as string;
+
+        const body = {
+            totalCount: selectedData.length,
+            totalPages: 1, // Ajuste conforme necessário
+            pageSize: selectedData.length, // Ajuste conforme necessário
+            currentPage: 1, // Ajuste conforme necessário
+            listAvailability: selectedData
+        };
 
         try {
-            const classIesId = searchParams.get('Id') as string;
-            const url = `http://localhost:5293/api/v1/Institution/TurmaIes/${classIesId}/UpdateDisponibilidades`;
-            const response = await apiService.put(url,  [...selectedData] );
+            const url = `http://localhost:5293/api/v1/Empresa/AtualizarDisponibilidades?empresaId=${empresaId}`;
+            const response = await apiService.put(url, body);
             if (response.status === 200) {
                 console.log("Update successful");
             } else {
@@ -70,7 +75,7 @@ export default function AvailabilityPagination() {
         } catch (error) {
             console.error("Update error", error);
         }
-    }; 
+    };
 
     const columTable = [
         {
