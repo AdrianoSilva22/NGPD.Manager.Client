@@ -46,6 +46,7 @@ export default function InstitutionRegister() {
         formData.append('period', classIes.period)
         formData.append('shift', classIes.shift)
         formData.append('availabilities', JSON.stringify(classIes.availabilities));
+
         try {
             const token = Cookies.get('tokenUserInfo');
             if (!token) {
@@ -157,6 +158,13 @@ export default function InstitutionRegister() {
                                                 </div>
                                             </div>
                                             <div className="col-12 col-sm-4">
+                                                <div className="form-group local-forms">
+                                                   
+                                                    
+                                                </div>
+                                            </div>
+                                            <div className="col-12 col-sm-4">
+
                                                 <div className="form-group students-up-files">
                                                     <label>Anexe os Estudantes</label>
                                                     <div className="uplod">

@@ -120,6 +120,12 @@ export default function ClassesPaginition() {
                             <FeatherIcon icon="eye" size={20} />
                         </i>
                     </Link>
+
+                    <Link href={{ pathname: '/instituicao/turma/disponibilidade', query: { Id: classIes.id } }} className="btn btn-sm bg-danger-light">
+                        <i>
+                            <FeatherIcon icon="clock" size={20} />
+                        </i>
+                    </Link>
                 </>
             ),
         },

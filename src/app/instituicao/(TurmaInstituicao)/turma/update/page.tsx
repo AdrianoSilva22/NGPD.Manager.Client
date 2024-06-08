@@ -156,15 +156,7 @@ export default function ClassUpdate() {
                                                     </div>
                                                     <div className="col-12 col-sm-4">
                                                         <div className="form-group local-forms">
-                                                            <label>
-                                                                Disponibilidade <span className="login-danger">*</span>
-                                                            </label>
-                                                            <Select
-                                                                className="w-100 local-forms select"
-                                                                onChange={handleAvailabilitySelect}
-                                                                options={availabilityOptions}
-                                                                placeholder="Selecione a disponibilidade"
-                                                            />
+                                                           
                                                         </div>
                                                     </div>
                                                     <div className="col-12">
