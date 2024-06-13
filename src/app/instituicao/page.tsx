@@ -15,6 +15,8 @@ import { IconContext } from "react-icons";
 import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
 import Header, { default as Footer } from '../../components/Header/Header';
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
+
 
 export default function InstitutionsPaginition() {
     const [institutions, setInstitutions] = useState<Institution[]>();
@@ -89,20 +91,37 @@ export default function InstitutionsPaginition() {
             title: 'Ações',
             key: 'acoes',
             render: (institution: Institution) => (
-                <>
-                <button id="button-delete" onClick={() => showDeleteConfirm(institution)}>
-                    <Link href="#" className="btn btn-sm bg-success-light me-2">
-                        <i>
-                            <FeatherIcon icon="trash" size={16} />
-                        </i>
-                    </Link>
-                </button>
 
-                <Link href={{ pathname: '/instituicao/update', query: { Id: institution.id } }} className="btn btn-sm bg-danger-light">
-                            <i>
-                                <FeatherIcon icon="edit" size={18} />
-                            </i>
-                        </Link>
+                
+                <>
+
+    <div className="btn-rounded">
+                  <button
+                    type="button"
+                    className="btn btn-primary dropdown-toggle me-1"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    Ações
+                  </button>
+                  <div className="dropdown-menu">
+                    <Link href={{ pathname: '/empresa/register',  }} className="dropdown-item" >
+                      Adicionar uma Insituição
+                    </Link>
+                    <Link  href={{ pathname: '/instituicao/detalhes', query: { Id: institution.id } }} className="dropdown-item" >
+                     Visualizar uma Insituição
+                    </Link>
+                    <Link  href={{ pathname: '/instituicao/update', query: { Id: institution.id } }} className="dropdown-item" >
+                     Editar uma Insituição
+                    </Link>
+                    <div className="dropdown-divider" />
+                    <button onClick={() => showDeleteConfirm(institution)} className="dropdown-item" role="button">
+                    Deletar uma instituição
+                    </button>
+                  </div>
+                </div>
+              
             </>
         ),
     },
