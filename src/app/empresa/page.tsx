@@ -14,6 +14,7 @@ import { IconContext } from "react-icons";
 import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
 import Header, { default as Footer } from '../../components/Header/Header';
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 
 export default function EmpresasPaginition() {
     const [empresas, setEmpresas] = useState<Empresa[]>();
@@ -82,8 +83,38 @@ export default function EmpresasPaginition() {
             title: 'Ações',
             key: 'acoes',
             render: (empresa: Empresa) => (
-                <>
-                <button id="button-delete" onClick={() => showDeleteConfirm(empresa)}>
+               
+               <>
+             <div className="btn-rounded">
+                  <button
+                    type="button"
+                    className="btn btn-primary dropdown-toggle me-1"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    Ações
+                  </button>
+                  <div className="dropdown-menu">
+                    <Link href={{ pathname: '/empresa/register',  }} className="dropdown-item" >
+                      Adicionar uma Insituticao
+                    </Link>
+                    <Link  href={{ pathname: '/empresa/update', query: { Id: empresa.id } }} className="dropdown-item" >
+                     Editar uma instituicao
+                    </Link>
+                    <Link href={{ pathname: '/empresa/detalhes', query: { Id: empresa.id } }} className="dropdown-item" >
+                     Detalhes
+                    </Link>
+                    <Link  href={{ pathname: '/empresa/disponibilidade', query: { Id: empresa.id } }} className="dropdown-item" >
+                     Editar disponibilidade
+                    </Link>
+                    <div className="dropdown-divider" />
+                    <button onClick={() => showDeleteConfirm(empresa)} className="dropdown-item" role="button">
+                    Deletar uma instituição
+                    </button>
+                  </div>
+                </div>
+                {/* <button id="button-delete" onClick={() => showDeleteConfirm(empresa)}>
                     <Link href="#" className="btn btn-sm bg-success-light me-2">
                         <i>
                             <FeatherIcon icon="trash" size={16} />
@@ -101,7 +132,9 @@ export default function EmpresasPaginition() {
                             <i>
                                 <FeatherIcon icon="clock" size={18} />
                             </i>
-                        </Link>
+                        </Link> */}
+                    
+
             </>
         ),
     },
