@@ -145,7 +145,7 @@ export default function AvailabilityPagination() {
                                     <Table
                                         pagination={false}
                                         columns={columTable}
-                                        dataSource={availability.sort((a, b) => (a.startTime > b.startTime) ? 1 : -1)}
+                                        dataSource={availability}
                                         rowSelection={rowSelection}
                                         rowKey={(availability: Availability) => availability.id}
                                     />

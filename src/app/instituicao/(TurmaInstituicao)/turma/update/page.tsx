@@ -2,13 +2,13 @@
 import Header from '@/components/Header/Header';
 import Sidebar from '@/components/Sidebar/SideBar';
 import { Input } from '@/components/stringInput';
-import { Availability } from '@/models/AvailabilityClassIes';
+
 import { ClassIes, initialValueClassIes } from '@/models/ClassIes';
 import { Institution } from '@/models/institution';
 import { PropsOption } from '@/models/propsOption';
 import { mensagemErro, mensagemSucesso } from '@/models/toastr';
-import { ClassIesServiceUpdate } from '@/service/ClassIes';
-import { apiService } from '@/service/apiService/apiService';
+
+import axios from 'axios';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -17,44 +17,43 @@ import Select, { SingleValue } from "react-select";
 export default function ClassUpdate() {
     const [classIes, setClassIes] = useState<ClassIes>(initialValueClassIes);
     const [institutions, setInstitutions] = useState<Institution[]>([]);
-    const [availabilities, setAvailabilities] = useState<Availability[]>([]);
-    const { updateEntity, getEntityById } = ClassIesServiceUpdate;
+
+   
 
     const searchParams = useSearchParams();
+    const id = searchParams.get('id') || '';
 
     useEffect(() => {
-        const fetchClassById = async () => {
+       
+        const fetchTurmaIes = async () => {
             try {
-                const classId = searchParams.get('Id') as string;
-                const resultfetchClassById = await getEntityById(classId);
-                setClassIes(resultfetchClassById.data);
+                const response = await axios.get<ClassIes>(`http://localhost:5293/api/v1/Institution/TurmaIes/${id}`);
+                setClassIes(response.data);
             } catch (error) {
-                console.error(error);
+                console.error("Erro ao buscar as informações da TurmaIes:", error);
             }
         };
-        fetchClassById();
-        fetchInstitutionsAndAvailabilities();
-    }, [searchParams]);
 
-    const fetchInstitutionsAndAvailabilities = async () => {
-        try {
-            const institutions = (await apiService.get(`http://localhost:5293/api/v1/institution`)).data
-            const availability = await (await apiService.get((`http://localhost:5293/api/v1/Institution/turmas/disponibilidade`))).data
-            setInstitutions(institutions.institution)
-            setAvailabilities(availability.listAvailability)
-        } catch (error) {
-            console.error(error);
-        }
-    };
+        fetchTurmaIes();
+    }, [id]);
+
+    useEffect(() => {
+       
+        const fetchInstitutions = async () => {
+            try {
+                const response = await axios.get<Institution[]>('http://localhost:5293/api/v1/Institution');
+                setInstitutions(response.data);
+            } catch (error) {
+                console.error("Erro ao buscar as instituições:", error);
+            }
+        };
+
+        fetchInstitutions();
+    }, []);
 
     const institutionOptions = institutions.map(institution => ({
         value: institution.id,
         label: institution.name,
-    }));
-
-    const availabilityOptions = availabilities.map(availability => ({
-        value: availability.id,
-        label: `${availability.dayWeek} - ${availability.startTime} - ${availability.scheduleEnd}`,
     }));
 
     const handleInstitutionSelect = (selectedOption: SingleValue<PropsOption>) => {
@@ -62,21 +61,14 @@ export default function ClassUpdate() {
         setClassIes({ ...classIes, institutionId: selectedInstitution?.id });
     };
 
-    const handleAvailabilitySelect = (selectedOption: SingleValue<PropsOption>) => {
-        const selectedAvailability = availabilities.find(avail => avail.id === selectedOption?.value) || null;
-        setClassIes({ ...classIes, availabilityId: selectedAvailability?.id });
-    };
-
     const handleUpdate = async () => {
         try {
-            if (classIes) {
-                await updateEntity(classIes);
-                setClassIes(initialValueClassIes);
-                mensagemSucesso('Turma Atualizada');
-            }
+            await axios.put(`http://localhost:5293/api/v1/Institution/TurmaIes/UpdateTurmaIes`, classIes);
+            console.log("TurmaIes atualizada com sucesso!");
+            mensagemSucesso('Turma atualizada com sucesso!');
         } catch (error) {
-            console.error('Erro ao atualizar Turma:', error);
-            mensagemErro('Erro ao atualizar Turma');
+            console.error("Erro ao atualizar a TurmaIes:", error);
+            mensagemErro('Erro ao atualizar a turma.');
         }
     };
 
@@ -118,7 +110,8 @@ export default function ClassUpdate() {
                                                             </label>
                                                             <Input
                                                                 value={classIes.course}
-                                                                onChange={(value: string) => setClassIes({ ...classIes, course: value })} />
+                                                                onChange={(value: string) => setClassIes({ ...classIes, course: value })}
+                                                            />
                                                         </div>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
@@ -128,7 +121,8 @@ export default function ClassUpdate() {
                                                             </label>
                                                             <Input
                                                                 value={classIes.period}
-                                                                onChange={(value: string) => setClassIes({ ...classIes, period: value })} />
+                                                                onChange={(value: string) => setClassIes({ ...classIes, period: value })}
+                                                            />
                                                         </div>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
@@ -138,7 +132,8 @@ export default function ClassUpdate() {
                                                             </label>
                                                             <Input
                                                                 value={classIes.shift}
-                                                                onChange={(value: string) => setClassIes({ ...classIes, shift: value })} />
+                                                                onChange={(value: string) => setClassIes({ ...classIes, shift: value })}
+                                                            />
                                                         </div>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
@@ -155,9 +150,7 @@ export default function ClassUpdate() {
                                                         </div>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
-                                                        <div className="form-group local-forms">
-                                                           
-                                                        </div>
+                                                        <div className="form-group local-forms"></div>
                                                     </div>
                                                     <div className="col-12">
                                                         <div className="student-submit">

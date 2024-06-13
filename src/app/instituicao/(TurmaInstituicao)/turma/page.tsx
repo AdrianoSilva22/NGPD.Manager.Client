@@ -95,9 +95,42 @@ export default function ClassesPaginition() {
             title: 'Ações',
             key: 'acoes',
             render: (classIes: ClassIes) => (
+                
                 <>
 
-                    <button id="button-delete" onClick={() => showDeleteConfirm(classIes)}>
+                <div className="btn-rounded">
+                  <button
+                    type="button"
+                    className="btn btn-primary dropdown-toggle me-1"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    Ações
+                  </button>
+                  <div className="dropdown-menu">
+                    <Link href={{ pathname: '/instituicao/turma/register',  }} className="dropdown-item" >
+                      Adicionar  Turma
+                    </Link>
+                    <Link href={{ pathname: '/instituicao/turma/detalhes', query: { Id: classIes.id } }} className="dropdown-item" >
+                     Visualizar  Turma
+                    </Link>
+                  {/* <Link href={{ pathname: '/instituicao/turma/update', query: { Id: classIes.id } }} className="dropdown-item">
+                            Editar Turma
+                        </Link> */}
+                    <Link href={{ pathname: '/instituicao/turma/disponibilidade', query: { Id: classIes.id } }} className="dropdown-item"  >
+                    Editar disponibilidade
+                    </Link>
+                    <div className="dropdown-divider" />
+                    <button onClick={() => showDeleteConfirm(classIes)} className="dropdown-item" role="button" color="red" >
+                    Deletar  Turma
+                    </button>
+                  </div>
+                  </div>
+            
+                
+
+                    {/* <button id="button-delete" onClick={() => showDeleteConfirm(classIes)}>
                         <Link href="#" className="btn btn-sm bg-success-light me-2">
                             <i>
                                 <FeatherIcon icon="trash" size={16} />
@@ -125,7 +158,7 @@ export default function ClassesPaginition() {
                         <i>
                             <FeatherIcon icon="clock" size={20} />
                         </i>
-                    </Link>
+                    </Link> */}
                 </>
             ),
         },

@@ -16,7 +16,7 @@ import { apiService } from "@/service/apiService/apiService";
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from "next/navigation";
 import { Availability } from "@/models/Availability";
-
+import { AvailabilityClassIes } from "@/models/AvailabilityClassIes";
 export default function AvailabilityPagination() {
     const [availability, setAvailabilitys] = useState<Availability[]>([]);
     const [pageIndex, setPage] = useState(0);
@@ -138,11 +138,11 @@ export default function AvailabilityPagination() {
                             pageInfo && (
                                 <div className="table table-stripped table-hover datatable">
                                     <Table
-                                        pagination={false}
-                                        columns={columTable}
-                                        dataSource={availability.sort((a, b) => (a.startTime > b.startTime) ? 1 : -1)}
-                                        rowSelection={rowSelection}
-                                        rowKey={(availability: Availability) => availability.id}
+                                   pagination={false}
+                                   columns={columTable}
+                                   dataSource={availability}
+                                   rowSelection={rowSelection}
+                                   rowKey={(availability: Availability) => availability.id}
                                     />
                                 </div>
                             )
