@@ -822,12 +822,12 @@ table.table td h2 span {
 }
 
 .actions {
-	display: -webkit-box;
-	display: -ms-flexbox;
-	display: flex;
-	justify-content: end;
-	-webkit-justify-content: end;
-	-ms-flex-pack: end;
+		/* display: -webkit-box;
+		display: -ms-flexbox;
+		display: flex;
+		justify-content: end;
+		-webkit-justify-content: end;
+		-ms-flex-pack: end; */
 }
 
 .actions a {
