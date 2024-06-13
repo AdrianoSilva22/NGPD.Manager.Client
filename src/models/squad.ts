@@ -6,6 +6,7 @@ export interface Squad {
     nameSquad: string
     turmaIesId:string
     mentorId: string
+    empresaId: string
 }
 
 export const initialValueSquad: Squad = {
@@ -15,5 +16,6 @@ export const initialValueSquad: Squad = {
     nameSquad: '',
     mentorId: '',
     qtd: "",
-    turmaIesId: ""
+    turmaIesId: "",
+    empresaId: ""
 };
