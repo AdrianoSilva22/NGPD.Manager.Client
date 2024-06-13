@@ -102,14 +102,10 @@ const Sidebar = (props) => {
                   <ul style={{ display: isSideMenu === "empresa" ? "block" : "none" }}>
                     <li>
                       <Link href="/empresa" className={`${"/empresa" === pathName ? "active" : ""}`}>
-                        Listagem
+                        Empresas
                       </Link>
                     </li>
-                    <li>
-                      <Link href="/empresa/register" className={`${"/empresa/register" === pathName ? "active" : ""}`}>
-                        Adicionar
-                      </Link>
-                    </li>
+                   
                   </ul>
                 )}
               </li>
@@ -125,27 +121,37 @@ const Sidebar = (props) => {
                   <ul style={{ display: isSideMenu === "instituicao" ? "block" : "none" }}>
                     <li>
                       <Link href="/instituicao" className={`${"/instituicao" === pathName ? "active" : ""}`}>
-                        Listagem
+                        Instituições
                       </Link>
                     </li>
-                    <li>
-                      <Link href="/instituicao/register" className={`${"/instituicao/register" === pathName ? "active" : ""}`}>
-                        Adicionar
-                      </Link>
-                    </li>
+                   
+                  </ul>
+                )}
+              </li>
+
+              {/* testeeeeeeeeeee */}
+              <li className={`${"/instituicao/turma" === pathName || "/instituicao/turma/register" === pathName ? "active submenu" : "submenu"}`}>
+                <Link
+                  href="#"
+                  className={isSideMenu === "turma" ? "subdrop" : ""}
+                  onClick={() => toggleSidebar(isSideMenu === "turma" ? "" : "turma")}
+                >
+                  <i className="fa-solid fa-book-open-reader" /> <span> Turmas </span> <span className="menu-arrow" />
+
+                  
+                </Link>
+                {isSideMenu === "turma" && (
+                  <ul style={{ display: isSideMenu === "instituicao" ? "block" : "none" }}>
+                   
                     <li>
                       <Link href="/instituicao/turma" className={`${"/instituicao/turma" === pathName ? "active" : ""}`}>
-                        Listagem Turmas
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/instituicao/turma/register" className={`${"/instituicao/turma/register" === pathName ? "active" : ""}`}>
-                        Adicionar Turma
+                        Turmas
                       </Link>
                     </li>
                   </ul>
                 )}
-              </li>
+</li>
+
               <li className={`${"/squad" === pathName || "/squad/register-instituicao" === pathName ? "active submenu" : "submenu"}`}>
                 <Link
                   href="#"
@@ -158,14 +164,10 @@ const Sidebar = (props) => {
                   <ul style={{ display: isSideMenu === "squad" ? "block" : "none" }}>
                     <li>
                       <Link href="/squad" className={`${"/squad" === pathName ? "active" : ""}`}>
-                        Listar
+                       Squads
                       </Link>
                     </li>
-                    <li>
-                      <Link href="/squad/register-instituicao" className={`${"/squad/register-instituicao" === pathName ? "active" : ""}`}>
-                        Adicionar
-                      </Link>
-                    </li>
+                   
                   </ul>
                 )}
               </li>
@@ -181,7 +183,7 @@ const Sidebar = (props) => {
                   <ul style={{ display: isSideMenu === "mentor" ? "block" : "none" }}>
                     <li>
                       <Link href="/mentor" className={`${"/mentor" === pathName ? "active" : ""}`}>
-                        Listar
+                        Mentores
                       </Link>
                     </li>
                   </ul>
@@ -199,7 +201,7 @@ const Sidebar = (props) => {
                   <ul style={{ display: isSideMenu === "user" ? "block" : "none" }}>
                     <li>
                       <Link href="/user" className={`${"/user" === pathName ? "active" : ""}`}>
-                        Adicionar
+                        Adicionar Usuário
                       </Link>
                     </li>
                   </ul>

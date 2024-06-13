@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 
-export const EmailInput = ({ value, onChange }: InputProps) => {
+export const EmailInput = ({ value, onChange, readOnly }: InputProps) => {
     const [error, setError] = useState<string>('');
 
     const fetchValue = (e: ChangeEvent<HTMLInputElement>) => {
@@ -21,6 +21,7 @@ export const EmailInput = ({ value, onChange }: InputProps) => {
                 type="text"
                 value={value}
                 onChange={fetchValue}
+                readOnly={readOnly}
                 className={`form-control ${error ? 'is-invalid' : ''}`}
             />
             {error && <div className="invalid-feedback">{error}</div>}

@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 
-export const Input = ({ onChange, value }: StringInputProps) => {
+export const Input = ({ onChange, value,readOnly }: StringInputProps) => {
     const [error, setError] = useState<string>('');
 
     const fetchValue = (e: ChangeEvent<HTMLInputElement>) => {
@@ -20,6 +20,7 @@ export const Input = ({ onChange, value }: StringInputProps) => {
             <input type="text"
                 onChange={fetchValue}
                 value={value}
+                readOnly={readOnly}
                 className={`form-control ${error && 'is-invalid'} `}
             />
             {error && <div className="invalid-feedback">{error}</div>}
