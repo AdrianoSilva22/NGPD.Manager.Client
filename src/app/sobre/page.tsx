@@ -32,7 +32,7 @@ export default function Home() {
                 <div className="card-body">
                   <h5 className="card-title">{students[0].name}</h5>
                   <p className="card-text">{students[0].description}</p>
-                  <h4>Open to Working</h4>
+                  <h4>Open to Work</h4>
                   <p className="card-text">{students[0].stack}</p>
                   <div>
                     <a href="https://github.com/adrianosilva22" target="_blank">
@@ -90,7 +90,7 @@ export default function Home() {
                 <div className="card-body">
                   <h5 className="card-title">{students[3].name}</h5>
                   <p className="card-text">{students[3].description}</p>
-                  <h4>Open to Working</h4>
+                  <h4>Open to Work</h4>
                   <p className="card-text">{students[3].stack}</p>
                   <div>
                   <a href="https://github.com/Joaosamaia" target="_blank">
