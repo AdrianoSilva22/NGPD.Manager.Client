@@ -1,0 +1,13 @@
+.background {
+    background: linear-gradient(180deg, black, rgb(61, 94, 225));
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .card {
+    margin-top: 20%;
+    height: 100vh;
+  }

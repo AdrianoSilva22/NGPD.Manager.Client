@@ -205,6 +205,24 @@ const Sidebar = (props) => {
                   </ul>
                 )}
               </li>
+              <li className={`${"/sobre" === pathName || "/sobre" === pathName ? "active submenu" : "submenu"}`}>
+                <Link
+                  href="#"
+                  className={isSideMenu === "sobre" ? "subdrop" : ""}
+                  onClick={() => toggleSidebar(isSideMenu === "sobre" ? "" : "sobre")}
+                >
+                  <i className="fa-solid fa-eye" /> <span> Sobre Nós </span> <span className="menu-arrow" />
+                </Link>
+                {isSideMenu === "sobre" && (
+                  <ul style={{ display: isSideMenu === "user" ? "block" : "none" }}>
+                    <li>
+                      <Link href="/sobre" className={`${"/user" === pathName ? "active" : ""}`}>
+                        Visualizar
+                      </Link>
+                    </li>
+                  </ul>
+                )}
+              </li>
             </ul>
           </div>
         </div>
