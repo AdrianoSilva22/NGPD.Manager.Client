@@ -20,7 +20,7 @@ export default function AvailabilityPagination() {
     const [availability, setAvailabilitys] = useState<Availability[]>([]);
     const [pageIndex, setPage] = useState(0);
     const [pageInfo, setPageInfo] = useState<Page | null>(null);
-    const [searchDay, setSearchDay] = useState<string>("Selecione um dia da semana");
+    const [searchDay, setSearchDay] = useState<string>("Segunda-feira");
     const [] = useAtom(globalStateAtomId);
     const PAGE_SIZE = 25;
     const { t } = useTranslation();
