@@ -4,10 +4,11 @@
     min-height: 100vh;
     display: flex;
     justify-content: center;
+    padding: 15px 0 0 170px;
     align-items: center;
   }
   
   .card {
     margin-top: 20%;
-    height: 100vh;
+    height:120vh;
   }

@@ -93,7 +93,7 @@ const Sidebar = (props) => {
               <li className={`${"/empresa" === pathName || "/empresa/register" === pathName ? "active submenu" : "submenu"}`}>
                 <Link
                   href="#"
-                  className={isSideMenu === "empresa" ? "subdrop" : ""}
+                  
                   onClick={() => toggleSidebar(isSideMenu === "empresa" ? "" : "empresa")}
                 >
                   <i className="fas fa-city" /> <span> Empresas </span> <span className="menu-arrow" />

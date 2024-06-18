@@ -11,10 +11,10 @@ import Image from 'next/image';
 export default function Home() {
 
   const students = [
-    { name: 'Adriano Silva', image: adrianoImg, description: 'Desenvolvedor Front-end', stack: 'React com Next.js e Node.js' },
-    { name: 'Gabriel', image: gabrielImg, description: 'Desenvolvedor Front-end', stack: 'React com Next.js e Node.js' },
-    { name: 'Washington', image: washingtonImg, description: 'Desenvolvedor Back-end', stack: 'C#/.NET, NodeJs, criação de sistema robusto e escaláveis' },
-    { name: 'João', image: joaoImg, description: 'Desenvolvedor Back-end', stack: 'Python | Java | Flutter/Dart | C#/.NET | PostgreSQL' },
+    { name: 'Adriano Silva', image: adrianoImg, description: 'Responsável Desenvolvimento Front-end', stack: 'React com Next.js e Node.js' },
+    { name: 'Gabriel', image: gabrielImg, description: 'Responsável Desenvolvimento Front-end', stack: 'Next.js | Java' },
+    { name: 'Washington', image: washingtonImg, description: 'Responsável Desenvolvimento Back-end', stack: 'C#/.NET, NodeJs, criação de sistema robusto e escaláveis' },
+    { name: 'João', image: joaoImg, description: 'Responsável Desenvolvimento Back-end', stack: 'Python | Java | Flutter/Dart | C#/.NET | PostgreSQL' },
   ];
 
   return (
@@ -54,9 +54,9 @@ export default function Home() {
                   <p className="card-text">{students[1].description}</p>
                   <p className="card-text">{students[1].stack}</p>
                   <div>
-                  <a href="https://github.com/adrianosilva22" target="_blank">
-                      <strong> @gabriel | </strong>
-                      <i className="fa-brands fa-github"></i>
+                  <a href="https://www.linkedin.com/in/gabrielgmpaiva" target="_blank">
+                      <strong> @Gabrielgmpaiva | </strong>
+                      <i className="fa-brands fa-linkedin"></i>
                     </a>
                   </div>
                 </div>
