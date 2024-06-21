@@ -30,7 +30,7 @@ Durante os últimos meses, nosso squad desenvolveu uma solução inovadora para 
    
 2. Navegue até o diretório do projeto:
    ```sh
-   cd seu-repositorio-frontend
+   cd caminho-do-diretorio
    ```
 3. Instale as dependências:
    ```sh
@@ -47,7 +47,7 @@ Durante os últimos meses, nosso squad desenvolveu uma solução inovadora para 
 
 ## Backend
 
-Este frontend está ligado ao backend do projeto, que pode ser encontrado em: [Link para o Repositório do Backend]()
+Este frontend está ligado ao backend do projeto, que pode ser encontrado em: [Link para o Repositório do Backend](https://github.com/washingtoncandido/NGPDs)
 
 ## Contato
 
