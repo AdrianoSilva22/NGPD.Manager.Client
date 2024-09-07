@@ -38,7 +38,6 @@ export default function Login() {
                       Olá! Para ter acesso aos nossos diversos recursos, você terá que logar pelo Google. Clique no botão abaixo para fazer o login.
                     </p>
 
-                    {/* Form */}
                     <form>
                       <div className="form-group">
                         <button

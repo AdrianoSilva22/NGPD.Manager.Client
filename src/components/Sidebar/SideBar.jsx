@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Scrollbars from "react-custom-scrollbars-2";
@@ -13,7 +14,10 @@ const Sidebar = (props) => {
   };
 
   useEffect(() => {
-    setUserRole(Cookies.get('userRole'));
+    const tokenUser = Cookies.get("tokenUserInfo")
+    const tokenUserDecoded = jwtDecode(tokenUser)
+
+    setUserRole(tokenUserDecoded.role);
 
     function handleMouseOver(e) {
       e.stopPropagation();

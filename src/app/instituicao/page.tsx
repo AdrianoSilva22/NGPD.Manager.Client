@@ -32,7 +32,7 @@ export default function InstitutionsPaginition() {
     useEffect(() => {
         const getPageInfo = async () => {
             try {
-                setIsLoading(true); // Iniciar carregamento
+                setIsLoading(true)
                 const url = `http://localhost:5293/api/v1/institution?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
                 const pageInfoResponse = await apiService.get(url)
                 setPageInfo(pageInfoResponse.data)

@@ -20,8 +20,6 @@ const LoadingPage = () => {
           const backendResponse = await axios.post('http://localhost:5293/api/v1/Auth/login', { tokenId: googleIdToken })
           const tokenUserInfo = backendResponse.data.token
           Cookies.set('tokenUserInfo', tokenUserInfo)
-          const tokenDecoded = jwtDecode(tokenUserInfo) as TokenDecoded
-          Cookies.set('userRole', tokenDecoded.role)
           router.push('/dashboard')
         } else {
           console.error('Usuário não autenticado.')
