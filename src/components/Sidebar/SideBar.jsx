@@ -1,3 +1,4 @@
+'use client'
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
