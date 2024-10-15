@@ -70,7 +70,6 @@ export default function SquadsPagination() {
                 await updateAlocationEntity(squad.id, session.user.email);
                 mensagemSucesso("Sucesso ao alocar");
 
-                // Atualizando o estado dos squads
                 setSquads(prevSquads =>
                     prevSquads.map(s =>
                         s.id === squad.id ? { ...s, mentor: { name: session.user.name } } : s

@@ -69,11 +69,6 @@ export default function InstituicoesPaginition() {
         {
             title: 'Disponibilidade',
             dataIndex: 'availability',
-            // render: (availabilityClassIes: Availability) => (
-            //     <div>
-            //         {availabilityClassIes.dayWeek}: {availabilityClassIes.startTime} - {availabilityClassIes.scheduleEnd}
-            //     </div>
-            // ),
         },
         {
             title: 'Ações',

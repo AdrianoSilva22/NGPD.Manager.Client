@@ -113,27 +113,6 @@ export default function EmpresasPaginition() {
                     </button>
                   </div>
                 </div>
-                {/* <button id="button-delete" onClick={() => showDeleteConfirm(empresa)}>
-                    <Link href="#" className="btn btn-sm bg-success-light me-2">
-                        <i>
-                            <FeatherIcon icon="trash" size={16} />
-                        </i>
-                    </Link>
-                </button>
-
-                        <Link href={{ pathname: '/empresa/update', query: { Id: empresa.id } }} className="btn btn-sm bg-danger-light">
-                            <i>
-                                <FeatherIcon icon="edit" size={18} />
-                            </i>
-                        </Link>
-
-                        <Link href={{ pathname: '/empresa/disponibilidade', query: { Id: empresa.id } }} className="btn btn-sm bg-danger-light">
-                            <i>
-                                <FeatherIcon icon="clock" size={18} />
-                            </i>
-                        </Link> */}
-                    
-
             </>
         ),
     },

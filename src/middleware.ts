@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { isAuthorized } from './accessControl'
 import { jwtDecode } from 'jwt-decode'
-import { TokenUserInfo } from './models/tokenUserInfo'
+import { TokenDecoded } from './models/tokenDecoded'
 
 export function middleware(request: NextRequest) {
 
@@ -13,9 +13,11 @@ export function middleware(request: NextRequest) {
         const url = new URL('/login', request.url)
         return NextResponse.redirect(url)
     } else {
-        const tokenDecoded = jwtDecode(userRole) as TokenUserInfo
-
-        if (!tokenDecoded.role || !isAuthorized(tokenDecoded.role, currentPath)) {
+        const tokenDecoded = jwtDecode(userRole) as TokenDecoded
+        const objectAcess = JSON.parse(tokenDecoded.acesso)
+        const perfil = objectAcess.perfils[0];
+        
+        if (!perfil || !isAuthorized(perfil, currentPath)) {
             const url = new URL('/login', request.url)
             return NextResponse.redirect(url)
         } else {

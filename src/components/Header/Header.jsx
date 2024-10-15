@@ -18,9 +18,11 @@ const Header = () => {
     const fetchDaraUser = async () => {
       const session = await getSession()
       setUser(session?.user)
-      const tokenUserInfoAuthenticate = Cookies.get('tokenUserInfo');
-      const tokenDecoded = jwtDecode(tokenUserInfoAuthenticate)
-      setUserResponseBackend(tokenDecoded)
+      const tokenUser = Cookies.get("tokenUserInfo")
+      const tokenDecoded = jwtDecode(tokenUser)
+      const objectAcess = JSON.parse(tokenDecoded.acesso)
+      const perfil = objectAcess.perfils[0];
+      setUserResponseBackend(perfil)
     }
     fetchDaraUser()
   }, []);
@@ -88,7 +90,7 @@ const Header = () => {
                 />
                 <div className="user-text">
                   <h6>{user?.name}</h6>
-                  <p className="text-muted mb-0">{userResponseBackend?.role}</p>
+                  <p className="text-muted mb-0">{userResponseBackend}</p>
                 </div>
               </span>
             </Link>
@@ -105,7 +107,7 @@ const Header = () => {
                 </div>
                 <div className="user-text">
                   <h6>{user?.name}</h6>
-                  <p className="text-muted mb-0">{userResponseBackend?.role}</p>
+                  <p className="text-muted mb-0">{userResponseBackend}</p>
                 </div>
               </div>
               <button onClick={clearAllCookies} className="btn btn-link text-decoration-none">

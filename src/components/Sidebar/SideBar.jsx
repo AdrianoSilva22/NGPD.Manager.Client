@@ -16,9 +16,11 @@ const Sidebar = (props) => {
 
   useEffect(() => {
     const tokenUser = Cookies.get("tokenUserInfo")
-    const tokenUserDecoded = jwtDecode(tokenUser)
+    const tokenDecoded = jwtDecode(tokenUser)
+    const objectAcess = JSON.parse(tokenDecoded.acesso)
+    const perfil = objectAcess.perfils[0];
 
-    setUserRole(tokenUserDecoded.role);
+    setUserRole(perfil);
 
     function handleMouseOver(e) {
       e.stopPropagation();
@@ -37,7 +39,7 @@ const Sidebar = (props) => {
         }
       }
     }
-    
+
     document.addEventListener('mouseover', handleMouseOver);
 
     return () => {
@@ -98,7 +100,7 @@ const Sidebar = (props) => {
               <li className={`${"/empresa" === pathName || "/empresa/register" === pathName ? "active submenu" : "submenu"}`}>
                 <Link
                   href="#"
-                  
+
                   onClick={() => toggleSidebar(isSideMenu === "empresa" ? "" : "empresa")}
                 >
                   <i className="fas fa-city" /> <span> Empresas </span> <span className="menu-arrow" />
@@ -110,7 +112,7 @@ const Sidebar = (props) => {
                         Empresas
                       </Link>
                     </li>
-                   
+
                   </ul>
                 )}
               </li>
@@ -129,7 +131,7 @@ const Sidebar = (props) => {
                         Instituições
                       </Link>
                     </li>
-                   
+
                   </ul>
                 )}
               </li>
@@ -143,11 +145,11 @@ const Sidebar = (props) => {
                 >
                   <i className="fa-solid fa-book-open-reader" /> <span> Turmas </span> <span className="menu-arrow" />
 
-                  
+
                 </Link>
                 {isSideMenu === "turma" && (
                   <ul style={{ display: isSideMenu === "instituicao" ? "block" : "none" }}>
-                   
+
                     <li>
                       <Link href="/instituicao/turma" className={`${"/instituicao/turma" === pathName ? "active" : ""}`}>
                         Turmas
@@ -155,7 +157,7 @@ const Sidebar = (props) => {
                     </li>
                   </ul>
                 )}
-</li>
+              </li>
 
               <li className={`${"/squad" === pathName || "/squad/register-instituicao" === pathName ? "active submenu" : "submenu"}`}>
                 <Link
@@ -169,10 +171,10 @@ const Sidebar = (props) => {
                   <ul style={{ display: isSideMenu === "squad" ? "block" : "none" }}>
                     <li>
                       <Link href="/squad" className={`${"/squad" === pathName ? "active" : ""}`}>
-                       Squads
+                        Squads
                       </Link>
                     </li>
-                   
+
                   </ul>
                 )}
               </li>
@@ -300,9 +302,9 @@ const Sidebar = (props) => {
 
   return (
     <div>
-      {userRole === 'Gerente' || userRole === 'Suporte' ? (
+      {userRole === 'gerente' || userRole === 'Suporte' ? (
         renderSidebarGerenteAndSuporte()
-      ) : userRole === 'Mentor' ? (
+      ) : userRole === 'mentor' ? (
         renderSidebarMentor()
       ) : (
         ''

@@ -56,9 +56,9 @@ export default function AvailabilityPagination() {
 
         const body = {
             totalCount: selectedData.length,
-            totalPages: 1, // Ajuste conforme necessário
-            pageSize: selectedData.length, // Ajuste conforme necessário
-            currentPage: 1, // Ajuste conforme necessário
+            totalPages: 1, 
+            pageSize: selectedData.length, 
+            currentPage: 1,
             listAvailability: selectedData
         };
 

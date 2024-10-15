@@ -1,5 +1,6 @@
 'use client'
 import { TokenDecoded } from '@/models/tokenDecoded'
+import { TokenUserInfo } from '@/models/tokenUserInfo'
 import '@/styles/loadginPage.css'
 import axios from 'axios'
 import Cookies from 'js-cookie'
@@ -17,7 +18,11 @@ const LoadingPage = () => {
         const session: Session | null = await getSession()
         if (session) {
           const googleIdToken = session.id_token;
-          const backendResponse = await axios.post('http://localhost:5293/api/v1/Auth/login', { tokenId: googleIdToken })
+
+          const backendResponse = await axios.post('http://localhost:5189/api/Auth/login', {
+            tokenId: googleIdToken
+          })
+
           const tokenUserInfo = backendResponse.data.token
           Cookies.set('tokenUserInfo', tokenUserInfo)
           router.push('/dashboard')

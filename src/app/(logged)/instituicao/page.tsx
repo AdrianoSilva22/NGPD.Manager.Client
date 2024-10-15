@@ -31,7 +31,7 @@ export default function InstitutionsPaginition() {
         const getPageInfo = async () => {
             try {
                 setIsLoading(true)
-                const url = `http://localhost:5293/api/v1/institution?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
+                const url = `http://localhost:5189/api/Ies?PageNumber=${pageIndex + 1}&pageSize=${PAGE_SIZE}&Sort=asc`
                 const pageInfoResponse = await apiService.get(url)
                 setPageInfo(pageInfoResponse.data)
                 setInstitutions(pageInfoResponse.data.institution)
