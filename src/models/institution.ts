@@ -7,10 +7,10 @@ export interface Institution {
 
 export interface Page {
     currentePage: number
-    institutions: Institution[]
+    list:[]
     pageSize: number
+    pageCount: number
     totalCount: number
-    totalPages: number
 }
 
 
