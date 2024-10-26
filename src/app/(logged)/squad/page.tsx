@@ -8,19 +8,24 @@ import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { apiService } from "@/service/apiService/apiService";
 import { SquadServiceUpdateMentor, SquadServices } from "@/service/squad";
 import "@/styles/pagination.css";
-import { Table, TablePaginationConfig } from "antd";
+import { Table, TablePaginationConfig, Select } from "antd";
 import FeatherIcon from "feather-icons-react";
 import { useAtom } from "jotai";
 import { getSession } from 'next-auth/react';
+import Cookies from 'js-cookie';
 import Link from 'next/link';
 import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
+import { TokenDecoded } from "@/models/tokenDecoded";
+import { jwtDecode } from "jwt-decode";
 
 export default function SquadsPagination() {
-    const { updateAlocationEntity } = SquadServiceUpdateMentor;
+
     const [squads, setSquads] = useState<Squad[]>([]);
+    const [mentores, setMentores] = useState<MentorEstatico[]>([])
+    const [mentor, setMentor] = useState<MentorEstatico[]>([])
     const { deleteEntity } = SquadServices;
     const [pageNumber, setPage] = useState(0);
     const [pageInfo, setPageInfo] = useState<Page>();
@@ -30,39 +35,133 @@ export default function SquadsPagination() {
     const [isAllocating, setIsAllocating] = useState(false);
     const [session, setSession] = useState<any>(null);
     const [tableKey, setTableKey] = useState(0);
+    const [selectedMentor, setSelectedMentor] = useState<MentorEstatico | null>(null);
+    const [perfil, setPerfil] = useState<Perfil>();
+    const [allocatedMentors, setAllocatedMentors] = useState<{ [squadId: string]: MentorEstatico | null }>({});
 
-    const [perfis, setPerfis] = useState<Perfil[]>([]);
+    interface MentorEstatico {
+        id: string;
+        contaUsuarioId: string;
+        name: string
+        email: string
+    }
 
-    const PAGE_SIZE = 1;
+
+    const PAGE_SIZE = 5;
+
+    // Dados Estáticos iniciais para o Estado
+    const initialSquads: Squad[] = [
+        {
+            id: "1",
+            turmaId: "101",
+            empresaId: "Porto Digital",
+            mentorId: "301",
+            name: "Squad Ficr",
+        },
+        {
+            id: "2",
+            turmaId: "102",
+            empresaId: "TRF",
+            mentorId: "302",
+            name: "Squad Unit",
+        },
+        {
+            id: "3",
+            turmaId: "103",
+            empresaId: "Ferreira Costa",
+            mentorId: "303",
+            name: "Squad Cesar",
+        },
+    ];
+
+    // Dados Estáticos iniciais para o Estado
+    const initialMentors: MentorEstatico[] = [
+        {
+            id: "302",
+            contaUsuarioId: "12345-abcde-67890-fghij",
+            name: "Thiago",
+            email: 'thia@gmail.com',
+        },
+        {
+            id: "303",
+            contaUsuarioId: "23456-bcdef-78901-ghijk",
+            name: "Bárbara",
+            email: "barbr@gmail.com"
+        },
+        {
+            id: "301",
+            contaUsuarioId: "34567-cdefg-89012-hijkl",
+            name: "Adriano",
+            email: "mundobr097@gmail.com"
+        },
+    ];
+    //dados estaticos pra req do select e de remover mentor
+    const SelectMentor = (mentorId: string) => {
+        //consumir a rota para alocar mentor ao squad
+        const mentor = mentores.find((m) => m.id === mentorId);
+        setSelectedMentor(mentor || null);
+    }
+
+    const allocateMentor = (squadId: string, email: string) => {
+        const mentor = mentores.find((m) => m.email === email) || null;
+        if (mentor) {
+            setAllocatedMentors(prev => ({
+                ...prev,
+                [squadId]: mentor, // Aloca o mentor apenas para o squad específico
+            }));
+        }
+    };
+
+    // Função para remover o mentor de um squad específico
+    const removeMentor = (squadId: string) => {
+        setAllocatedMentors(prev => ({
+            ...prev,
+            [squadId]: null, // Remove o mentor apenas para o squad específico
+        }));
+    };
+
+    const fetchSession = async () => {
+        const userSession = await getSession();
+        if (userSession) {
+            setSession(userSession);
+        } else {
+            mensagemErro("Sessão não encontrada");
+        }
+    }
+
+    const fetchUserRole = () => {
+        const userInfoToken = Cookies.get("tokenUserInfo")
+        if (userInfoToken) {
+            const tokenDecoded = jwtDecode(userInfoToken) as TokenDecoded
+            const objectAcessTipo = JSON.parse(tokenDecoded.acesso)
+            const emailPerfil = tokenDecoded.sub
+            const tipoPerfil = objectAcessTipo.perfils[0];
+            setPerfil((p) => ({ ...p, tipo: tipoPerfil }))
+            setPerfil((p) => ({ ...p, sub: emailPerfil }))
+        }
+    }
 
     useEffect(() => {
-        const fetchSession = async () => {
-            const userSession = await getSession();
-            if (userSession) {
-                setSession(userSession);
-            } else {
-                mensagemErro("Sessão não encontrada");
-            }
-        };
-
-        fetchSession();
-    }, []);
+        fetchSession()
+        fetchUserRole()
+    }, [])
 
     useEffect(() => {
         const getPageInfo = async () => {
-            const url = `Perfil?PageNumber=${pageNumber}&pageSize=${PAGE_SIZE}&Sort=asc`;
+            // const url = Perfil?PageNumber=${pageNumber}&pageSize=${PAGE_SIZE}&Sort=asc;
             try {
-                const pageInfoResponse = await apiService.get(url);
-                setPageInfo(pageInfoResponse.data);
-                setPerfis(pageInfoResponse.data.list)
-
+                // const pageInfoResponse = await apiService.get(url);
+                // setPageInfo(pageInfoResponse.data);
+                // setPerfis(pageInfoResponse.data.list)
+                setSquads(initialSquads)
+                setMentores(initialMentors)
                 setLoading(false);
             } catch (error) {
                 console.error(error);
             }
         };
         getPageInfo();
-    }, [pageNumber])
+    }, [pageNumber, perfil])
 
     const paginationConfig: TablePaginationConfig = {
         current: pageNumber + 1,
@@ -80,8 +179,59 @@ export default function SquadsPagination() {
 
     const columTable = [
         {
-            title: 'Tipo',
-            dataIndex: 'tipo',
+            title: "Nome",
+            dataIndex: "name",
+        },
+        {
+            title: "Turma ID",
+            dataIndex: "turmaId",
+        },
+        {
+            title: "Empresa",
+            dataIndex: "empresaId",
+            key: "empresaId",
+        },
+        {
+            title: "Mentor",
+            dataIndex: "mentorId",
+            render: (mentorId: string, squad: Squad) => {
+                if (perfil?.tipo === "gerente") {
+                    return (
+                        <Select
+                            style={{ width: 120 }}
+                            onChange={(value) => allocateMentor(squad.id, mentores.find(m => m.id === value)?.email || '')}
+                            placeholder="Selecione um mentor"
+                        >
+                            {mentores.map((mentor) => (
+                                <Select.Option key={mentor.id} value={mentor.id}>
+                                    {mentor.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    );
+                } else if (perfil?.tipo === "mentor") {
+                    return (
+                        allocatedMentors[squad.id] ? (
+                            <span style={{ display: 'flex', alignItems: 'center' }}>
+                                {allocatedMentors[squad.id]?.name}
+                                <span
+                                    onClick={() => removeMentor(squad.id)}
+                                    style={{ cursor: 'pointer', marginLeft: '5px', marginBottom: '15px', color: 'black' }}
+                                >
+                                    <FeatherIcon icon="trash" size={10} />
+                                </span>
+                            </span>
+                        ) : (
+                            <span
+                                onClick={() => allocateMentor(squad.id, perfil.sub || '')}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                Alocar-me ao Squad <FeatherIcon icon="plus" size={18} />
+                            </span>
+                        )
+                    );
+                }
+            },
         },
     ];
 
@@ -153,10 +303,9 @@ export default function SquadsPagination() {
                                                     </div>
                                                     <div className="table-responsive">
                                                         <Table
-                                                            dataSource={perfis}
+                                                            dataSource={squads}
                                                             columns={columTable}
                                                             pagination={paginationConfig}
-                                                            rowKey="id"
                                                         />
                                                     </div>
                                                 </>

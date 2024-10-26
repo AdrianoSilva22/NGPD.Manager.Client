@@ -1,21 +1,19 @@
 export interface Squad {
-    id: string
-    qtd: string
-    institutionClasseId: string
-    classModule: string | undefined
-    nameSquad: string
-    turmaIesId:string
-    mentorId: string
-    empresaId: string
-}
+    id: string;
+    turmaId: string;
+    empresaId: string;
+    mentorId: string;
+    name: string;
+    allocatedMentorEmail?: string
+  }
 
-export const initialValueSquad: Squad = {
-    id: '',
-    institutionClasseId: '',
-    classModule: '',
-    nameSquad: '',
-    mentorId: '',
-    qtd: "",
-    turmaIesId: "",
-    empresaId: ""
-};
+// export const initialValueSquad: Squad = {
+//     id: '',
+//     institutionClasseId: '',
+//     classModule: '',
+//     nameSquad: '',
+//     mentorId: '',
+//     qtd: "",
+//     turmaIesId: "",
+//     empresaId: ""
+// };

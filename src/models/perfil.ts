@@ -1,4 +1,4 @@
 interface Perfil {
-    id: string
-    tipo: string
+    tipo?: string
+    sub?: string
 }
