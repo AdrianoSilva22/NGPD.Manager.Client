@@ -37,42 +37,6 @@ export default function SquadsPagination() {
     const [tableKey, setTableKey] = useState(0);
     const [selectedMentor, setSelectedMentor] = useState<MentorEstatico | null>(null);
     const [perfil, setPerfil] = useState<Perfil>();
-    const [allocatedMentors, setAllocatedMentors] = useState<{ [squadId: string]: MentorEstatico | null }>({});
-
-    interface MentorEstatico {
-        id: string;
-        contaUsuarioId: string;
-        name: string
-        email: string
-    }
-
-
-    const PAGE_SIZE = 5;
-
-    // Dados Estáticos iniciais para o Estado
-    const initialSquads: Squad[] = [
-        {
-            id: "1",
-            turmaId: "101",
-            empresaId: "Porto Digital",
-            mentorId: "301",
-            name: "Squad Ficr",
-        },
-        {
-            id: "2",
-            turmaId: "102",
-            empresaId: "TRF",
-            mentorId: "302",
-            name: "Squad Unit",
-        },
-        {
-            id: "3",
-            turmaId: "103",
-            empresaId: "Ferreira Costa",
-            mentorId: "303",
-            name: "Squad Cesar",
-        },
-    ];
 
     // Dados Estáticos iniciais para o Estado
     const initialMentors: MentorEstatico[] = [
@@ -95,6 +59,51 @@ export default function SquadsPagination() {
             email: "mundobr097@gmail.com"
         },
     ];
+
+    const [allocatedMentors, setAllocatedMentors] = useState<{ [squadId: string]: MentorEstatico | null }>({
+        "1": initialMentors.find((mentor) => mentor.id === "302") || null,
+        "2": null,
+        "3": null
+    })
+
+    interface MentorEstatico {
+        id: string;
+        contaUsuarioId: string;
+        name: string
+        email: string
+    }
+
+    const PAGE_SIZE = 5;
+
+    // Dados Estáticos iniciais para o Estado
+    const initialSquads: Squad[] = [
+        {
+            id: "1",
+            turmaId: "101",
+            empresaId: "Porto Digital",
+            mentorId: "301",
+            name: "Squad Ficr",
+            allocatedMentorEmail: ''
+        },
+        {
+            id: "2",
+            turmaId: "102",
+            empresaId: "TRF",
+            mentorId: "302",
+            name: "Squad Unit",
+            allocatedMentorEmail: ''
+        },
+        {
+            id: "3",
+            turmaId: "103",
+            empresaId: "Ferreira Costa",
+            mentorId: "303",
+            name: "Squad Cesar",
+            allocatedMentorEmail: '',
+        },
+    ];
+
+
     //dados estaticos pra req do select e de remover mentor
     const SelectMentor = (mentorId: string) => {
         //consumir a rota para alocar mentor ao squad
@@ -108,17 +117,17 @@ export default function SquadsPagination() {
             setAllocatedMentors(prev => ({
                 ...prev,
                 [squadId]: mentor, // Aloca o mentor apenas para o squad específico
-            }));
+            }))
         }
-    };
+    }
 
     // Função para remover o mentor de um squad específico
     const removeMentor = (squadId: string) => {
         setAllocatedMentors(prev => ({
             ...prev,
             [squadId]: null, // Remove o mentor apenas para o squad específico
-        }));
-    };
+        }))
+    }
 
     const fetchSession = async () => {
         const userSession = await getSession();
@@ -199,8 +208,9 @@ export default function SquadsPagination() {
                     return (
                         <Select
                             style={{ width: 120 }}
+                            className={allocatedMentors[squad.id] ? 'select-placeholder-dark' : 'select-placeholder-light'}
                             onChange={(value) => allocateMentor(squad.id, mentores.find(m => m.id === value)?.email || '')}
-                            placeholder="Selecione um mentor"
+                            placeholder={allocatedMentors[squad.id] ? allocatedMentors[squad.id]?.name : "Selecione um mentor"}
                         >
                             {mentores.map((mentor) => (
                                 <Select.Option key={mentor.id} value={mentor.id}>
@@ -214,12 +224,17 @@ export default function SquadsPagination() {
                         allocatedMentors[squad.id] ? (
                             <span style={{ display: 'flex', alignItems: 'center' }}>
                                 {allocatedMentors[squad.id]?.name}
-                                <span
-                                    onClick={() => removeMentor(squad.id)}
-                                    style={{ cursor: 'pointer', marginLeft: '5px', marginBottom: '15px', color: 'black' }}
-                                >
-                                    <FeatherIcon icon="trash" size={10} />
-                                </span>
+                                {allocatedMentors[squad.id]?.email === perfil.sub ? (
+                                    <span
+                                        onClick={() => removeMentor(squad.id)}
+                                        style={{ cursor: 'pointer', marginLeft: '5px', marginBottom: '15px', color: 'black' }}
+                                    >
+                                        <FeatherIcon icon="trash" size={10} />
+                                    </span>
+                                ) : (
+                                    <span></span>
+                                )}
+
                             </span>
                         ) : (
                             <span

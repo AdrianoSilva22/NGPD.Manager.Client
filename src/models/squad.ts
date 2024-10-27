@@ -4,7 +4,7 @@ export interface Squad {
     empresaId: string;
     mentorId: string;
     name: string;
-    allocatedMentorEmail?: string
+    allocatedMentorEmail: string
   }
 
 // export const initialValueSquad: Squad = {

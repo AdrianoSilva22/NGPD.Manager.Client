@@ -113,6 +113,14 @@ a {
 	text-decoration: none;
 }
 
+.select-placeholder-dark .ant-select-selection-placeholder {
+    color: black; /* Ou qualquer cor que você prefira para o texto do placeholder quando um mentor está alocado */
+}
+
+.select-placeholder-light .ant-select-selection-placeholder {
+    color: gray; /* Ou qualquer cor que você prefira quando não há mentor alocado */
+}
+
 input,
 button,
 a {
