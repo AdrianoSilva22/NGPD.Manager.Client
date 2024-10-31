@@ -24,5 +24,5 @@ export default function FullCalendarComponent() {
   }, []);
 
   return <div ref={calendarRef}></div>;
-}
+  }
 
