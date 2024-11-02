@@ -1,8 +1,8 @@
 'use client'
 import React from 'react';
 import { ReactNode } from 'react';
-import Sidebar from "@/components/Sidebar/SideBar";
-import Header from "@/components/Header/Header";
+import Sidebar from "@/components/Sidebar/SideBar.jsx";
+import Header from "@/components/Header/Header.jsx";
 
 interface LayoutProps {
   children: ReactNode;

@@ -1,6 +1,4 @@
 'use client'
-import Header from "@/components/Header/Header";
-import Sidebar from "@/components/Sidebar/SideBar";
 import { Page } from "@/models/institution";
 import { Mentor } from "@/models/mentor";
 import { apiService } from "@/service/apiService/apiService";
@@ -65,8 +63,6 @@ export default function MentoresPaginition() {
 
     return (
         <>
-        <Header />
-          <Sidebar />
             <div className="main-wrapper">
                 <div className="page-wrapper">
                     <div className="content container-fluid">

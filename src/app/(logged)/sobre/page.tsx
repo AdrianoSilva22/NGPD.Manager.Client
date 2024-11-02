@@ -3,8 +3,6 @@ import adrianoImg from '@/assets/img/adriano.jpeg';
 import gabrielImg from '@/assets/img/gabriel.jpeg';
 import joaoImg from '@/assets/img/joao.jpeg';
 import washingtonImg from '@/assets/img/teste1.jpg';
-import Header from '@/components/Header/Header';
-import Sidebar from '@/components/Sidebar/SideBar';
 import styles from '@/styles/sobre.module.css';
 import Image from 'next/image';
 
@@ -19,8 +17,6 @@ export default function Home() {
 
   return (
     <>
-      <Header />
-      <Sidebar />
       <div className={styles.background}>
         <div className="container">
           <div className="row justify-content-center">
