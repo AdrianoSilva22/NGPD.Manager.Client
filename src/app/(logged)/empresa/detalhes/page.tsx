@@ -136,11 +136,11 @@ export default function DetailsCompany() {
                                                                     <tbody>
                                                                         {record.listSquad.map((squad: Squad) => (
                                                                             <tr key={squad.id}>
-                                                                                <td>{squad.nameSquad}</td>
+                                                                                {/* <td>{squad.nameSquad}</td>
                                                                                 <td>{squad.institutionClasseId}</td>
                                                                                 <td>{squad.classModule}</td>
                                                                                 <td>{squad.turmaIesId}</td>
-                                                                                <td>{squad.mentorId}</td>
+                                                                                <td>{squad.mentorId}</td> */}
                                                                             </tr>
                                                                         ))}
                                                                     </tbody>

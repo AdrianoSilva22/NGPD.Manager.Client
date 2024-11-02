@@ -1,8 +1,8 @@
 // Componente Pai (por exemplo, em uma página)
 import { useSetAtom } from 'jotai';
 import { institutionClassIdAtom } from '@/atoms/atoms';
-import AvailabilityPagination from '../../app/instituicao/(TurmaInstituicao)/turma/disponibilidade/page';
 import { useEffect } from 'react';
+import AvailabilityPagination from '@/app/(logged)/empresa/disponibilidade/page';
 
 const ParentComponent = () => {
     const setInstitutionClassId = useSetAtom(institutionClassIdAtom);

@@ -34,7 +34,7 @@ export default function StudentRegister() {
     const getValueSelectTurma = (selectedOption: SingleValue<PropsOption>) => {
         const selectedTurma = listClassIes.find(classIes => classIes.id === selectedOption?.value) || null
         if (selectedTurma) {
-            setStudent({ ...student, turmaId: selectedTurma?.id })
+            setStudent({ ...student, name: selectedTurma?.id })
         }
     }
 

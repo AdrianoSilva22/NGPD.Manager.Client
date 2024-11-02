@@ -7,13 +7,11 @@ export interface Squad {
     allocatedMentorEmail: string
   }
 
-// export const initialValueSquad: Squad = {
-//     id: '',
-//     institutionClasseId: '',
-//     classModule: '',
-//     nameSquad: '',
-//     mentorId: '',
-//     qtd: "",
-//     turmaIesId: "",
-//     empresaId: ""
-// };
+export const initialValueSquad: Squad = {
+    id: '',
+    turmaId: '',
+    name: '',
+    mentorId: '',
+    allocatedMentorEmail: "",
+    empresaId: ""
+};

@@ -61,8 +61,8 @@ export default function RegisterSquad() {
                                                     <label>Módulo <span className="login-danger">*</span></label>
                                                     <select
                                                         className="form-control"
-                                                        value={squadData.classModule}
-                                                        onChange={(e) => setSquadData({ ...squadData, classModule: e.target.value })}
+                                                        value={squadData.empresaId}
+                                                        onChange={(e) => setSquadData({ ...squadData, name: e.target.value })}
                                                     >
 
                                                         <option >Selecione um módulo</option>
@@ -76,7 +76,7 @@ export default function RegisterSquad() {
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
                                                 <label >Nome do Squad <span className="login-danger">*</span></label>
-                                                <input type="text" className="form-control" value={squadData.nameSquad} onChange={(e) => setSquadData({ ...squadData, nameSquad: e.target.value })} />
+                                                <input type="text" className="form-control" value={squadData.empresaId} onChange={(e) => setSquadData({ ...squadData, mentorId: e.target.value })} />
                                                 </div>
                                             </div>
                                             <div className="col-12">
