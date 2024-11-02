@@ -20,6 +20,7 @@ import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
 import { TokenDecoded } from "@/models/tokenDecoded";
 import { jwtDecode } from "jwt-decode";
+import { PermissionRequirement } from "@/components/PermissionRequirement ";
 
 export default function SquadsPagination() {
 
@@ -309,11 +310,13 @@ export default function SquadsPagination() {
                                                             <div className="col">
                                                                 <h3 className="page-title">Squads</h3>
                                                             </div>
-                                                            <div className="col-auto text-end float-end ms-auto download-grp">
-                                                                <Link href="/squad/register-instituicao" className="btn btn-primary">
-                                                                    <i className="fas fa-plus" />
-                                                                </Link>
-                                                            </div>
+                                                            {<PermissionRequirement permission="adicionar-squad">
+                                                                <div className="col-auto text-end float-end ms-auto download-grp">
+                                                                    <Link href="/squad/register-instituicao" className="btn btn-primary">
+                                                                        <i className="fas fa-plus" />
+                                                                    </Link>
+                                                                </div>
+                                                            </PermissionRequirement>}
                                                         </div>
                                                     </div>
                                                     <div className="table-responsive">
