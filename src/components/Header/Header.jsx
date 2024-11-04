@@ -28,12 +28,17 @@ const Header = () => {
   }, []);
 
   const handlesidebar = () => {
-    document.body.classList.toggle("mini-sidebar");
+    if (typeof window !== 'undefined') {
+      document.body.classList.toggle("mini-sidebar");
+    }
   };
-
+  
   const handlesidebarmobilemenu = () => {
-    document.body.classList.toggle('slide-nav');
-  }
+    if (typeof window !== 'undefined') {
+      document.body.classList.toggle('slide-nav');
+    }
+  };
+  
 
   const clearAllCookies = () => {
     const cookieKeys = Object.keys(Cookies.get())
