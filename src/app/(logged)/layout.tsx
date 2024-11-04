@@ -1,8 +1,9 @@
-'use client'
-import React from 'react';
-import { ReactNode } from 'react';
-import Sidebar from "@/components/Sidebar/SideBar.jsx";
-import Header from "@/components/Header/Header.jsx";
+'use client';
+import React, { ReactNode } from 'react';
+import dynamic from 'next/dynamic';
+
+const Header = dynamic(() => import('@/components/Header/Header.jsx'), { ssr: false });
+const Sidebar = dynamic(() => import('@/components/Sidebar/SideBar.jsx'), { ssr: false });
 
 interface LayoutProps {
   children: ReactNode;
