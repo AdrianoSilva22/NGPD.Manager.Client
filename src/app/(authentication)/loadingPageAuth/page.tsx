@@ -1,10 +1,5 @@
 'use client'
-import { TokenDecoded } from '@/models/tokenDecoded'
-import { TokenUserInfo } from '@/models/tokenUserInfo'
 import '@/styles/loadginPage.css'
-import axios from 'axios'
-import Cookies from 'js-cookie'
-import { jwtDecode } from "jwt-decode"
 import { Session } from 'next-auth'
 import { getSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -12,8 +7,11 @@ import { useEffect } from 'react'
 
 const LoadingPage = () => {
   const router = useRouter()
+
   useEffect(() => {
     const sendTokenToBackend = async () => {
+      const axios = (await import('axios')).default
+      const Cookies = (await import('js-cookie')).default
       try {
         const session: Session | null = await getSession()
         if (session) {
@@ -33,7 +31,10 @@ const LoadingPage = () => {
         console.error('Erro ao enviar token para o backend:', error)
       }
     };
-    sendTokenToBackend()
+
+    if (typeof window !== 'undefined') {
+      sendTokenToBackend()
+    }
   }, [])
 
   return (
