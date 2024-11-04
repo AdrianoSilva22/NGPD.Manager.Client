@@ -15,16 +15,19 @@ const Sidebar = (props) => {
   };
 
   useEffect(() => {
-    const tokenUser = Cookies.get("tokenUserInfo")
-    const tokenDecoded = jwtDecode(tokenUser)
-    const objectAcess = JSON.parse(tokenDecoded.acesso)
-    const perfil = objectAcess.perfils[0];
+    const tokenUser = Cookies.get("tokenUserInfo");
+    if (tokenUser) {
+      const tokenDecoded = jwtDecode(tokenUser);
+      const objectAcess = JSON.parse(tokenDecoded.acesso);
+      const perfil = objectAcess.perfils[0];
 
-    setUserRole(perfil);
+      setUserRole(perfil);
+    }
 
-    function handleMouseOver(e) {
-      e.stopPropagation();
-      if (typeof window !== 'undefined') {
+    // Verifique se estamos no lado do cliente
+    if (typeof window !== 'undefined') {
+      function handleMouseOver(e) {
+        e.stopPropagation();
         const toggleBtn = document.querySelector('#toggle_btn');
         if (toggleBtn && toggleBtn.offsetParent !== null) {
           var targ = e.target.closest('.sidebar');
@@ -38,43 +41,44 @@ const Sidebar = (props) => {
           return false;
         }
       }
+
+      document.addEventListener('mouseover', handleMouseOver);
+
+      return () => {
+        document.removeEventListener('mouseover', handleMouseOver);
+      };
     }
-
-    document.addEventListener('mouseover', handleMouseOver);
-
-    return () => {
-      document.removeEventListener('mouseover', handleMouseOver);
-    };
   }, []);
 
   useEffect(() => {
-    $(document).on('change', '.sidebar-type-four input', function () {
-      if ($(this).is(':checked')) {
-        $('.sidebar').addClass('sidebar-eight');
-        $('.sidebar-menu').addClass('sidebar-menu-eight');
-        $('.menu-title').addClass('menu-title-eight');
-        $('.header').addClass('header-eight');
-        $('.header-left-two').addClass('header-left-eight');
-        $('.user-menu').addClass('user-menu-eight');
-        $('.dropdown-toggle').addClass('dropdown-toggle-eight');
-        $('.white-logo').addClass('show-logo');
-        $('.header-one .header-left-one .logo:not(.logo-small), .header-five .header-left-five .logo:not(.logo-small)').addClass('hide-logo');
-        $('.header-two .header-left-two .logo:not(.logo-small)').removeClass('hide-logo');
-        $('.header-two .header-left-two .dark-logo').removeClass('show-logo');
-      } else {
-        $('.sidebar').removeClass('sidebar-eight');
-        $('.sidebar-menu').removeClass('sidebar-menu-eight');
-        $('.menu-title').removeClass('menu-title-eight');
-        $('.header').removeClass('header-eight');
-        $('.header-left-two').removeClass('header-left-eight');
-        $('.user-menu').removeClass('user-menu-eight');
-        $('.dropdown-toggle').removeClass('dropdown-toggle-eight');
-        $('.white-logo').removeClass('show-logo');
-        $('.header-one .header-left-one .logo:not(.logo-small), .header-five .header-left-five .logo:not(.logo-small)').removeClass('hide-logo');
-      }
-    });
-  }, []);
-
+    if (typeof window !== 'undefined') {
+      $(document).on('change', '.sidebar-type-four input', function () {
+        if ($(this).is(':checked')) {
+          $('.sidebar').addClass('sidebar-eight');
+          $('.sidebar-menu').addClass('sidebar-menu-eight');
+          $('.menu-title').addClass('menu-title-eight');
+          $('.header').addClass('header-eight');
+          $('.header-left-two').addClass('header-left-eight');
+          $('.user-menu').addClass('user-menu-eight');
+          $('.dropdown-toggle').addClass('dropdown-toggle-eight');
+          $('.white-logo').addClass('show-logo');
+          $('.header-one .header-left-one .logo:not(.logo-small), .header-five .header-left-five .logo:not(.logo-small)').addClass('hide-logo');
+          $('.header-two .header-left-two .logo:not(.logo-small)').removeClass('hide-logo');
+          $('.header-two .header-left-two .dark-logo').removeClass('show-logo');
+        } else {
+          $('.sidebar').removeClass('sidebar-eight');
+          $('.sidebar-menu').removeClass('sidebar-menu-eight');
+          $('.menu-title').removeClass('menu-title-eight');
+          $('.header').removeClass('header-eight');
+          $('.header-left-two').removeClass('header-left-eight');
+          $('.user-menu').removeClass('user-menu-eight');
+          $('.dropdown-toggle').removeClass('dropdown-toggle-eight');
+          $('.white-logo').removeClass('show-logo');
+          $('.header-one .header-left-one .logo:not(.logo-small), .header-five .header-left-five .logo:not(.logo-small)').removeClass('hide-logo');
+        }
+      });
+    }
+  })
   let { location } = props;
   let pathName = location ? location.pathName : '';
 
