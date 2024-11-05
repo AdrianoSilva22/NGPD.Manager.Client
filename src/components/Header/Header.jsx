@@ -1,4 +1,5 @@
 'use client'
+
 import logo from '@/assets/img/PortoDigital_2019.png';
 import logoSmall from '@/assets/img/transferir.jpeg';
 import Cookies from 'js-cookie';
@@ -8,43 +9,51 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-
 const Header = () => {
+  const [user, setUser] = useState();
+  const [userResponseBackend, setUserResponseBackend] = useState();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Estado para controle do dropdown
 
-  const [user, setUser] = useState()
-  const [userResponseBackend, setUserResponseBackend] = useState()
   useEffect(() => {
-    const fetchDaraUser = async () => {
-      const session = await getSession()
-      setUser(session?.user)
-      const tokenUser = Cookies.get("tokenUserInfo")
-      const tokenDecoded = jwtDecode(tokenUser)
-      const objectAcess = JSON.parse(tokenDecoded.acesso)
-      const perfil = objectAcess.perfils[0];
-      setUserResponseBackend(perfil)
-    }
-    fetchDaraUser()
+    const fetchDataUser = async () => {
+      const session = await getSession();
+      setUser(session?.user);
+      const tokenUser = Cookies.get("tokenUserInfo");
+      const tokenDecoded = jwtDecode(tokenUser);
+      const objectAccess = JSON.parse(tokenDecoded.acesso);
+      const perfil = objectAccess.perfils[0];
+      setUserResponseBackend(perfil);
+    };
+    fetchDataUser();
   }, []);
 
-  const handlesidebar = () => {
+  // Função para alternar a sidebar
+  const handleSidebar = () => {
     if (typeof window !== 'undefined') {
       document.body.classList.toggle("mini-sidebar");
     }
   };
-  
-  const handlesidebarmobilemenu = () => {
+
+  // Função para alternar o menu mobile
+  const handleSidebarMobileMenu = () => {
     if (typeof window !== 'undefined') {
       document.body.classList.toggle('slide-nav');
     }
   };
-  
 
+  // Limpar todos os cookies
   const clearAllCookies = () => {
-    const cookieKeys = Object.keys(Cookies.get())
+    const cookieKeys = Object.keys(Cookies.get());
     cookieKeys.forEach((cookieKey) => {
-      Cookies.remove(cookieKey)
-    })
-  }
+      Cookies.remove(cookieKey);
+    });
+    setIsDropdownOpen(false); // Fecha o dropdown após logout
+  };
+
+  // Função para alternar o dropdown
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev); // Alterna o estado do dropdown
+  };
 
   return (
     <>
@@ -57,11 +66,13 @@ const Header = () => {
             <Image src={logoSmall} alt="Logo" width={100} height={100} />
           </Link>
         </div>
+
         <div className="menu-toggle">
-          <Link href="#" id="toggle_btn" onClick={handlesidebar}>
+          <Link href="#" id="toggle_btn" onClick={handleSidebar}>
             <i className="fas fa-bars" />
           </Link>
         </div>
+
         <div className="top-nav-search">
           <form>
             <input
@@ -74,16 +85,15 @@ const Header = () => {
             </button>
           </form>
         </div>
-        <Link href="#" className="mobile_btn" id="mobile_btn" onClick={() => handlesidebarmobilemenu()}>
+
+        {/* Botão do menu mobile */}
+        <Link href="#" className="mobile_btn" id="mobile_btn" onClick={handleSidebarMobileMenu}>
           <i className="fas fa-bars" />
         </Link>
+
         <ul className="nav user-menu">
-          <li className="nav-item dropdown has-arrow new-user-menus">
-            <Link
-              href="#"
-              className="dropdown-toggle nav-link"
-              data-bs-toggle="dropdown"
-            >
+          <li className="nav-item dropdown has-arrow new-user-menus custom-dropdown">
+            <button onClick={toggleDropdown} className="dropdown-toggle nav-link">
               <span className="user-img">
                 <Image
                   className="rounded-circle"
@@ -97,8 +107,8 @@ const Header = () => {
                   <p className="text-muted mb-0">{userResponseBackend}</p>
                 </div>
               </span>
-            </Link>
-            <div className="dropdown-menu">
+            </button>
+            <div className={`dropdown-menu ${isDropdownOpen ? 'visible' : ''}`}>
               <div className="user-header">
                 <div className="avatar avatar-sm">
                   <Image
@@ -114,18 +124,15 @@ const Header = () => {
                   <p className="text-muted mb-0">{userResponseBackend}</p>
                 </div>
               </div>
-              <button onClick={clearAllCookies} className="btn btn-link text-decoration-none">
-                <Link className="dropdown-item" href="/login">
-                  Logout
-                </Link>
-              </button>
-
+              <Link className="dropdown-item" href="/" onClick={clearAllCookies}>
+                Logout
+              </Link>
             </div>
           </li>
         </ul>
       </div>
     </>
   );
-}
+};
 
-export default Header
+export default Header;
