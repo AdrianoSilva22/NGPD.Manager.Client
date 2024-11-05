@@ -6,36 +6,38 @@ import { Institution, initialvalueInstitution } from '@/models/institution'
 import { mensagemErro, mensagemSucesso } from '@/models/toastr'
 import { InstituitionServices } from '@/service/institution'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function InstitutionUpdate() {
     const [institution, setInstitution] = useState<Institution>(initialvalueInstitution)
     const { updateEntity, getEntityById } = InstituitionServices
 
-    const searchParams = useSearchParams();
-
     useEffect(() => {
         const fetchInstitutionById = async () => {
             try {
-                const institutionId = searchParams.get('Id') as string;
-                const resultfetchInstitutionById = await getEntityById(institutionId);
-                setInstitution(resultfetchInstitutionById.data);
-                mensagemSucesso("Sucesso!")
+                // Acessando os parâmetros da URL usando window
+                const urlParams = new URLSearchParams(window.location.search);
+                const institutionId = urlParams.get('Id'); // 'Id' deve corresponder ao que está na URL
+
+                if (institutionId) {
+                    const resultfetchInstitutionById = await getEntityById(institutionId);
+                    setInstitution(resultfetchInstitutionById.data);
+                    mensagemSucesso("Sucesso!");
+                } else {
+                    mensagemErro("ID da instituição não encontrado na URL.");
+                }
             } catch (error) {
-                mensagemErro("Erro")
+                mensagemErro("Erro ao buscar a instituição.");
                 console.error(error);
             }
         };
 
         fetchInstitutionById();
-    }, [searchParams]);
-
+    }, []); // Executa uma vez quando o componente é montado
 
     return (
         <>
             {institution ? (
-
                 <div className="main-wrapper">
                     <div className="page-wrapper">
                         <div className="content container-fluid">
@@ -63,30 +65,29 @@ export default function InstitutionUpdate() {
                                                         </h5>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
-    <div className="form-group local-forms">
-        <label>
-            Nome da Instituição <span className="login-danger">*</span>
-        </label>
-        <Input
-            value={institution.name}
-            readOnly
-            onChange={(value: string) => setInstitution({ ...institution, name: value })} 
-        />
-    </div>
-</div>
-<div className="col-12 col-sm-4">
-    <div className="form-group local-forms">
-        <label>
-            Email da Instituição <span className="login-danger">*</span>
-        </label>
-        <EmailInput 
-            value={institution.contact}
-            readOnly
-            onChange={(value: string) => setInstitution({ ...institution, contact: value })}
-        />
-    </div>
-</div>
-                                                    
+                                                        <div className="form-group local-forms">
+                                                            <label>
+                                                                Nome da Instituição <span className="login-danger">*</span>
+                                                            </label>
+                                                            <Input
+                                                                value={institution.name}
+                                                                readOnly
+                                                                onChange={(value: string) => setInstitution({ ...institution, name: value })} 
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-12 col-sm-4">
+                                                        <div className="form-group local-forms">
+                                                            <label>
+                                                                Email da Instituição <span className="login-danger">*</span>
+                                                            </label>
+                                                            <EmailInput 
+                                                                value={institution.contact}
+                                                                readOnly
+                                                                onChange={(value: string) => setInstitution({ ...institution, contact: value })}
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
@@ -95,10 +96,10 @@ export default function InstitutionUpdate() {
                             </div>
                         </div>
                     </div>
-
                 </div>
             ) : (
-                <div>Carregando...</div>)}
+                <div>Carregando...</div>
+            )}
         </>
     )
 }

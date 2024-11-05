@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { globalStateAtomId } from "@/atoms/atoms";
 import { ClassIes } from "@/models/ClassIes";
 import { Page } from "@/models/institution";
@@ -10,7 +10,6 @@ import { Footer } from 'antd/es/layout/layout';
 import FeatherIcon from "feather-icons-react";
 import { useAtom } from "jotai";
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { IconContext } from "react-icons";
 import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
@@ -24,7 +23,6 @@ export default function InstituicoesPaginition() {
     const [loading, setLoading] = useState(true);
     const [squadData, setSquadData] = useState<Squad>(initialValueSquad);
     const PAGE_SIZE = 15;
-    const searchParams = useSearchParams();
 
     useEffect(() => {
         const getPageInfo = async () => {
@@ -42,11 +40,11 @@ export default function InstituicoesPaginition() {
     }, [pageIndex]);
 
     useEffect(() => {
-        const classIesId = searchParams.get('classIesId');
+        const classIesId = new URLSearchParams(window.location.search).get('classIesId');
         if (classIesId) {
             setSquadData(prevData => ({ ...prevData, classIesId }));
         }
-    }, [searchParams]);
+    }, []);
 
     const columTable = [
         {
@@ -162,7 +160,7 @@ export default function InstituicoesPaginition() {
                                                         pageClassName={"page-item"}
                                                         activeClassName={"active"}
                                                         onPageChange={(event) => setPage(event.selected)}
-                                                        pageCount={Math.ceil(pageInfo.totalCount / 15)}
+                                                        pageCount={Math.ceil(pageInfo.totalCount / PAGE_SIZE)}
                                                         breakLabel="..."
                                                         previousLabel={
                                                             <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
@@ -189,4 +187,3 @@ export default function InstituicoesPaginition() {
         </>
     );
 }
-

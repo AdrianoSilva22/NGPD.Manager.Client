@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { Input } from '@/components/stringInput';
 
 import { ClassIes, initialValueClassIes } from '@/models/ClassIes';
@@ -8,7 +8,6 @@ import { mensagemErro, mensagemSucesso } from '@/models/toastr';
 
 import axios from 'axios';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Select, { SingleValue } from "react-select";
 
@@ -16,27 +15,29 @@ export default function ClassUpdate() {
     const [classIes, setClassIes] = useState<ClassIes>(initialValueClassIes);
     const [institutions, setInstitutions] = useState<Institution[]>([]);
 
-   
-
-    const searchParams = useSearchParams();
-    const id = searchParams.get('id') || '';
+    const [id, setId] = useState<string>('');
 
     useEffect(() => {
-       
+        // Pega o id dos parâmetros da URL usando window.location
+        const urlParams = new URLSearchParams(window.location.search);
+        const fetchedId = urlParams.get('id') || '';
+        setId(fetchedId);
+
         const fetchTurmaIes = async () => {
             try {
-                const response = await axios.get<ClassIes>(`http://localhost:5293/api/v1/Institution/TurmaIes/${id}`);
+                const response = await axios.get<ClassIes>(`http://localhost:5293/api/v1/Institution/TurmaIes/${fetchedId}`);
                 setClassIes(response.data);
             } catch (error) {
                 console.error("Erro ao buscar as informações da TurmaIes:", error);
             }
         };
 
-        fetchTurmaIes();
-    }, [id]);
+        if (fetchedId) {
+            fetchTurmaIes();
+        }
+    }, []);
 
     useEffect(() => {
-       
         const fetchInstitutions = async () => {
             try {
                 const response = await axios.get<Institution[]>('http://localhost:5293/api/v1/Institution');

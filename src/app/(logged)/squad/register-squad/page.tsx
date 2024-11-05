@@ -4,26 +4,19 @@ import { Squad, initialValueSquad } from "@/models/squad";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { apiService } from "@/service/apiService/apiService";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function RegisterSquad() {
     const [squadData, setSquadData] = useState<Squad>(initialValueSquad);
-    const searchParams = useSearchParams();
 
     useEffect(() => {
-        
-        console.log(squadData);
-    
-     
-    }, [squadData]);
-    
-    useEffect(() => {
-        const classIesId = searchParams.get('classIesId');
+        // Obter o parâmetro classIesId da URL usando window.location
+        const urlParams = new URLSearchParams(window.location.search);
+        const classIesId = urlParams.get('classIesId');
         if (classIesId) {
             setSquadData(prevData => ({ ...prevData, institutionClasseId: classIesId }));
         }
-    }, [searchParams]);
+    }, []);
 
     const cadastrarSquad = async () => {
         try {
@@ -66,9 +59,9 @@ export default function RegisterSquad() {
                                                     <select
                                                         className="form-control"
                                                         value={squadData.empresaId}
-                                                        onChange={(e) => setSquadData({ ...squadData, id: e.target.value })}
+                                                        onChange={(e) => setSquadData({ ...squadData, empresaId: e.target.value })}
                                                     >
-                                                        <option >Selecione um módulo</option>
+                                                        <option>Selecione um módulo</option>
                                                         <option value="Kick off">Kick off</option>
                                                         <option value="Grow up">Grow up</option>
                                                         <option value="Rise Up">Rise Up</option>
@@ -78,28 +71,23 @@ export default function RegisterSquad() {
                                             </div>
                                             <div className="col-12 col-sm-4">
                                                 <div className="form-group local-forms">
-                                                    <label >Quantidade de Squad <span className="login-danger">*</span></label>
+                                                    <label>Quantidade de Squad <span className="login-danger">*</span></label>
                                                     <select
                                                         className="form-control"
                                                         value={squadData.mentorId}
                                                         onChange={(e) => setSquadData({ ...squadData, mentorId: e.target.value })}
                                                     >
-                                                        <option >Selecione a quantidade</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                        <option value="5">5</option>
-                                                        <option value="6">6</option>
-                                                        <option value="7">7</option>
-                                                        <option value="8">8</option>
+                                                        <option>Selecione a quantidade</option>
+                                                        {[...Array(8)].map((_, i) => (
+                                                            <option key={i} value={i + 1}>{i + 1}</option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="col-12 col-sm-4">
                                             <div className="form-group local-forms">
-                                                <label >Nome do Squad <span className="login-danger">*</span></label>
+                                                <label>Nome do Squad <span className="login-danger">*</span></label>
                                                 <input type="text" className="form-control" value={squadData.name} onChange={(e) => setSquadData({ ...squadData, name: e.target.value })} />
                                             </div>
                                         </div>

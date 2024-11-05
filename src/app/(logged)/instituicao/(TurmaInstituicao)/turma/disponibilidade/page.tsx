@@ -1,4 +1,3 @@
-'use client'
 import { globalStateAtomId, institutionClassIdAtom } from "@/atoms/atoms";
 import { Page } from "@/models/institution";
 import "@/styles/pagination.css";
@@ -8,12 +7,10 @@ import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
-
 import { apiService } from "@/service/apiService/apiService";
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from "next/navigation";
 import { Availability } from "@/models/Availability";
-import { AvailabilityClassIes } from "@/models/AvailabilityClassIes";
+
 export default function AvailabilityPagination() {
     const [availability, setAvailabilitys] = useState<Availability[]>([]);
     const [pageIndex, setPage] = useState(0);
@@ -22,7 +19,6 @@ export default function AvailabilityPagination() {
     const [] = useAtom(globalStateAtomId);
     const PAGE_SIZE = 25;
     const { t } = useTranslation();
-    const searchParams = useSearchParams();
 
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
@@ -36,9 +32,9 @@ export default function AvailabilityPagination() {
         onChange: onSelectChange,
     };
 
-    
-
     useEffect(() => {
+        const classIesId = new URLSearchParams(window.location.search).get('Id');
+
         const getPageInfo = async () => {
             try {
                 const url = `http://localhost:5293/api/v1/Institution/TurmaIes/GetAllDisponibilidades?pageIndex=${pageIndex + 1}&searchDay=${searchDay}`;
@@ -49,6 +45,7 @@ export default function AvailabilityPagination() {
                 console.error("Failed to fetch data", error);
             }
         };
+
         getPageInfo();
     }, [pageIndex, searchDay]);
 
@@ -56,9 +53,9 @@ export default function AvailabilityPagination() {
         const selectedData = availability.filter(item => selectedRowKeys.includes(item.id));
 
         try {
-            const classIesId = searchParams.get('Id') as string;
+            const classIesId = new URLSearchParams(window.location.search).get('Id');
             const url = `http://localhost:5293/api/v1/Institution/TurmaIes/${classIesId}/UpdateDisponibilidades`;
-            const response = await apiService.put(url,  [...selectedData] );
+            const response = await apiService.put(url, [...selectedData]);
             if (response.status === 200) {
                 console.log("Update successful");
             } else {
@@ -67,7 +64,7 @@ export default function AvailabilityPagination() {
         } catch (error) {
             console.error("Update error", error);
         }
-    }; 
+    };
 
     const columTable = [
         {
@@ -93,80 +90,78 @@ export default function AvailabilityPagination() {
     ];
 
     return (
-        <>
-            <div className="main-wrapper">
-                <div className="page-wrapper">
-                    <div className="content container-fluid">
-                        <div className="page-header">
-                            <div className="row">
-                                <div className="col-sm-12">
-                                    <div className="page-sub-header">
-                                        <h3 className="page-title">Disponibilidade</h3>
-                                    </div>
+        <div className="main-wrapper">
+            <div className="page-wrapper">
+                <div className="content container-fluid">
+                    <div className="page-header">
+                        <div className="row">
+                            <div className="col-sm-12">
+                                <div className="page-sub-header">
+                                    <h3 className="page-title">Disponibilidade</h3>
                                 </div>
                             </div>
                         </div>
-                        <div className="student-group-form">
-                            <div className="row">
-                                <div className="col-lg-3 col-md-6">
-                                    <div className="form-group">
-                                        <select
-                                            className="form-control"
-                                            value={searchDay}
-                                            onChange={(e) => setSearchDay(e.target.value)}
-                                        >
-                                            <option value="Segunda-feira">Segunda-feira</option>
-                                            <option value="Terça-feira">Terça-feira</option>
-                                            <option value="Quarta-feira">Quarta-feira</option>
-                                            <option value="Quinta-feira">Quinta-feira</option>
-                                            <option value="Sexta-feira">Sexta-feira</option>
-                                            <option value="Sábado">Sábado</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="button-wrapper">
-                            <button className="btn btn-primary" onClick={handleUpdate}>Update Selected</button>
-                        </div>
-                        {
-                            pageInfo && (
-                                <div className="table table-stripped table-hover datatable">
-                                    <Table
-                                   pagination={false}
-                                   columns={columTable}
-                                   dataSource={availability}
-                                   rowSelection={rowSelection}
-                                   rowKey={(availability: Availability) => availability.id}
-                                    />
-                                </div>
-                            )
-                        }
-                        {
-                            pageInfo && (
-                                <ReactPaginate
-                                    containerClassName={"pagination"}
-                                    pageClassName={"page-item"}
-                                    activeClassName={"active"}
-                                    onPageChange={(event) => setPage(event.selected)}
-                                    pageCount={Math.ceil(pageInfo.totalCount / PAGE_SIZE)}
-                                    breakLabel="..."
-                                    previousLabel={
-                                        <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                            <AiFillLeftCircle />
-                                        </IconContext.Provider>
-                                    }
-                                    nextLabel={
-                                        <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                            <AiFillRightCircle />
-                                        </IconContext.Provider>
-                                    }
-                                />
-                            )
-                        }
                     </div>
+                    <div className="student-group-form">
+                        <div className="row">
+                            <div className="col-lg-3 col-md-6">
+                                <div className="form-group">
+                                    <select
+                                        className="form-control"
+                                        value={searchDay}
+                                        onChange={(e) => setSearchDay(e.target.value)}
+                                    >
+                                        <option value="Segunda-feira">Segunda-feira</option>
+                                        <option value="Terça-feira">Terça-feira</option>
+                                        <option value="Quarta-feira">Quarta-feira</option>
+                                        <option value="Quinta-feira">Quinta-feira</option>
+                                        <option value="Sexta-feira">Sexta-feira</option>
+                                        <option value="Sábado">Sábado</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="button-wrapper">
+                        <button className="btn btn-primary" onClick={handleUpdate}>Update Selected</button>
+                    </div>
+                    {
+                        pageInfo && (
+                            <div className="table table-stripped table-hover datatable">
+                                <Table
+                                    pagination={false}
+                                    columns={columTable}
+                                    dataSource={availability}
+                                    rowSelection={rowSelection}
+                                    rowKey={(availability: Availability) => availability.id}
+                                />
+                            </div>
+                        )
+                    }
+                    {
+                        pageInfo && (
+                            <ReactPaginate
+                                containerClassName={"pagination"}
+                                pageClassName={"page-item"}
+                                activeClassName={"active"}
+                                onPageChange={(event) => setPage(event.selected)}
+                                pageCount={Math.ceil(pageInfo.totalCount / PAGE_SIZE)}
+                                breakLabel="..."
+                                previousLabel={
+                                    <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
+                                        <AiFillLeftCircle />
+                                    </IconContext.Provider>
+                                }
+                                nextLabel={
+                                    <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
+                                        <AiFillRightCircle />
+                                    </IconContext.Provider>
+                                }
+                            />
+                        )
+                    }
                 </div>
             </div>
-        </>
-    )
+        </div>
+    );
 }

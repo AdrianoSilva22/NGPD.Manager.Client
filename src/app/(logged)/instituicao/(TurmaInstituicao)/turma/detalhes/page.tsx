@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { ClassIes } from "@/models/ClassIes";
 import { Institution } from "@/models/institution";
 import { Student } from "@/models/student";
@@ -7,7 +7,6 @@ import "@/styles/pagination.css";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
 import { Table, Tooltip } from "antd";
 import { Footer } from "antd/es/layout/layout";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ClassesPagination() {
@@ -16,12 +15,11 @@ export default function ClassesPagination() {
     const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
     const [expandedSection, setExpandedSection] = useState<'institution' | 'students'>('institution');
     const { getEntityById } = ClassIesServiceGetById;
-    const searchParams = useSearchParams();
 
     useEffect(() => {
         const fetchClassById = async () => {
             try {
-                const classIesId = searchParams.get('Id') as string;
+                const classIesId = new URL(window.location.href).searchParams.get('Id') as string;
                 const response = await getEntityById(classIesId);
                 setListClassIes(response.data);
             } catch (error) {
@@ -32,7 +30,7 @@ export default function ClassesPagination() {
         };
 
         fetchClassById();
-    }, [searchParams]);
+    }, []);
 
     const handleExpand = (id: string, section: 'institution' | 'students') => {
         if (expandedRowKeys.includes(id) && expandedSection === section) {

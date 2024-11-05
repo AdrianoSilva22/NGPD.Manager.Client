@@ -6,46 +6,50 @@ import { Institution, initialvalueInstitution } from '@/models/institution'
 import { mensagemErro, mensagemSucesso } from '@/models/toastr'
 import { InstituitionServices } from '@/service/institution'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function InstitutionUpdate() {
     const [institution, setInstitution] = useState<Institution>(initialvalueInstitution)
     const { updateEntity, getEntityById } = InstituitionServices
 
-    const searchParams = useSearchParams();
-
     useEffect(() => {
         const fetchInstitutionById = async () => {
             try {
-                const institutionId = searchParams.get('Id') as string;
-                const resultfetchInstitutionById = await getEntityById(institutionId);
-                setInstitution(resultfetchInstitutionById.data);
+                // Acessando os parâmetros da URL usando window
+                const urlParams = new URLSearchParams(window.location.search);
+                const institutionId = urlParams.get('Id'); // 'Id' deve corresponder ao que está na URL
+
+                if (institutionId) {
+                    const resultfetchInstitutionById = await getEntityById(institutionId);
+                    setInstitution(resultfetchInstitutionById.data);
+                } else {
+                    mensagemErro("ID da instituição não encontrado na URL.");
+                }
             } catch (error) {
                 console.error(error);
+                mensagemErro("Erro ao buscar a instituição.");
             }
         };
 
         fetchInstitutionById();
-    }, [searchParams]);
+    }, []); // Executa uma vez quando o componente é montado
 
     const atualizar = async () => {
         try {
             if (institution) {
-                await updateEntity(institution)
-                setInstitution(initialvalueInstitution)
-                mensagemSucesso("Instituição atualizada com sucesso")
+                await updateEntity(institution);
+                setInstitution(initialvalueInstitution);
+                mensagemSucesso("Instituição atualizada com sucesso");
             }
         } catch (error) {
             console.log(error);
-            mensagemErro('erro ao atualizr')
+            mensagemErro('Erro ao atualizar');
         }
     }
 
     return (
         <>
             {institution ? (
-
                 <div className="main-wrapper">
                     <div className="page-wrapper">
                         <div className="content container-fluid">
@@ -106,10 +110,10 @@ export default function InstitutionUpdate() {
                             </div>
                         </div>
                     </div>
-
                 </div>
             ) : (
-                <div>Carregando...</div>)}
+                <div>Carregando...</div>
+            )}
         </>
     )
 }
