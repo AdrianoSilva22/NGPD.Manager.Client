@@ -2,6 +2,8 @@
 import React, { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 
+const Header = dynamic(() => import('@/components/Header/Header.jsx'), { ssr: false });
+const Sidebar = dynamic(() => import('@/components/Sidebar/SideBar.jsx'), { ssr: false });
 
 interface LayoutProps {
   children: ReactNode;
@@ -10,7 +12,8 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div>
-      {/* removendo temporariamente o header e sidebar pra test de deploy */}
+      <Header />
+      <Sidebar />
       <main>{children}</main>
     </div>
   );

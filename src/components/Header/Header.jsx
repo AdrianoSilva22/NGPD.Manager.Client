@@ -1,7 +1,6 @@
 'use client'
 import logo from '@/assets/img/PortoDigital_2019.png';
 import logoSmall from '@/assets/img/transferir.jpeg';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import { getSession } from 'next-auth/react';
