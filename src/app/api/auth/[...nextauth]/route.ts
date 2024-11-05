@@ -1,7 +1,7 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
+import NextAuth, { NextAuthOptions } from 'next-auth'
+import GoogleProvider from 'next-auth/providers/google'
 
-require('dotenv').config()
+require('dotenv').config();
 
 const nextAuthOptions: NextAuthOptions = {
   providers: [
@@ -13,18 +13,18 @@ const nextAuthOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user, account }: { token: any; user: any; account: any }) {
       if (account) {
-        token.id_token = account.id_token;
+        token.id_token = account.id_token
       }
-      return token;
+      return token
     },
     async session({ session, token }: { session: any; token: any }) {
-      session.id_token = token.id_token;
-      return session;
+      session.id_token = token.id_token
+      return session
     },
   },
-}
+  secret: process.env.NEXTAUTH_SECRET || 'ASDFJKLÇASDFJKDLÇSFJKÇSAF',
+};
 
 const handler = NextAuth(nextAuthOptions)
 
-export { handler as GET, handler as POST };
-
+export { handler as GET, handler as POST }
