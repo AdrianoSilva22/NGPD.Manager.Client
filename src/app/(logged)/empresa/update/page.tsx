@@ -1,57 +1,60 @@
-"use client"
+"use client";
 
-import { EmailInput } from '@/components/emailInput'
-import { Input } from '@/components/stringInput'
-import { Empresa, initialValueEmpresa } from '@/models/empresa'
-import { mensagemErro, mensagemSucesso } from '@/models/toastr'
-import { EmpresaService } from '@/service/empresa'
-import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { EmailInput } from '@/components/emailInput';
+import { Input } from '@/components/stringInput';
+import { Empresa, initialValueEmpresa } from '@/models/empresa';
+import { mensagemErro, mensagemSucesso } from '@/models/toastr';
+import { EmpresaService } from '@/service/empresa';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function EmpresaUpdate() {
-    const [empresa, setEmpresa] = useState<Empresa>(initialValueEmpresa)
-    const { getEntityById, updateEntity } = EmpresaService
-    const searchParams = useSearchParams();
+    const [empresa, setEmpresa] = useState<Empresa>(initialValueEmpresa);
+    const router = useRouter();
+    const { getEntityById, updateEntity } = EmpresaService;
 
     useEffect(() => {
         const fetchEmpresaById = async () => {
             try {
-                const empresaId = searchParams.get('Id') as string;
-                const resultfetchEmpresaById = await getEntityById(empresaId);
-                setEmpresa(resultfetchEmpresaById.data);
+                const { searchParams } = new URL(window.location.href);
+                const empresaId = searchParams.get('Id'); // Obtendo o ID da URL
+                if (empresaId) {
+                    const result = await getEntityById(empresaId);
+                    setEmpresa(result.data);
+                }
             } catch (error) {
                 console.error(error);
-            } 
+                mensagemErro("Erro ao buscar empresa.");
+            }
         };
 
         fetchEmpresaById();
-    }, [searchParams]);
+    }, [router]);
 
     const atualizar = async () => {
         try {
             if (empresa) {
-                await updateEntity(empresa)
-                setEmpresa(initialValueEmpresa)
-                mensagemSucesso("Empresa atualizada com sucesso")
+                await updateEntity(empresa);
+                setEmpresa(initialValueEmpresa);
+                mensagemSucesso("Empresa atualizada com sucesso");
             }
         } catch (error) {
-            console.log(error);
-            mensagemErro('erro ao atualizr')
+            console.error("Erro ao atualizar empresa:", error);
+            mensagemErro('Erro ao atualizar');
         }
-    }
+    };
 
     return (
         <>
             {empresa ? (
-
                 <div className="main-wrapper">
                     <div className="page-wrapper">
                         <div className="content container-fluid">
                             <div className="page-header">
                                 <div className="row align-items-center">
                                     <div className="col">
-                                        <span className="page-title">Atualizar </span>
+                                        <span className="page-title">Atualizar</span>
                                         <ul className="breadcrumb">
                                             <li className="breadcrumb-item">
                                                 <Link href="/empresa">Listagem de Empresas</Link>
@@ -78,7 +81,8 @@ export default function EmpresaUpdate() {
                                                             </label>
                                                             <Input
                                                                 value={empresa.name}
-                                                                onChange={(value: string) => setEmpresa({ ...empresa, name: value })} />
+                                                                onChange={(value: string) => setEmpresa({ ...empresa, name: value })}
+                                                            />
                                                         </div>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
@@ -105,10 +109,10 @@ export default function EmpresaUpdate() {
                             </div>
                         </div>
                     </div>
-
                 </div>
             ) : (
-                <div>Carregando...</div>)}
+                <div>Carregando...</div>
+            )}
         </>
-    )
+    );
 }
