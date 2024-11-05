@@ -1,3 +1,4 @@
+'use client'
 import { globalStateAtomId, institutionClassIdAtom } from "@/atoms/atoms";
 import { Page } from "@/models/institution";
 import "@/styles/pagination.css";
