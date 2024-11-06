@@ -6,43 +6,43 @@ import { apiService } from "@/service/apiService/apiService";
 import { InstituitionServices } from "@/service/institution";
 import "@/styles/pagination.css";
 import { Modal, Spin, Table } from "antd";
-import FeatherIcon from "feather-icons-react";
 import { useAtom } from "jotai";
 import Link from 'next/link';
 import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
-
 
 export default function InstitutionsPaginition() {
-    const [institutions, setInstitutions] = useState<Institution[]>();
+    const [institutions, setInstitutions] = useState<Institution[]>([]); // Inicia como array vazio
     const { deleteEntity } = InstituitionServices;
     const [pageIndex, setPage] = useState(0);
     const [pageInfo, setPageInfo] = useState<Page>();
     const [isLoading, setIsLoading] = useState(false);
     const [] = useAtom(globalStateAtomId);
     const PAGE_SIZE = 15;
-    const [isModalVisible, setIsModalVisible] = useState(false)
-    const [selectedInstituion, setSelectedInstituion] = useState<Institution | null>(null)
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedInstituion, setSelectedInstituion] = useState<Institution | null>(null);
 
     useEffect(() => {
         const getPageInfo = async () => {
             try {
-                setIsLoading(true)
-                const url = `http://localhost:5189/api/Ies?PageNumber=${pageIndex + 1}&pageSize=${PAGE_SIZE}&Sort=asc`
-                const pageInfoResponse = await apiService.get(url)
-                setPageInfo(pageInfoResponse.data)
-                setInstitutions(pageInfoResponse.data.institution)
+                setIsLoading(true);
+                const url = `http://localhost:5189/api/Ies?PageSize=${PAGE_SIZE}&PageNumber=${pageIndex}&Sort=asc`; // Corrigido PageNumber para pageIndex sem soma
+                const pageInfoResponse = await apiService.get(url);
+                
+                console.log(pageInfoResponse.data); // Verificar a resposta da API
+
+                setPageInfo(pageInfoResponse.data);
+                setInstitutions(pageInfoResponse.data.list || []); // Acessar o campo 'list' para obter os dados
             } catch (error) {
                 console.error(error);
             } finally {
                 setIsLoading(false);
             }
-        }
-        getPageInfo()
-    }, [pageIndex])
+        };
+        getPageInfo();
+    }, [pageIndex]);
 
     const deleteInstituicao = async (institution: Institution) => {
         try {
@@ -76,24 +76,20 @@ export default function InstitutionsPaginition() {
 
     const columTable = [
         {
-            title: 'Nome',
+            title: 'name',
             dataIndex: 'name',
             key: 'name',
         },
         {
-            title: 'Contato',
-            dataIndex: 'contact',
-            key: 'contact',
+            title: 'email',
+            dataIndex: 'email',
+            key: 'email',
         },
         {
             title: 'Ações',
             key: 'acoes',
             render: (institution: Institution) => (
-
-                
-                <>
-
-    <div className="btn-rounded">
+                <div className="btn-rounded">
                   <button
                     type="button"
                     className="btn btn-primary dropdown-toggle me-1"
@@ -104,13 +100,13 @@ export default function InstitutionsPaginition() {
                     Ações
                   </button>
                   <div className="dropdown-menu">
-                    <Link href={{ pathname: '/empresa/register',  }} className="dropdown-item" >
+                    <Link href={{ pathname: '/empresa/register' }} className="dropdown-item">
                       Adicionar uma Insituição
                     </Link>
-                    <Link  href={{ pathname: '/instituicao/detalhes', query: { Id: institution.id } }} className="dropdown-item" >
+                    <Link href={{ pathname: '/instituicao/detalhes', query: { Id: institution.id } }} className="dropdown-item">
                      Visualizar uma Insituição
                     </Link>
-                    <Link  href={{ pathname: '/instituicao/update', query: { Id: institution.id } }} className="dropdown-item" >
+                    <Link href={{ pathname: '/instituicao/update', query: { Id: institution.id } }} className="dropdown-item">
                      Editar uma Insituição
                     </Link>
                     <div className="dropdown-divider" />
@@ -119,11 +115,9 @@ export default function InstitutionsPaginition() {
                     </button>
                   </div>
                 </div>
-              
-            </>
-        ),
-    },
-];
+            ),
+        },
+    ];
 
     return (
         <>
@@ -143,71 +137,54 @@ export default function InstitutionsPaginition() {
                             <div className="row">
                                 <div className="col-lg-3 col-md-6">
                                     <div className="form-group">
-                                    <div className="search-student-btn">
-                                <Link    href="/instituicao/register">
-                                <button type="button" className="btn btn-primary">Incluir</button>
-                                </Link>
-                                </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-3 col-md-6">
-                                    <div className="form-group">
-                                       
-                                    </div>
-                                </div>
-                                <div className="col-lg-3 col-md-6">
-                                    <div className="form-group">
-                                        
+                                        <div className="search-student-btn">
+                                            <Link href="/instituicao/register">
+                                                <button type="button" className="btn btn-primary">Incluir</button>
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            
-                            
                         </div>
-                    </div>
-                                    {
-                                        isLoading ? (
-                                            <div className="loading-spinner">
-                                                <Spin size="large" />
-                                            </div>
-                                        ) : (
-                                            pageInfo && (
-                                                <div className="table-responsive">
-                                                    <Table
-                                                        pagination={false}
-                                                        columns={columTable}
-                                                        dataSource={institutions}
-                                                        rowKey={(institution: Institution) => institution.contact}
-                                                    />
-                                                </div>
-                                            )
-                                        )
-                                    }
-                                    {
-                                        pageInfo && (
-                                            <ReactPaginate
-                                                containerClassName={"pagination"}
-                                                pageClassName={"page-item"}
-                                                activeClassName={"active"}
-                                                onPageChange={(event) => setPage(event.selected)}
-                                                pageCount={Math.ceil(pageInfo.totalCount / 15)}
-                                                breakLabel="..."
-                                                previousLabel={
-                                                    < IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                                        <AiFillLeftCircle />
-                                                    </IconContext.Provider>
-                                                }
-                                                nextLabel={
-                                                    <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                                        <AiFillRightCircle />
-                                                    </IconContext.Provider>
-                                                }
-                                            />
-                                        )
-                                    }
-                                </div>
+                        {isLoading ? (
+                            <div className="loading-spinner">
+                                <Spin size="large" />
                             </div>
-               
+                        ) : (
+                            pageInfo && (
+                                <div className="table-responsive">
+                                    <Table
+                                        pagination={false}
+                                        columns={columTable}
+                                        dataSource={institutions}
+                                        rowKey={(institution: Institution) => institution.id} // Usando 'id' como rowKey
+                                    />
+                                </div>
+                            )
+                        )}
+                        {pageInfo && (
+                            <ReactPaginate
+                                containerClassName={"pagination"}
+                                pageClassName={"page-item"}
+                                activeClassName={"active"}
+                                onPageChange={(event) => setPage(event.selected)}
+                                pageCount={Math.ceil(pageInfo.totalCount / 15)}
+                                breakLabel="..."
+                                previousLabel={
+                                    <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
+                                        <AiFillLeftCircle />
+                                    </IconContext.Provider>
+                                }
+                                nextLabel={
+                                    <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
+                                        <AiFillRightCircle />
+                                    </IconContext.Provider>
+                                }
+                            />
+                        )}
+                    </div>
+                </div>
+            </div>
             <Modal
                 title="Confirmação de Exclusão"
                 visible={isModalVisible}
@@ -219,5 +196,5 @@ export default function InstitutionsPaginition() {
                 <p>Você tem certeza que deseja excluir esta Instituicao?</p>
             </Modal>
         </>
-    )
+    );
 }

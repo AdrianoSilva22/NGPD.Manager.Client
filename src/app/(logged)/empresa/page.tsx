@@ -6,7 +6,6 @@ import { apiService } from "@/service/apiService/apiService";
 import { EmpresaService } from "@/service/empresa";
 import "@/styles/pagination.css";
 import { Modal, Table } from "antd";
-import FeatherIcon from "feather-icons-react";
 import Link from 'next/link';
 import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
@@ -27,7 +26,7 @@ export default function EmpresasPaginition() {
     useEffect(() => {
         const getPageInfo = async () => {
             try {
-                const url = `http://localhost:5293/api/v1/Empresa?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
+                const url = `http://localhost:5189/api/Empresa?PageSize=${PAGE_SIZE}&PageNumber=${pageIndex + 0}&Sort=asc`
                 const pageInfoResponse = await apiService.get(url)
                 setPageInfo(pageInfoResponse.data)
                 setEmpresas(pageInfoResponse.data.empresa)
@@ -75,8 +74,8 @@ export default function EmpresasPaginition() {
         },
         {
             title: 'Contato',
-            dataIndex: 'contact',
-            key: 'contact',
+            dataIndex: 'email',
+            key: 'email',
         },
         {
             title: 'Ações',
