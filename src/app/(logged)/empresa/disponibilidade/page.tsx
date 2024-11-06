@@ -22,8 +22,9 @@ export default function Calendario() {
 
     useEffect(() => {
         const fetchEmpresaNome = async () => {
-            const empresaId = searchParams.get('Id') || searchParams.get('id');
-            if (empresaId) {
+            const { searchParams } = new URL(window.location.href);
+            const empresaId = searchParams.get('Id');
+            if (empresaId) {    
                 try {
                     const response = await axios.get(`http://localhost:5189/api/Empresa/${empresaId}`);
                     if (response.data && response.data.nome) {
