@@ -1,5 +1,4 @@
 'use client'
-// imports necessários
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Modal, Input, Button } from 'antd';
