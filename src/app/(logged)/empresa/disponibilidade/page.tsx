@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { Modal, Input, Button } from 'antd';
 import axios from 'axios';
 
@@ -17,12 +16,11 @@ export default function Calendario() {
     const [titulo, setTitulo] = useState('');
     const [descricao, setDescricao] = useState('');
     const [empresaNome, setEmpresaNome] = useState('');
-    const searchParams = useSearchParams();
 
     useEffect(() => {
         const fetchEmpresaNome = async () => {
-            const { searchParams } = new URL(window.location.href);
-            const empresaId = searchParams.get('Id');
+            const urlParams = new URLSearchParams(window.location.search);
+            const empresaId = urlParams.get('Id');
             if (empresaId) {    
                 try {
                     const response = await axios.get(`http://localhost:5189/api/Empresa/${empresaId}`);
@@ -31,7 +29,6 @@ export default function Calendario() {
                     } else {
                         setEmpresaNome('Nome da empresa não encontrado');
                     }
-                    setEmpresaNome(response.data.nome);
                 } catch (error) {
                     console.error('Erro ao buscar nome da empresa:', error);
                 }
@@ -39,7 +36,7 @@ export default function Calendario() {
         };
 
         fetchEmpresaNome();
-    }, [searchParams]);
+    }, []);
 
     const handleSlotClick = (dia: string, hora: string) => {
         setSelectedSlot({ dia, hora });
@@ -63,7 +60,8 @@ export default function Calendario() {
             });
 
             try {
-                const empresaId = searchParams.get('Id') || searchParams.get('id');
+                const urlParams = new URLSearchParams(window.location.search);
+                const empresaId = urlParams.get('Id');
                 const disponibilidadeId = 'your-disponibilidade-id'; // Substitua pelo valor real
                 await axios.post(`http://localhost:5189/api/Empresa/${empresaId}/assign-disponibilidade/${disponibilidadeId}`, {
                     titulo,
@@ -95,7 +93,8 @@ export default function Calendario() {
             const selectedData = Object.entries(agenda).flatMap(([dia, slots]) =>
                 slots.map((slot) => ({ ...slot, dia }))
             );
-            const empresaId = searchParams.get('Id') || searchParams.get('id');
+            const urlParams = new URLSearchParams(window.location.search);
+            const empresaId = urlParams.get('Id');
 
             const body = {
                 totalCount: selectedData.length,
@@ -119,7 +118,6 @@ export default function Calendario() {
 
     return (
         <div className="container">
-
             <div className="content container-fluid">
                 <div className="page-header">
                     <div className="row">
@@ -130,88 +128,82 @@ export default function Calendario() {
                         </div>
                     </div>
                 </div>
-                <div className="student-group-form">
-                    <div className="row">
-                        <div className="col-lg-3 col-md-6">
-                            <div className="form-group">
-                                <div className="search-student-btn">
-                                    <a href="/empresa/register">
-                                    </a></div></div></div></div></div></div>
-            <h3 className="page-title">
-                Agendamento de Horários
-            </h3>
+                <h3 className="page-title">
+                    Agendamento de Horários
+                </h3>
 
-            <table className="calendar-table">
-                <thead>
-                    <tr>
-                        <th>Horários</th>
-                        {diasSemana.map((dia) => (
-                            <th key={dia}>{dia}</th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {horarios.map((hora) => (
-                        <tr key={hora}>
-                            <td>{hora}</td>
+                <table className="calendar-table">
+                    <thead>
+                        <tr>
+                            <th>Horários</th>
                             {diasSemana.map((dia) => (
-                                <td
-                                    key={dia}
-                                    className={`slot ${agenda[dia]?.some((item) => item.hora === hora) ? 'selected' : ''}`}
-                                    onClick={() => handleSlotClick(dia, hora)}
-                                >
-                                    {agenda[dia]?.some((item) => item.hora === hora) ? 'Reservado' : ''}
-                                </td>
+                                <th key={dia}>{dia}</th>
                             ))}
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-            <Modal
-                title="Confirma Disponibilidade? "
-                visible={isModalVisible}
-                onOk={handleOk}
-                onCancel={handleCancel}
-                okText="Salvar"
-                cancelText="Cancelar"
-            >
-                <Input
-                    placeholder="Título"
-                    value={titulo}
-                    onChange={(e) => setTitulo(e.target.value)}
-                />
-                <Input.TextArea
-                    placeholder="Descrição"
-                    value={descricao}
-                    onChange={(e) => setDescricao(e.target.value)}
-                    style={{ marginTop: '10px' }}
-                />
-            </Modal>
-            <Button className="btn btn-primary" onClick={handleUpdate} style={{ marginTop: '20px' }}>
-                Atualizar Disponibilidades
-            </Button>
-            <style jsx>{`
-        .container {
-          padding: 20px;
-        }
-        .calendar-table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-        th, td {
-          border: 1px solid #ddd;
-          padding: 8px;
-          text-align: center;
-        }
-        .slot {
-          cursor: pointer;
-          background-color: #f9f9f9;
-        }
-        .slot.selected {
-          background-color: #4caf50;
-          color: white;
-        }
-      `}</style>
+                    </thead>
+                    <tbody>
+                        {horarios.map((hora) => (
+                            <tr key={hora}>
+                                <td>{hora}</td>
+                                {diasSemana.map((dia) => (
+                                    <td
+                                        key={dia}
+                                        className={`slot ${agenda[dia]?.some((item) => item.hora === hora) ? 'selected' : ''}`}
+                                        onClick={() => handleSlotClick(dia, hora)}
+                                    >
+                                        {agenda[dia]?.some((item) => item.hora === hora) ? 'Reservado' : ''}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <Modal
+                    title="Confirma Disponibilidade?"
+                    visible={isModalVisible}
+                    onOk={handleOk}
+                    onCancel={handleCancel}
+                    okText="Salvar"
+                    cancelText="Cancelar"
+                >
+                    <Input
+                        placeholder="Título"
+                        value={titulo}
+                        onChange={(e) => setTitulo(e.target.value)}
+                    />
+                    <Input.TextArea
+                        placeholder="Descrição"
+                        value={descricao}
+                        onChange={(e) => setDescricao(e.target.value)}
+                        style={{ marginTop: '10px' }}
+                    />
+                </Modal>
+                <Button className="btn btn-primary" onClick={handleUpdate} style={{ marginTop: '20px' }}>
+                    Atualizar Disponibilidades
+                </Button>
+                <style jsx>{`
+                    .container {
+                        padding: 20px;
+                    }
+                    .calendar-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+                    th, td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        text-align: center;
+                    }
+                    .slot {
+                        cursor: pointer;
+                        background-color: #f9f9f9;
+                    }
+                    .slot.selected {
+                        background-color: #4caf50;
+                        color: white;
+                    }
+                `}</style>
+            </div>
         </div>
     );
 }
