@@ -23,31 +23,31 @@ export default function InstitutionsPaginition() {
     const PAGE_SIZE = 15;
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedInstituion, setSelectedInstituion] = useState<Institution | null>(null);
-
     useEffect(() => {
         const getPageInfo = async () => {
             try {
-                setIsLoading(true);
-                const url = `http://localhost:5189/api/Ies?PageSize=${PAGE_SIZE}&PageNumber=${pageIndex}&Sort=asc`; // Corrigido PageNumber para pageIndex sem soma
+                const url = `http://localhost:5189/api/Ies?PageSize=${PAGE_SIZE}&PageNumber=${pageIndex}&Sort=asc`
                 const pageInfoResponse = await apiService.get(url);
-                
-                console.log(pageInfoResponse.data); // Verificar a resposta da API
-
-                setPageInfo(pageInfoResponse.data);
-                setInstitutions(pageInfoResponse.data.list || []); // Acessar o campo 'list' para obter os dados
+                setPageInfo({
+                    currentePage: pageInfoResponse.data.currentePage,
+                    pageSize: pageInfoResponse.data.pageSize,
+                    totalCount: pageInfoResponse.data.totalCount,
+                    pageCount: pageInfoResponse.data.pageCount,
+                    list: pageInfoResponse.data.list
+                });
+                setInstitutions(pageInfoResponse.data.list);
             } catch (error) {
                 console.error(error);
-            } finally {
-                setIsLoading(false);
             }
         };
         getPageInfo();
     }, [pageIndex]);
 
+
     const deleteInstituicao = async (institution: Institution) => {
         try {
             await deleteEntity(institution.id);
-            const filteredInstitutions = institutions?.filter(i => i.contact !== institution.contact);
+            const filteredInstitutions = institutions?.filter(i => i.email !== institution.email);
             setInstitutions(filteredInstitutions);
             mensagemSucesso("Instituição deletada com sucesso!");
         } catch (error) {

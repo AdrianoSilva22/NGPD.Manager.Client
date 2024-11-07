@@ -21,19 +21,23 @@ export default function MentoresPaginition() {
     useEffect(() => {
         const getPageInfo = async () => {
             try {
-                setIsLoading(true); // Iniciar carregamento
-                const url = `http://localhost:5293/api/v1/Mentor?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
-                const pageInfoResponse = await apiService.get(url)
-                setPageInfo(pageInfoResponse.data)
-                setMentores(pageInfoResponse.data.mentor)
+                const url = `http://localhost:5189/api/Mentor?PageSize=15&PageNumber=0&Sort=asc`
+                const pageInfoResponse = await apiService.get(url);
+                setPageInfo({
+                    currentePage: pageInfoResponse.data.currentePage,
+                    pageSize: pageInfoResponse.data.pageSize,
+                    totalCount: pageInfoResponse.data.totalCount,
+                    pageCount: pageInfoResponse.data.pageCount,
+                    list: pageInfoResponse.data.list
+                });
+                setMentores(pageInfoResponse.data.list);
             } catch (error) {
                 console.error(error);
-            } finally {
-                setIsLoading(false);
             }
-        }
-        getPageInfo()
-    }, [pageIndex])
+        };
+        getPageInfo();
+    }, [pageIndex]);
+
 
     const columTable = [
         {
@@ -43,8 +47,8 @@ export default function MentoresPaginition() {
         },
         {
             title: 'Email',
-            dataIndex: 'contact',
-            key: 'contact',
+            dataIndex: 'email',
+            key: 'email',
         },
         {
             title: 'Ações',

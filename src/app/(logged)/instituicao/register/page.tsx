@@ -56,8 +56,8 @@ export default function InstitutionRegister() {
                                                 <div className="form-group local-forms">
                                                     <label>Email <span className="login-danger">*</span></label>
                                                     <EmailInput
-                                                        value={institution.contact}
-                                                        onChange={(value: string) => setInstituition({ ...institution, contact: value })}
+                                                        value={institution.email}
+                                                        onChange={(value: string) => setInstituition({ ...institution, email: value })}
                                                     />
                                                 </div>
                                             </div>
