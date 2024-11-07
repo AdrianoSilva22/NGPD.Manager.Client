@@ -82,9 +82,9 @@ export default function InstitutionUpdate() {
                                                                 Email da Instituição <span className="login-danger">*</span>
                                                             </label>
                                                             <EmailInput 
-                                                                value={institution.contact}
+                                                                value={institution.email}
                                                                 readOnly
-                                                                onChange={(value: string) => setInstitution({ ...institution, contact: value })}
+                                                                onChange={(value: string) => setInstitution({ ...institution, email: value })}
                                                             />
                                                         </div>
                                                     </div>
