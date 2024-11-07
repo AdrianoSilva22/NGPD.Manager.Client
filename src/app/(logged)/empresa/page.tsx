@@ -1,4 +1,3 @@
-// Importações necessárias
 'use client'
 import { Empresa } from "@/models/empresa";
 import { Page as InstitutionPage } from "@/models/institution";
@@ -6,7 +5,7 @@ import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { apiService } from "@/service/apiService/apiService";
 import { EmpresaService } from "@/service/empresa";
 import "@/styles/pagination.css";
-import { Modal, Table } from "antd";
+import { Modal, Table, TablePaginationConfig } from "antd";
 import Link from 'next/link';
 import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
@@ -17,17 +16,17 @@ import { Button } from "@nextui-org/react";
 export default function EmpresasPaginition() {
     const [empresas, setEmpresas] = useState<Empresa[]>([]);
     const { deleteEntity } = EmpresaService;
-    const [pageIndex, setPage] = useState(0);
+    const [pageNumber, setPage] = useState(0);
     const [pageInfo, setPageInfo] = useState<InstitutionPage | null>(null);
     const PAGE_SIZE = 15;
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedEmpresa, setSelectedEmpresa] = useState<Empresa | null>(null);
-    const [dropdownVisible, setDropdownVisible] = useState<string | null>(null); // Estado para controlar o dropdown
+    const [dropdownVisible, setDropdownVisible] = useState<string | null>(null);
 
     useEffect(() => {
         const getPageInfo = async () => {
             try {
-                const url = `http://localhost:5189/api/Empresa?PageSize=${PAGE_SIZE}&PageNumber=${pageIndex}&Sort=asc`
+                const url = `Empresa?PageNumber=${pageNumber}&pageSize=${PAGE_SIZE}&Sort=asc`
                 const pageInfoResponse = await apiService.get(url);
                 setPageInfo({
                     currentePage: pageInfoResponse.data.currentePage,
@@ -42,12 +41,25 @@ export default function EmpresasPaginition() {
             }
         };
         getPageInfo();
-    }, [pageIndex]);
+    }, [pageNumber]);
+
+    const paginationConfig: TablePaginationConfig = {
+        current: pageNumber + 1,
+        pageSize: PAGE_SIZE,
+        total: pageInfo ? Math.ceil(pageInfo.totalCount / PAGE_SIZE) : 0,
+        onChange: (page, size) => {
+            if (page === 1) {
+                setPage(0)
+            } else if (page > 1) {
+                setPage(page - 1)
+            }
+        },
+    };
 
     const deleteEmpresa = async (empresa: Empresa) => {
         try {
             await deleteEntity(empresa.id);
-            const filteredEmpresas = empresas?.filter(i => i.contact !== empresa.contact);
+            const filteredEmpresas = empresas?.filter(i => i.id !== empresa.id);
             setEmpresas(filteredEmpresas);
             mensagemSucesso("Empresa deletada com sucesso!");
         } catch (error) {
@@ -160,33 +172,12 @@ export default function EmpresasPaginition() {
                         pageInfo &&
                         <div className="table-responsive">
                             <Table
-                                pagination={false}
+                                pagination={paginationConfig}
                                 columns={columTable}
                                 dataSource={empresas}
                                 rowKey={(empresa: Empresa) => empresa.contact}
                             />
                         </div>
-                    }
-                    {
-                        pageInfo &&
-                        <ReactPaginate
-                            containerClassName={"pagination"}
-                            pageClassName={"page-item"}
-                            activeClassName={"active"}
-                            onPageChange={(event) => setPage(event.selected)}
-                            pageCount={Math.ceil(pageInfo.totalCount / 15)}
-                            breakLabel="..."
-                            previousLabel={
-                                <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                    <AiFillLeftCircle />
-                                </IconContext.Provider>
-                            }
-                            nextLabel={
-                                <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                    <AiFillRightCircle />
-                                </IconContext.Provider>
-                            }
-                        />
                     }
                 </div>
             </div>

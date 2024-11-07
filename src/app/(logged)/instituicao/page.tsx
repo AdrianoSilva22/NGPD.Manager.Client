@@ -5,7 +5,7 @@ import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { apiService } from "@/service/apiService/apiService";
 import { InstituitionServices } from "@/service/institution";
 import "@/styles/pagination.css";
-import { Modal, Spin, Table } from "antd";
+import { Modal, Spin, Table, TablePaginationConfig } from "antd";
 import { useAtom } from "jotai";
 import Link from 'next/link';
 import { useEffect, useState } from "react";
@@ -14,9 +14,9 @@ import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
 import ReactPaginate from "react-paginate";
 
 export default function InstitutionsPaginition() {
-    const [institutions, setInstitutions] = useState<Institution[]>([]); // Inicia como array vazio
+    const [institutions, setInstitutions] = useState<Institution[]>([]);
     const { deleteEntity } = InstituitionServices;
-    const [pageIndex, setPage] = useState(0);
+    const [pageNumber, setPage] = useState(0);
     const [pageInfo, setPageInfo] = useState<Page>();
     const [isLoading, setIsLoading] = useState(false);
     const [] = useAtom(globalStateAtomId);
@@ -26,7 +26,7 @@ export default function InstitutionsPaginition() {
     useEffect(() => {
         const getPageInfo = async () => {
             try {
-                const url = `http://localhost:5189/api/Ies?PageSize=${PAGE_SIZE}&PageNumber=${pageIndex}&Sort=asc`
+                const url = `Ies?PageNumber=${pageNumber}&pageSize=${PAGE_SIZE}&Sort=asc`
                 const pageInfoResponse = await apiService.get(url);
                 setPageInfo({
                     currentePage: pageInfoResponse.data.currentePage,
@@ -41,18 +41,31 @@ export default function InstitutionsPaginition() {
             }
         };
         getPageInfo();
-    }, [pageIndex]);
+    }, [pageNumber]);
+
+    const paginationConfig: TablePaginationConfig = {
+        current: pageNumber + 1,
+        pageSize: PAGE_SIZE,
+        total: pageInfo ? Math.ceil(pageInfo.totalCount / PAGE_SIZE) : 0,
+        onChange: (page, size) => {
+            if (page === 1) {
+                setPage(0)
+            } else if (page > 1) {
+                setPage(page - 1)
+            }
+        },
+    };
 
 
-    const deleteInstituicao = async (institution: Institution) => {
+    const deleteInstituicao = async (instituion: Institution) => {
         try {
-            await deleteEntity(institution.id);
-            const filteredInstitutions = institutions?.filter(i => i.email !== institution.email);
-            setInstitutions(filteredInstitutions);
+            await deleteEntity(instituion.id);
+            const filteredEmpresas = institutions?.filter(i => i.id !== instituion.id);
+            setInstitutions(filteredEmpresas);
             mensagemSucesso("Instituição deletada com sucesso!");
         } catch (error) {
             console.log(error);
-            mensagemErro('Erro ao excluir Instituição');
+            mensagemErro('Erro ao excluir Empresa');
         }
     };
 
@@ -90,30 +103,30 @@ export default function InstitutionsPaginition() {
             key: 'acoes',
             render: (institution: Institution) => (
                 <div className="btn-rounded">
-                  <button
-                    type="button"
-                    className="btn btn-primary dropdown-toggle me-1"
-                    data-bs-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    Ações
-                  </button>
-                  <div className="dropdown-menu">
-                    <Link href={{ pathname: '/empresa/register' }} className="dropdown-item">
-                      Adicionar uma Insituição
-                    </Link>
-                    <Link href={{ pathname: '/instituicao/detalhes', query: { Id: institution.id } }} className="dropdown-item">
-                     Visualizar uma Insituição
-                    </Link>
-                    <Link href={{ pathname: '/instituicao/update', query: { Id: institution.id } }} className="dropdown-item">
-                     Editar uma Insituição
-                    </Link>
-                    <div className="dropdown-divider" />
-                    <button onClick={() => showDeleteConfirm(institution)} className="dropdown-item" role="button">
-                    Deletar uma instituição
+                    <button
+                        type="button"
+                        className="btn btn-primary dropdown-toggle me-1"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                    >
+                        Ações
                     </button>
-                  </div>
+                    <div className="dropdown-menu">
+                        <Link href={{ pathname: '/empresa/register' }} className="dropdown-item">
+                            Adicionar uma Insituição
+                        </Link>
+                        <Link href={{ pathname: '/instituicao/detalhes', query: { Id: institution.id } }} className="dropdown-item">
+                            Visualizar uma Insituição
+                        </Link>
+                        <Link href={{ pathname: '/instituicao/update', query: { Id: institution.id } }} className="dropdown-item">
+                            Editar uma Insituição
+                        </Link>
+                        <div className="dropdown-divider" />
+                        <button onClick={() => showDeleteConfirm(institution)} className="dropdown-item" role="button">
+                            Deletar uma instituição
+                        </button>
+                    </div>
                 </div>
             ),
         },
@@ -154,33 +167,13 @@ export default function InstitutionsPaginition() {
                             pageInfo && (
                                 <div className="table-responsive">
                                     <Table
-                                        pagination={false}
+                                        pagination={paginationConfig}
                                         columns={columTable}
                                         dataSource={institutions}
-                                        rowKey={(institution: Institution) => institution.id} // Usando 'id' como rowKey
+                                        rowKey={(institution: Institution) => institution.id}
                                     />
                                 </div>
                             )
-                        )}
-                        {pageInfo && (
-                            <ReactPaginate
-                                containerClassName={"pagination"}
-                                pageClassName={"page-item"}
-                                activeClassName={"active"}
-                                onPageChange={(event) => setPage(event.selected)}
-                                pageCount={Math.ceil(pageInfo.totalCount / 15)}
-                                breakLabel="..."
-                                previousLabel={
-                                    <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                        <AiFillLeftCircle />
-                                    </IconContext.Provider>
-                                }
-                                nextLabel={
-                                    <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                        <AiFillRightCircle />
-                                    </IconContext.Provider>
-                                }
-                            />
                         )}
                     </div>
                 </div>
