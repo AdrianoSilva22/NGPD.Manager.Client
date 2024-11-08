@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
 const Header = () => {
   const [user, setUser] = useState();
   const [userResponseBackend, setUserResponseBackend] = useState();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Estado para controle do dropdown
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     const fetchDataUser = async () => {
@@ -27,32 +27,28 @@ const Header = () => {
     fetchDataUser();
   }, []);
 
-  // Função para alternar a sidebar
   const handleSidebar = () => {
     if (typeof window !== 'undefined') {
       document.body.classList.toggle("mini-sidebar");
     }
   };
 
-  // Função para alternar o menu mobile
   const handleSidebarMobileMenu = () => {
     if (typeof window !== 'undefined') {
       document.body.classList.toggle('slide-nav');
     }
   };
 
-  // Limpar todos os cookies
   const clearAllCookies = () => {
     const cookieKeys = Object.keys(Cookies.get());
     cookieKeys.forEach((cookieKey) => {
       Cookies.remove(cookieKey);
     });
-    setIsDropdownOpen(false); // Fecha o dropdown após logout
+    setIsDropdownOpen(false); 
   };
 
-  // Função para alternar o dropdown
   const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev); // Alterna o estado do dropdown
+    setIsDropdownOpen((prev) => !prev); 
   };
 
   return (
@@ -86,7 +82,6 @@ const Header = () => {
           </form>
         </div>
 
-        {/* Botão do menu mobile */}
         <Link href="#" className="mobile_btn" id="mobile_btn" onClick={handleSidebarMobileMenu}>
           <i className="fas fa-bars" />
         </Link>
