@@ -1,55 +1,84 @@
 'use client'
 
-import logo from '@/assets/img/PortoDigital_2019.png';
-import logoSmall from '@/assets/img/transferir.jpeg';
-import Cookies from 'js-cookie';
-import { jwtDecode } from 'jwt-decode';
-import { getSession } from 'next-auth/react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import logo from '@/assets/img/PortoDigital_2019.png'
+import logoSmall from '@/assets/img/transferir.jpeg'
+import Cookies from 'js-cookie'
+import { jwtDecode } from 'jwt-decode'
+import { getSession } from 'next-auth/react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { Select } from 'antd';
+import { useRouter } from 'next/navigation'
+import jwtEncode from 'jwt-encode'
 
 const Header = () => {
   const [user, setUser] = useState();
-  const [userResponseBackend, setUserResponseBackend] = useState();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [userPerfil, setUserPerfil] = useState()
+  const [profiles, setProfiles] = useState([])
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     const fetchDataUser = async () => {
-      const session = await getSession();
-      setUser(session?.user);
-      const perfilToken = Cookies.get("userProfile");
+      const session = await getSession()
+      setUser(session?.user)
+      const perfilToken = Cookies.get("userProfile")
       if (perfilToken) {
-        const perfil = jwtDecode(perfilToken);
-        setUserResponseBackend(perfil)
+        const perfil = jwtDecode(perfilToken)
+        setUserPerfil(perfil)
       }
+      const tokenUser = Cookies.get("tokenUserInfo")
+      const tokenDecoded = jwtDecode(tokenUser)
+      const profilesDynamic = Object.keys(tokenDecoded).filter((key) => {
+        try {
+          const permissions = JSON.parse(tokenDecoded[key]);
+          return Array.isArray(permissions);
+        } catch (error) {
+          return false;
+        }
+      });
+      setProfiles(profilesDynamic)
     };
-    fetchDataUser();
-  }, []);
+    fetchDataUser()
+  }, [])
 
   const handleSidebar = () => {
     if (typeof window !== 'undefined') {
-      document.body.classList.toggle("mini-sidebar");
+      document.body.classList.toggle("mini-sidebar")
     }
   };
 
   const handleSidebarMobileMenu = () => {
     if (typeof window !== 'undefined') {
-      document.body.classList.toggle('slide-nav');
+      document.body.classList.toggle('slide-nav')
     }
   };
 
   const clearAllCookies = () => {
-    const cookieKeys = Object.keys(Cookies.get());
+    const cookieKeys = Object.keys(Cookies.get())
     cookieKeys.forEach((cookieKey) => {
-      Cookies.remove(cookieKey);
+      Cookies.remove(cookieKey)
     });
-    setIsDropdownOpen(false);
+    setIsDropdownOpen(false)
   };
 
   const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
-  };
+    setIsDropdownOpen((prev) => !prev)
+  }
+
+  const handleSelectChange = selectedProfile => {
+    try {
+      setUserPerfil(selectedProfile)
+      const encodedProfile = jwtEncode(selectedProfile, 'a8f9s0fj0sdfff0s9fj#')
+      Cookies.set('userProfile', encodedProfile)
+      location.reload()
+    } catch (error) {
+      console.error('Erro ao atualizar o perfil no cookie:', error)
+    }
+  }
+  
+  
 
   return (
     <>
@@ -99,7 +128,7 @@ const Header = () => {
                 />
                 <div className="user-text">
                   <h6>{user?.name}</h6>
-                  <p className="text-muted mb-0">{userResponseBackend}</p>
+                  <p className="text-muted mb-0">{userPerfil}</p>
                 </div>
               </span>
             </button>
@@ -116,7 +145,19 @@ const Header = () => {
                 </div>
                 <div className="user-text">
                   <h6>{user?.name}</h6>
-                  <p className="text-muted mb-0">{userResponseBackend}</p>
+                  <p className="text-muted mb-0">
+                    <Select
+                      value={userPerfil}
+                      style={{ width: 100, fontSize: '12px' }}
+                      onChange={handleSelectChange}
+                      size="small"
+                    >
+                      {profiles.map((perfil, index) => (
+                        <Select.Option key={index} value={perfil}>
+                          {perfil}
+                        </Select.Option>
+                      ))}
+                    </Select></p>
                 </div>
               </div>
               <Link className="dropdown-item" href="/" onClick={clearAllCookies}>
@@ -127,7 +168,7 @@ const Header = () => {
         </ul>
       </div>
     </>
-  );
-};
+  )
+}
 
 export default Header;

@@ -54,8 +54,14 @@ export default function ProfileSelection() {
   }
 
   const handleLogout = () => {
+    const cookieKeys = Object.keys(Cookies.get())
+    cookieKeys.forEach((cookieKey) => {
+      Cookies.remove(cookieKey)
+    });
     router.push('/login')
   };
+
+
 
   return (
     <div className="d-flex align-items-center justify-content-center vh-100 bg-light position-relative">
