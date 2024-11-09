@@ -86,13 +86,13 @@ const Header = () => {
   const confirmChange = () => {
     try {
       setUserPerfil(selectedPerfil)
-      router.push('/dashboard')
       const encodedProfile = jwtEncode(selectedPerfil, 'a8f9s0fj0sdfff0s9fj#')
       Cookies.set('userProfile', encodedProfile)
       setIsModalOpen(false)
-      if (typeof window !== 'undefined' && window.location) {
+      router.push('/dashboard')
+      setTimeout(() => {
         window.location.reload()
-      }
+      }, 1000)
     } catch (error) {
       console.error('Erro ao atualizar o perfil no cookie:', error)
     }
