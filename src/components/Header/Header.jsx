@@ -8,15 +8,18 @@ import { getSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { Select } from 'antd';
+import { Select } from 'antd'
 import { useRouter } from 'next/navigation'
 import jwtEncode from 'jwt-encode'
+import { Modal } from 'antd'
 
 const Header = () => {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState()
   const [userPerfil, setUserPerfil] = useState()
   const [profiles, setProfiles] = useState([])
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedPerfil, setSelectedPerfil] = useState()
   const router = useRouter()
 
   useEffect(() => {
@@ -32,14 +35,14 @@ const Header = () => {
       const tokenDecoded = jwtDecode(tokenUser)
       const profilesDynamic = Object.keys(tokenDecoded).filter((key) => {
         try {
-          const permissions = JSON.parse(tokenDecoded[key]);
-          return Array.isArray(permissions);
+          const permissions = JSON.parse(tokenDecoded[key])
+          return Array.isArray(permissions)
         } catch (error) {
-          return false;
+          return false
         }
-      });
+      })
       setProfiles(profilesDynamic)
-    };
+    }
     fetchDataUser()
   }, [])
 
@@ -47,38 +50,53 @@ const Header = () => {
     if (typeof window !== 'undefined') {
       document.body.classList.toggle("mini-sidebar")
     }
-  };
+  }
 
   const handleSidebarMobileMenu = () => {
     if (typeof window !== 'undefined') {
       document.body.classList.toggle('slide-nav')
     }
-  };
+  }
 
   const clearAllCookies = () => {
     const cookieKeys = Object.keys(Cookies.get())
     cookieKeys.forEach((cookieKey) => {
       Cookies.remove(cookieKey)
-    });
+    })
     setIsDropdownOpen(false)
-  };
+  }
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev)
   }
 
   const handleSelectChange = selectedProfile => {
+    setSelectedPerfil(selectedProfile)
+    openModal()
+  }
+
+  const openModal = () => {
+    setIsModalOpen(true)
+  }
+
+  const cancelChange = () => {
+    setIsModalOpen(false)
+  }
+
+  const confirmChange = () => {
     try {
-      setUserPerfil(selectedProfile)
-      const encodedProfile = jwtEncode(selectedProfile, 'a8f9s0fj0sdfff0s9fj#')
+      setUserPerfil(selectedPerfil)
+      router.push('/dashboard')
+      const encodedProfile = jwtEncode(selectedPerfil, 'a8f9s0fj0sdfff0s9fj#')
       Cookies.set('userProfile', encodedProfile)
-      location.reload()
+      setIsModalOpen(false)
+      if (typeof window !== 'undefined' && window.location) {
+        window.location.reload()
+      }
     } catch (error) {
       console.error('Erro ao atualizar o perfil no cookie:', error)
     }
   }
-  
-  
 
   return (
     <>
@@ -167,8 +185,19 @@ const Header = () => {
           </li>
         </ul>
       </div>
+      <Modal
+        title="Mudança de Perfil"
+        open={isModalOpen}
+        onOk={confirmChange}
+        onCancel={cancelChange}
+        okText="Confirmar"
+        cancelText="Cancelar">
+        <p>
+          Você será redirecionado para a página inicial após a mudança de perfil.
+        </p>
+      </Modal>
     </>
   )
 }
 
-export default Header;
+export default Header
