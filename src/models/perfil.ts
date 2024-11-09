@@ -1,4 +1,4 @@
 interface Perfil {
-    tipo?: string
-    sub?: string
+    gerente: string
+    mentor: string
 }

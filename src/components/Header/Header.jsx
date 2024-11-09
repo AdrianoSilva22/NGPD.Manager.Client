@@ -18,11 +18,11 @@ const Header = () => {
     const fetchDataUser = async () => {
       const session = await getSession();
       setUser(session?.user);
-      const tokenUser = Cookies.get("tokenUserInfo");
-      const tokenDecoded = jwtDecode(tokenUser);
-      const objectAccess = JSON.parse(tokenDecoded.acesso);
-      const perfil = objectAccess.perfils[0];
-      setUserResponseBackend(perfil);
+      const perfilToken = Cookies.get("userProfile");
+      if (perfilToken) {
+        const perfil = jwtDecode(perfilToken);
+        setUserResponseBackend(perfil)
+      }
     };
     fetchDataUser();
   }, []);
@@ -44,11 +44,11 @@ const Header = () => {
     cookieKeys.forEach((cookieKey) => {
       Cookies.remove(cookieKey);
     });
-    setIsDropdownOpen(false); 
+    setIsDropdownOpen(false);
   };
 
   const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev); 
+    setIsDropdownOpen((prev) => !prev);
   };
 
   return (
