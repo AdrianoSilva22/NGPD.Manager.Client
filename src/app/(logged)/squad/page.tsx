@@ -140,13 +140,15 @@ export default function SquadsPagination() {
     }
 
     const fetchUserRole = () => {
-        const userInfoToken = Cookies.get("tokenUserInfo")
-        if (userInfoToken) {
-            const tokenDecoded = jwtDecode(userInfoToken) as TokenDecoded
-            const objectAcessTipo = JSON.parse(tokenDecoded.acesso)
-            const emailPerfil = tokenDecoded.sub
-            const tipoPerfil = objectAcessTipo.perfils[0];
-            setPerfil((p) => ({ ...p, tipo: tipoPerfil }))
+
+        const tokenUser = Cookies.get("tokenUserInfo")
+
+        if (tokenUser) {
+            const perfil = Cookies.get("userProfile") as string
+            const tokenDecoded = jwtDecode(tokenUser) as TokenDecoded
+            const emailPerfil = tokenDecoded.sub as string
+
+            setPerfil((p) => ({ ...p, tipo: perfil }))
             setPerfil((p) => ({ ...p, sub: emailPerfil }))
         }
     }
