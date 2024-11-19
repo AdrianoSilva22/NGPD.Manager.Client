@@ -137,11 +137,13 @@ export default function SquadsPagination() {
             dataIndex: "mentorId",
             render: (mentorId: string, squad: Squad) => {
                 if (perfil?.tipo === "gerente") {
+                   const mentorName = mentores.find((m) => m.id == mentorId)?.name
                     return (
                         <Select
                             style={{ width: 120 }}
                             onChange={(value) => allocateMentor(squad.id, value)}
                             placeholder="Selecione um mentor"
+                            value={mentorName}
                         >
                             {mentores.map((mentor) => (
                                 <Select.Option key={mentor.id} value={mentor.email}>
