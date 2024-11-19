@@ -20,7 +20,7 @@ export default function InstitutionsPaginition() {
     const [pageInfo, setPageInfo] = useState<Page>();
     const [isLoading, setIsLoading] = useState(false);
     const [] = useAtom(globalStateAtomId);
-    const PAGE_SIZE = 15;
+    const PAGE_SIZE = 2;
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedInstituion, setSelectedInstituion] = useState<Institution | null>(null);
     const [institutionSelected, setInstitutionSelected] = useState<Institution | null>(null);
@@ -101,9 +101,11 @@ export default function InstitutionsPaginition() {
 
     const deleteInstituicao = async (instituion: Institution) => {
         try {
-            await deleteEntity(instituion.id);
-            const filteredinstitutions = institutions?.filter((i) => i.id !== instituion.id);
-            setInstitutions(filteredinstitutions);
+            await deleteEntity(instituion.id)
+            const institutionsRemaining = institutions?.filter((i) => i.id !== instituion.id)
+            setInstitutions(institutionsRemaining)
+            setInstitutionsFiltro(institutionsRemaining)
+            setInstitutionSelected(null)
             mensagemSucesso("Instituição deletada com sucesso!");
         } catch (error) {
             console.log(error);
