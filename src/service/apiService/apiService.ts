@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import { jwtDecode } from "jwt-decode";
 
 export const apiService = axios.create({
     baseURL: "http://localhost:5189/api"
@@ -16,7 +17,9 @@ apiService.interceptors.request.use(
     }
 
     if (userProfile) {
-      config.headers['X-User-Profile'] = userProfile
+      const userProfileDecoded = jwtDecode(userProfile) as string;
+
+      config.headers['X-User-Profile'] = userProfileDecoded
     }
 
     return config
