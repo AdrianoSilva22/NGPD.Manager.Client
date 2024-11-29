@@ -41,7 +41,7 @@ export default function ClassUpdate() {
 
     const handleInstitutionSelect = (selectedOption: SingleValue<PropsOption>) => {
         const selectedRole = roles.find(rol => rol.id === selectedOption?.value) || null;
-        setUser({ ...user, perfil: selectedRole?.id, perfil: selectedRole?.role });
+        setUser({ ...user, perfil: selectedRole?.id });
     };
 
     const registerUser = async () => {
