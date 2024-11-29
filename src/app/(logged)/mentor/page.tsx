@@ -146,7 +146,7 @@ export default function MentoresPaginition() {
                                                         pagination={paginationConfig}
                                                         columns={columTable}
                                                         dataSource={mentores}
-                                                        rowKey={(mentor: Mentor) => mentor.contact}
+                                                        rowKey={(mentor: Mentor) => mentor.email}
                                                     />
                                                 </div>
                                             )
