@@ -1,12 +1,12 @@
 export interface User {
   name: string;
-  contact: string
-  roleId: string | undefined
+  email: string
+  perfil: string | undefined
 }
 
 
 export const initialValueUser: User = {
     name: '',
-    contact: '',
-    roleId: ''
+    email: '',
+    perfil: ''
 }
