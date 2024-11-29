@@ -15,29 +15,34 @@ export default function ClassUpdate() {
     const [user, setUser] = useState<User>(initialValueUser);
     const [roles, setRoles] = useState<OutputRoles[]>([]);
     const { registerEntity } = UserServices
+
     useEffect(() => {
         fetchRoles()
     }, []);
 
     const fetchRoles = async () => {
         try {
-            const roles = (await apiService.get(`http://localhost:5293/api/v1/User/Role`)).data
-            setRoles(roles.outPutRoles)
+            const response = await apiService.get(`http://localhost:5189/api/Perfil?PageSize=15&PageNumber=0&Sort=asc`);
+            const rolesData = response.data;
+            // Mapear corretamente a lista recebida
+            setRoles(rolesData.list.map((item: any) => ({
+                id: item.id,
+                role: item.tipo, // Ajuste conforme a nomenclatura correta
+            })));
         } catch (error) {
-            console.error(error);
+            console.error('Erro ao buscar cargos:', error);
         }
     };
 
     const institutionOptions = roles.map(role => ({
         value: role.id,
-        label: role.role,
+        label: role.role, // Aqui estamos pegando 'role' que agora é o 'tipo'
     }));
 
     const handleInstitutionSelect = (selectedOption: SingleValue<PropsOption>) => {
         const selectedRole = roles.find(rol => rol.id === selectedOption?.value) || null;
-        setUser({ ...user, roleId: selectedRole?.id });
+        setUser({ ...user, perfil: selectedRole?.id, perfil: selectedRole?.role });
     };
-
 
     const registerUser = async () => {
         try {
@@ -84,7 +89,7 @@ export default function ClassUpdate() {
                                                     <div className="col-12 col-sm-4">
                                                         <div className="form-group local-forms">
                                                             <label>
-                                                                name <span className="login-danger">*</span>
+                                                                Nome <span className="login-danger">*</span>
                                                             </label>
                                                             <Input
                                                                 value={user.name}
@@ -97,8 +102,8 @@ export default function ClassUpdate() {
                                                                 Email <span className="login-danger">*</span>
                                                             </label>
                                                             <EmailInput
-                                                                value={user.contact}
-                                                                onChange={(value: string) => setUser({ ...user, contact: value })} />
+                                                                value={user.email}
+                                                                onChange={(value: string) => setUser({ ...user, email: value })} />
                                                         </div>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
