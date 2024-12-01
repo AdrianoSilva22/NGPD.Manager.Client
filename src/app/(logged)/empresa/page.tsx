@@ -175,7 +175,7 @@ export default function EmpresasPaginition() {
                                 pagination={paginationConfig}
                                 columns={columTable}
                                 dataSource={empresas}
-                                rowKey={(empresa: Empresa) => empresa.contact}
+                                rowKey={(empresa: Empresa) => empresa.email}
                             />
                         </div>
                     }
