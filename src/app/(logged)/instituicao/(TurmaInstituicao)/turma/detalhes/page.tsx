@@ -146,7 +146,7 @@ export default function ClassesPagination() {
                                                                         {record.listStudant.map((student: Student) => (
                                                                             <tr key={student.id}>
                                                                                 <td>{student.name}</td>
-                                                                                <td>{student.contact}</td>
+                                                                                <td>{student.email}</td>
                                                                             </tr>
                                                                         ))}
                                                                     </tbody>

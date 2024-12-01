@@ -116,7 +116,7 @@ const DetailsCompany = () => {
                                         <tbody>
                                             <tr key={record.id}>
                                                 <td>{record.name}</td>
-                                                <td>{record.contact}</td>
+                                                <td>{record.email}</td>
                                             </tr>
                                         </tbody>
                                     </table>
