@@ -42,7 +42,9 @@ const LoadingPage = () => {
 
             if (profiles.length > 1) {
               router.push('/profileSelection');
-            } else if (profiles.length === 1 && tokenDecoded[profiles[0]] && JSON.parse(tokenDecoded[profiles[0]]).length > 0) {
+            } else if (profiles.length === 1) {
+              console.log('entrou');
+              
               const encodedProfile = jwtEncode(profiles[0], 'a8f9s0fj0sdfff0s9fj#');
               Cookies.set('userProfile', encodedProfile);
               router.push('/dashboard');
