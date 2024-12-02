@@ -115,7 +115,7 @@ const StudentUpdate = () => {
                                 className="w-100 local-forms select"
                                 onChange={getValueSelectTurma}
                                 options={turmaOptions}
-                                placeholder="Selecione uma Turma"
+                                placeholder="Selecione  uma Turma"
                             />
                         </div>
                     </div>

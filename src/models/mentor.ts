@@ -1,11 +1,11 @@
 export interface Mentor {
     id: string,
     name: string,
-    contact: string
+    email: string
 }
 
 export const initialValueMentor: Mentor = {
     id: '',
     name: '',
-    contact: ''
+    email: ''
 }

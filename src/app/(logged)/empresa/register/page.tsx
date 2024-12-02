@@ -56,8 +56,8 @@ export default function EmpresaRegister() {
                                                 <div className="form-group local-forms">
                                                     <label>Email <span className="login-danger">*</span></label>
                                                     <EmailInput
-                                                        value={empresa.contact}
-                                                        onChange={(value: string) => setEmpresa({ ...empresa, contact: value })}
+                                                        value={empresa.email}
+                                                        onChange={(value: string) => setEmpresa({ ...empresa, email: value })}
                                                     />
                                                 </div>
                                             </div>

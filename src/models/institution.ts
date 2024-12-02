@@ -2,7 +2,7 @@
 export interface Institution {
     id: string
     name: string;
-    contact: string;
+    email: string;
 }
 
 export interface Page {
@@ -18,7 +18,7 @@ export interface Page {
 
  export const initialvalueInstitution: Institution = {
     id: '',
-    contact: '',
+    email: '',
     name: ''
 }
 

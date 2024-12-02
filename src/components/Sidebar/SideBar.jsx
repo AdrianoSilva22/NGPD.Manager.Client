@@ -15,16 +15,12 @@ const Sidebar = (props) => {
   };
 
   useEffect(() => {
-    const tokenUser = Cookies.get("tokenUserInfo");
-    if (tokenUser) {
-      const tokenDecoded = jwtDecode(tokenUser);
-      const objectAcess = JSON.parse(tokenDecoded.acesso);
-      const perfil = objectAcess.perfils[0];
-
+    const perfilToken = Cookies.get("userProfile");
+    if (perfilToken) {
+      const perfil = jwtDecode(perfilToken);
       setUserRole(perfil);
     }
 
-    // Verifique se estamos no lado do cliente
     if (typeof window !== 'undefined') {
       function handleMouseOver(e) {
         e.stopPropagation();

@@ -18,38 +18,46 @@ import ReactPaginate from "react-paginate";
 
 export default function ClassesPaginition() {
 
-    const [listClassIes, setListClassIes] = useState<ClassIes[]>()
-    const { deleteEntity } = ClassIesServiceDelete
-    const [pageIndex, setPage] = useState(0)
-    const [pageInfo, setPageInfo] = useState<Page>()
-    const [, SetGlobalStateAtomId] = useAtom(globalStateAtomId)
+    const [listClassIes, setListClassIes] = useState<ClassIes[]>([]);
+    const { deleteEntity } = ClassIesServiceDelete;
+    const [pageIndex, setPage] = useState(0);
+    const [pageInfo, setPageInfo] = useState<Page | null>(null);
+    const [, SetGlobalStateAtomId] = useAtom(globalStateAtomId);
     const [loading, setLoading] = useState(true);
-    const PAGE_SIZE = 15
-    const [isModalVisible, setIsModalVisible] = useState(false)
-    const [selectedClassIes, setSelectedClassIes] = useState<ClassIes | null>(null)
+    const PAGE_SIZE = 15;
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedClassIes, setSelectedClassIes] = useState<ClassIes | null>(null);
 
     useEffect(() => {
         const getPageInfo = async () => {
-            const url = `http://localhost:5293/api/v1/Institution/TurmaIes/GetAllTurmaIes?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
             try {
-                const pageInfoResponse = await apiService.get(url)
-                setPageInfo(pageInfoResponse.data)
-                setListClassIes(pageInfoResponse.data.listClassIes)
+                setLoading(true);
+                const url = `http://localhost:5189/api/Turma?PageSize=${PAGE_SIZE}&PageNumber=${pageIndex}&Sort=asc`;
+                const pageInfoResponse = await apiService.get(url);
+                setPageInfo({
+                    currentePage: pageInfoResponse.data.currentePage,
+                    pageSize: pageInfoResponse.data.pageSize,
+                    totalCount: pageInfoResponse.data.totalCount,
+                    pageCount: pageInfoResponse.data.pageCount,
+                    list: pageInfoResponse.data.list
+                });
+                setListClassIes(pageInfoResponse.data.list);
                 setLoading(false);
             } catch (error) {
                 console.error(error);
+                setLoading(false);
             }
-        }
-        getPageInfo()
-    }, [pageIndex])
+        };
+        getPageInfo();
+    }, [pageIndex]);
 
     const deleteClassIes = async (classIes: ClassIes) => {
         try {
             if (listClassIes) {
-                await deleteEntity(classIes.id)
-                const filterlistClassIes = listClassIes.filter(i => i.id !== classIes.id)
-                setListClassIes(filterlistClassIes)
-                mensagemSucesso("Turma deletada com sucesso!")
+                await deleteEntity(classIes.id);
+                const filterlistClassIes = listClassIes.filter(i => i.id !== classIes.id);
+                setListClassIes(filterlistClassIes);
+                mensagemSucesso("Turma deletada com sucesso!");
             }
         } catch (error) {
             console.log(error);
@@ -75,88 +83,42 @@ export default function ClassesPaginition() {
         setSelectedClassIes(null);
     };
 
-
     const columTable = [
         {
             title: 'Curso',
-            dataIndex: 'course',
-        },
-        {
-            title: 'Turno',
-            dataIndex: 'shift',
-        },
-        {
-            title: 'Ano de Ingresso',
-            dataIndex: 'period',
+            dataIndex: 'name',
         },
         {
             title: 'Ações',
             key: 'acoes',
             render: (classIes: ClassIes) => (
-                
                 <>
-
-                <div className="btn-rounded">
-                  <button
-                    type="button"
-                    className="btn btn-primary dropdown-toggle me-1"
-                    data-bs-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    Ações
-                  </button>
-                  <div className="dropdown-menu">
-                    <Link href={{ pathname: '/instituicao/turma/register',  }} className="dropdown-item" >
-                      Adicionar  Turma
-                    </Link>
-                    <Link href={{ pathname: '/instituicao/turma/detalhes', query: { Id: classIes.id } }} className="dropdown-item" >
-                     Visualizar  Turma
-                    </Link>
-                  {/* <Link href={{ pathname: '/instituicao/turma/update', query: { Id: classIes.id } }} className="dropdown-item">
-                            Editar Turma
-                        </Link> */}
-                    <Link href={{ pathname: '/instituicao/turma/disponibilidade', query: { Id: classIes.id } }} className="dropdown-item"  >
-                    Editar disponibilidade
-                    </Link>
-                    <div className="dropdown-divider" />
-                    <button onClick={() => showDeleteConfirm(classIes)} className="dropdown-item" role="button" color="red" >
-                    Deletar  Turma
-                    </button>
-                  </div>
-                  </div>
-            
-                
-
-                    {/* <button id="button-delete" onClick={() => showDeleteConfirm(classIes)}>
-                        <Link href="#" className="btn btn-sm bg-success-light me-2">
-                            <i>
-                                <FeatherIcon icon="trash" size={16} />
-                            </i>
-                        </Link>
-                    </button>
-
-                    <button id="button-update" onClick={() => {
-                        SetGlobalStateAtomId(classIes.id)
-                    }}>
-                        <Link href={{ pathname: '/instituicao/turma/update', }} className="btn btn-sm bg-danger-light">
-                            <i>
-                                <FeatherIcon icon="edit" size={18} />
-                            </i>
-                        </Link>
-                    </button>
-
-                    <Link href={{ pathname: '/instituicao/turma/detalhes', query: { Id: classIes.id } }} className="btn btn-sm bg-danger-light">
-                        <i>
-                            <FeatherIcon icon="eye" size={20} />
-                        </i>
-                    </Link>
-
-                    <Link href={{ pathname: '/instituicao/turma/disponibilidade', query: { Id: classIes.id } }} className="btn btn-sm bg-danger-light">
-                        <i>
-                            <FeatherIcon icon="clock" size={20} />
-                        </i>
-                    </Link> */}
+                    <div className="btn-rounded">
+                        <button
+                            type="button"
+                            className="btn btn-primary dropdown-toggle me-1"
+                            data-bs-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                        >
+                            Ações
+                        </button>
+                        <div className="dropdown-menu">
+                            <Link href={{ pathname: '/instituicao/turma/register' }} className="dropdown-item" >
+                                Adicionar Turma
+                            </Link>
+                            <Link href={{ pathname: '/instituicao/turma/detalhes', query: { Id: classIes.id } }} className="dropdown-item" >
+                                Visualizar Turma
+                            </Link>
+                            <Link href={{ pathname: '/instituicao/turma/disponibilidade', query: { Id: classIes.id } }} className="dropdown-item"  >
+                                Editar disponibilidade
+                            </Link>
+                            <div className="dropdown-divider" />
+                            <button onClick={() => showDeleteConfirm(classIes)} className="dropdown-item" role="button" color="red" >
+                                Deletar Turma
+                            </button>
+                        </div>
+                    </div>
                 </>
             ),
         },
@@ -275,7 +237,6 @@ export default function ClassesPaginition() {
             >
                 <p>Você tem certeza que deseja excluir esta Empresa?</p>
             </Modal>
-
         </>
     )
 }

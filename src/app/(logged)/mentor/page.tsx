@@ -3,7 +3,7 @@ import { Page } from "@/models/institution";
 import { Mentor } from "@/models/mentor";
 import { apiService } from "@/service/apiService/apiService";
 import "@/styles/pagination.css";
-import { Spin, Table } from "antd";
+import { Spin, Table, TablePaginationConfig } from "antd";
 import FeatherIcon from "feather-icons-react";
 import Link from 'next/link';
 import { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ import ReactPaginate from "react-paginate";
 
 export default function MentoresPaginition() {
     const [mentores, setMentores] = useState<Mentor[]>();
-    const [pageIndex, setPage] = useState(0);
+    const [pageNumber, setPage] = useState(0);
     const [pageInfo, setPageInfo] = useState<Page>();
     const [isLoading, setIsLoading] = useState(false);
     const PAGE_SIZE = 15;
@@ -21,19 +21,36 @@ export default function MentoresPaginition() {
     useEffect(() => {
         const getPageInfo = async () => {
             try {
-                setIsLoading(true); // Iniciar carregamento
-                const url = `http://localhost:5293/api/v1/Mentor?page=${pageIndex + 1}&pageSize=${PAGE_SIZE}`
-                const pageInfoResponse = await apiService.get(url)
-                setPageInfo(pageInfoResponse.data)
-                setMentores(pageInfoResponse.data.mentor)
+                const url = `Mentor?PageNumber=${pageNumber}&pageSize=${PAGE_SIZE}&Sort=asc`
+                const pageInfoResponse = await apiService.get(url);
+                setPageInfo({
+                    currentePage: pageInfoResponse.data.currentePage,
+                    pageSize: pageInfoResponse.data.pageSize,
+                    totalCount: pageInfoResponse.data.totalCount,
+                    pageCount: pageInfoResponse.data.pageCount,
+                    list: pageInfoResponse.data.list
+                });
+                setMentores(pageInfoResponse.data.list);
             } catch (error) {
                 console.error(error);
-            } finally {
-                setIsLoading(false);
             }
-        }
-        getPageInfo()
-    }, [pageIndex])
+        };
+        getPageInfo();
+    }, [pageNumber]);
+
+    const paginationConfig: TablePaginationConfig = {
+        current: pageNumber + 1,
+        pageSize: PAGE_SIZE,
+        total: pageInfo ? Math.ceil(pageInfo.totalCount / PAGE_SIZE) : 0,
+        onChange: (page, size) => {
+            if (page === 1) {
+                setPage(0)
+            } else if (page > 1) {
+                setPage(page - 1)
+            }
+        },
+    };
+
 
     const columTable = [
         {
@@ -43,8 +60,8 @@ export default function MentoresPaginition() {
         },
         {
             title: 'Email',
-            dataIndex: 'contact',
-            key: 'contact',
+            dataIndex: 'email',
+            key: 'email',
         },
         {
             title: 'Ações',
@@ -126,35 +143,13 @@ export default function MentoresPaginition() {
                                             pageInfo && (
                                                 <div className="table-responsive">
                                                     <Table
-                                                        pagination={false}
+                                                        pagination={paginationConfig}
                                                         columns={columTable}
                                                         dataSource={mentores}
-                                                        rowKey={(mentor: Mentor) => mentor.contact}
+                                                        rowKey={(mentor: Mentor) => mentor.email}
                                                     />
                                                 </div>
                                             )
-                                        )
-                                    }
-                                    {
-                                        pageInfo && (
-                                            <ReactPaginate
-                                                containerClassName={"pagination"}
-                                                pageClassName={"page-item"}
-                                                activeClassName={"active"}
-                                                onPageChange={(event) => setPage(event.selected)}
-                                                pageCount={Math.ceil(pageInfo.totalCount / 15)}
-                                                breakLabel="..."
-                                                previousLabel={
-                                                    < IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                                        <AiFillLeftCircle />
-                                                    </IconContext.Provider>
-                                                }
-                                                nextLabel={
-                                                    <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                                        <AiFillRightCircle />
-                                                    </IconContext.Provider>
-                                                }
-                                            />
                                         )
                                     }
                                 </div>

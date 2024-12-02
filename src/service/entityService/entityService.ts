@@ -35,7 +35,7 @@ export const EntityService = <T>(url: string) => {
     }
 
     const deleteEntity = (id: string) => {
-        return apiService.delete(`${url}?id=${id}`)
+        return apiService.delete(`${url}/${id}`)
     }
 
     return {

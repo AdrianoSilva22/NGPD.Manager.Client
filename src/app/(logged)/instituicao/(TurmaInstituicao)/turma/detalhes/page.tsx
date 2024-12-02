@@ -125,7 +125,7 @@ export default function ClassesPagination() {
                                                                 <tbody>
                                                                     <tr key={record.institution.id}>
                                                                         <td>{record.institution.name}</td>
-                                                                        <td>{record.institution.contact}</td>
+                                                                        <td>{record.institution.email}</td>
                                                                     </tr>
                                                                 </tbody>
                                                             </table>

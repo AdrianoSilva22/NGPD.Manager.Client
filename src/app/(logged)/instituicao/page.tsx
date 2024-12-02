@@ -1,58 +1,115 @@
-"use client"
+'use client'
 import { globalStateAtomId } from "@/atoms/atoms";
 import { Institution, Page } from "@/models/institution";
 import { mensagemErro, mensagemSucesso } from "@/models/toastr";
 import { apiService } from "@/service/apiService/apiService";
 import { InstituitionServices } from "@/service/institution";
 import "@/styles/pagination.css";
-import { Modal, Spin, Table } from "antd";
-import FeatherIcon from "feather-icons-react";
+import { Modal, Spin, Table, TablePaginationConfig } from "antd";
 import { useAtom } from "jotai";
-import Link from 'next/link';
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { IconContext } from "react-icons";
-import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai";
-import ReactPaginate from "react-paginate";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
-
+import Select, { components } from "react-select";
+import { CloseCircleOutlined } from "@ant-design/icons";
 
 export default function InstitutionsPaginition() {
-    const [institutions, setInstitutions] = useState<Institution[]>();
+    const [institutions, setInstitutions] = useState<Institution[]>([]);
+    const [institutionsFiltro, setInstitutionsFiltro] = useState<Institution[]>([]);
     const { deleteEntity } = InstituitionServices;
-    const [pageIndex, setPage] = useState(0);
+    const [pageNumber, setPage] = useState(0);
     const [pageInfo, setPageInfo] = useState<Page>();
     const [isLoading, setIsLoading] = useState(false);
     const [] = useAtom(globalStateAtomId);
-    const PAGE_SIZE = 15;
-    const [isModalVisible, setIsModalVisible] = useState(false)
-    const [selectedInstituion, setSelectedInstituion] = useState<Institution | null>(null)
+    const PAGE_SIZE = 2;
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedInstituion, setSelectedInstituion] = useState<Institution | null>(null);
+    const [institutionSelected, setInstitutionSelected] = useState<Institution | null>(null);
+    const [dropdownVisible, setDropdownVisible] = useState<string | null>(null);
+
+    const options = institutionsFiltro.map((instituion) => ({
+        value: instituion.id,
+        label: instituion.name,
+    }));
+
+    const handleChange = (selectedOption: any) => {
+        if (selectedOption) {
+            const selectedInstitution = institutionsFiltro.find(
+                (institution) => institution.id === selectedOption.value
+            );
+            setInstitutionSelected(selectedInstitution || null)
+        }
+    };
+
+    const CustomDropdownIndicator = (props: any) => {
+
+        const handleClearSelection = () => {
+            setInstitutionSelected(null);
+        };
+        return (
+            <components.DropdownIndicator {...props}>
+                <CloseCircleOutlined
+                    style={{ fontSize: 16 }}
+                    onClick={handleClearSelection}
+                />
+            </components.DropdownIndicator>
+        );
+    };
 
     useEffect(() => {
         const getPageInfo = async () => {
             try {
-                setIsLoading(true)
-                const url = `http://localhost:5189/api/Ies?PageNumber=${pageIndex + 1}&pageSize=${PAGE_SIZE}&Sort=asc`
-                const pageInfoResponse = await apiService.get(url)
-                setPageInfo(pageInfoResponse.data)
-                setInstitutions(pageInfoResponse.data.institution)
+                setIsLoading(true);
+
+                const url = `Ies?PageNumber=${pageNumber}&pageSize=${PAGE_SIZE}&Sort=asc`;
+                const urlFiltro = `Ies?PageNumber=${0}&pageSize=${99999999}&Sort=asc`;
+
+                const pageInfoResponseFiltro = await apiService.get(urlFiltro);
+                const pageInfoResponse = await apiService.get(url);
+
+                setPageInfo({
+                    currentePage: pageInfoResponse.data.currentePage,
+                    pageSize: pageInfoResponse.data.pageSize,
+                    totalCount: pageInfoResponse.data.totalCount,
+                    pageCount: pageInfoResponse.data.pageCount,
+                    list: pageInfoResponse.data.list,
+                });
+
+                setInstitutions(pageInfoResponse.data.list);
+                setInstitutionsFiltro(pageInfoResponseFiltro.data.list);
             } catch (error) {
                 console.error(error);
             } finally {
                 setIsLoading(false);
             }
-        }
-        getPageInfo()
-    }, [pageIndex])
+        };
 
-    const deleteInstituicao = async (institution: Institution) => {
+        getPageInfo();
+    }, [pageNumber]);
+
+    const paginationConfig: TablePaginationConfig = {
+        current: pageNumber + 1,
+        pageSize: PAGE_SIZE,
+        total: pageInfo ? Math.ceil(pageInfo.totalCount / PAGE_SIZE) : 0,
+        onChange: (page, size) => {
+            if (page === 1) {
+                setPage(0);
+            } else if (page > 1) {
+                setPage(page - 1);
+            }
+        },
+    };
+
+    const deleteInstituicao = async (instituion: Institution) => {
         try {
-            await deleteEntity(institution.id);
-            const filteredInstitutions = institutions?.filter(i => i.contact !== institution.contact);
-            setInstitutions(filteredInstitutions);
+            await deleteEntity(instituion.id)
+            const institutionsRemaining = institutions?.filter((i) => i.id !== instituion.id)
+            setInstitutions(institutionsRemaining)
+            setInstitutionsFiltro(institutionsRemaining)
+            setInstitutionSelected(null)
             mensagemSucesso("Instituição deletada com sucesso!");
         } catch (error) {
             console.log(error);
-            mensagemErro('Erro ao excluir Instituição');
+            mensagemErro("Erro ao excluir institution");
         }
     };
 
@@ -74,6 +131,10 @@ export default function InstitutionsPaginition() {
         setSelectedInstituion(null);
     };
 
+    const toggleDropdown = (institutionId: string) => {
+        setDropdownVisible(dropdownVisible === institutionId ? null : institutionId);
+    };
+
     const columTable = [
         {
             title: 'Nome',
@@ -82,48 +143,52 @@ export default function InstitutionsPaginition() {
         },
         {
             title: 'Contato',
-            dataIndex: 'contact',
-            key: 'contact',
+            dataIndex: 'email',
+            key: 'email',
         },
         {
             title: 'Ações',
             key: 'acoes',
             render: (institution: Institution) => (
-
-                
                 <>
-
-    <div className="btn-rounded">
-                  <button
-                    type="button"
-                    className="btn btn-primary dropdown-toggle me-1"
-                    data-bs-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    Ações
-                  </button>
-                  <div className="dropdown-menu">
-                    <Link href={{ pathname: '/empresa/register',  }} className="dropdown-item" >
-                      Adicionar uma Insituição
-                    </Link>
-                    <Link  href={{ pathname: '/instituicao/detalhes', query: { Id: institution.id } }} className="dropdown-item" >
-                     Visualizar uma Insituição
-                    </Link>
-                    <Link  href={{ pathname: '/instituicao/update', query: { Id: institution.id } }} className="dropdown-item" >
-                     Editar uma Insituição
-                    </Link>
-                    <div className="dropdown-divider" />
-                    <button onClick={() => showDeleteConfirm(institution)} className="dropdown-item" role="button">
-                    Deletar uma instituição
-                    </button>
-                  </div>
-                </div>
-              
-            </>
-        ),
-    },
-];
+                    <div className="btn-rounded">
+                        <button
+                            type="button"
+                            className="btn btn-primary dropdown-toggle me-1"
+                            onClick={() => toggleDropdown(institution.id)}
+                        >
+                            Ações
+                        </button>
+                        {dropdownVisible === institution.id && (
+                            <div className="dropdown-menu show">
+                                <Link href="/institution/register" className="dropdown-item">
+                                    Adicionar uma Instituição
+                                </Link>
+    
+                                <Link href={{ pathname: '/institution/update', query: { Id: institution.id } }} className="dropdown-item">
+                                    Editar uma instituição
+                                </Link>
+    
+                                <Link href={{ pathname: '/institution/detalhes', query: { Id: institution.id } }} className="dropdown-item">
+                                    Detalhes
+                                </Link>
+    
+                                <Link href={{ pathname: '/institution/disponibilidade', query: { Id: institution.id } }} className="dropdown-item">
+                                    Editar disponibilidade
+                                </Link>
+    
+                                <div className="dropdown-divider" />
+    
+                                <button onClick={() => showDeleteConfirm(institution)} className="dropdown-item" role="button">
+                                    Deletar uma instituição
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </>
+            ),
+        },
+    ];
 
     return (
         <>
@@ -139,75 +204,59 @@ export default function InstitutionsPaginition() {
                                 </div>
                             </div>
                         </div>
+
                         <div className="student-group-form">
                             <div className="row">
                                 <div className="col-lg-3 col-md-6">
                                     <div className="form-group">
+                                        <Select
+                                            options={options}
+                                            placeholder="Pesquisar pelo Nome"
+                                            onChange={handleChange}
+                                            components={{
+                                                DropdownIndicator: CustomDropdownIndicator,
+                                            }}
+                                            value={institutionSelected ? { value: institutionSelected.id, label: institutionSelected.name } : "Pesquisar pelo Nome"}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="col-lg-2">
                                     <div className="search-student-btn">
-                                <Link    href="/instituicao/register">
-                                <button type="button" className="btn btn-primary">Incluir</button>
-                                </Link>
-                                </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-3 col-md-6">
-                                    <div className="form-group">
-                                       
-                                    </div>
-                                </div>
-                                <div className="col-lg-3 col-md-6">
-                                    <div className="form-group">
-                                        
+                                        <Link href="/instituicao/register">
+                                            <button type="button" className="btn btn-primary">Incluir</button>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
-                            
-                            
                         </div>
-                    </div>
-                                    {
-                                        isLoading ? (
-                                            <div className="loading-spinner">
-                                                <Spin size="large" />
-                                            </div>
-                                        ) : (
-                                            pageInfo && (
-                                                <div className="table-responsive">
-                                                    <Table
-                                                        pagination={false}
-                                                        columns={columTable}
-                                                        dataSource={institutions}
-                                                        rowKey={(institution: Institution) => institution.contact}
-                                                    />
-                                                </div>
-                                            )
-                                        )
-                                    }
-                                    {
-                                        pageInfo && (
-                                            <ReactPaginate
-                                                containerClassName={"pagination"}
-                                                pageClassName={"page-item"}
-                                                activeClassName={"active"}
-                                                onPageChange={(event) => setPage(event.selected)}
-                                                pageCount={Math.ceil(pageInfo.totalCount / 15)}
-                                                breakLabel="..."
-                                                previousLabel={
-                                                    < IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                                        <AiFillLeftCircle />
-                                                    </IconContext.Provider>
-                                                }
-                                                nextLabel={
-                                                    <IconContext.Provider value={{ color: "#B8C1CC", size: "26px" }}>
-                                                        <AiFillRightCircle />
-                                                    </IconContext.Provider>
-                                                }
-                                            />
-                                        )
-                                    }
-                                </div>
+
+                        {isLoading ? (
+                            <div className="loading-spinner">
+                                <Spin size="large" />
                             </div>
-               
+                        ) : institutionSelected ? (
+                            <div className="table-responsive">
+                                <Table
+                                    pagination={false}
+                                    columns={columTable}
+                                    dataSource={institutionSelected ? [institutionSelected] : []}
+                                    rowKey={(institution: Institution) => institution.id}
+                                />
+                            </div>
+                        ) : (
+                            <div className="table-responsive">
+                                <Table
+                                    pagination={paginationConfig}
+                                    columns={columTable}
+                                    dataSource={institutions}
+                                    rowKey={(institution: Institution) => institution.id}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
             <Modal
                 title="Confirmação de Exclusão"
                 visible={isModalVisible}
@@ -216,8 +265,8 @@ export default function InstitutionsPaginition() {
                 okText="Sim"
                 cancelText="Não"
             >
-                <p>Você tem certeza que deseja excluir esta Instituicao?</p>
+                <p>Você tem certeza que deseja excluir esta Instituição?</p>
             </Modal>
         </>
-    )
+    );
 }

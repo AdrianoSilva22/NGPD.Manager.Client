@@ -114,11 +114,13 @@ a {
 }
 
 .select-placeholder-dark .ant-select-selection-placeholder {
-    color: black; /* Ou qualquer cor que você prefira para o texto do placeholder quando um mentor está alocado */
+	color: black;
+	/* Ou qualquer cor que você prefira para o texto do placeholder quando um mentor está alocado */
 }
 
 .select-placeholder-light .ant-select-selection-placeholder {
-    color: gray; /* Ou qualquer cor que você prefira quando não há mentor alocado */
+	color: gray;
+	/* Ou qualquer cor que você prefira quando não há mentor alocado */
 }
 
 input,
@@ -162,6 +164,65 @@ textarea.form-control {
 .form-group {
 	margin-bottom: 1.25rem;
 }
+
+/* Estilos para o dropdown - Mantendo as classes do Bootstrap e adicionando a classe personalizada */
+.custom-dropdown .dropdown-menu {
+	position: absolute;
+	background-color: white;
+	box-shadow: 0 4px 8px rgba(114, 89, 89, 0.1);
+	padding: 10px;
+	right: 0;
+	z-index: 9999;
+	/* Garante que o dropdown fique acima de outros elementos */
+	visibility: hidden;
+	/* Inicialmente invisível */
+	opacity: 0;
+	/* Inicialmente invisível */
+	transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+	top: -40px;
+	/* Ajuste para ficar mais próximo do botão, pode ser ajustado */
+}
+
+.custom-dropdown .dropdown-menu.visible {
+	visibility: visible;
+	opacity: 1;
+}
+
+.custom-dropdown .dropdown-toggle {
+	cursor: pointer;
+}
+
+.custom-dropdown .dropdown-item {
+	text-decoration: none;
+	color: #333;
+	padding: 8px 16px;
+	display: block;
+}
+
+.custom-dropdown .dropdown-item:hover {
+	background-color: #f1f1f1;
+}
+
+/* Usando um seletor de ID com a classe para aumentar a especificidade */
+#cargo {
+	color: #4F72E1 !important; /* Adicionando !important para forçar a aplicação */
+  }
+  
+
+.custom-dropdown .user-header .avatar {
+	margin-right: 10px;
+}
+
+.custom-dropdown .user-text h6 {
+	font-size: 16px;
+	margin: 0;
+}
+
+.custom-dropdown .user-text p {
+	font-size: 12px;
+	color: #666;
+}
+
 
 #button-delete,
 #button-update {
@@ -830,7 +891,7 @@ table.table td h2 span {
 }
 
 .actions {
-		/* display: -webkit-box;
+	/* display: -webkit-box;
 		display: -ms-flexbox;
 		display: flex;
 		justify-content: end;
@@ -4466,7 +4527,7 @@ table.table-inbox tbody tr.checked {
 	min-width: 60px;
 	font-size: 14px;
 	font-weight: 700;
-	
+
 	padding: 11px 15px;
 }
 
@@ -10393,16 +10454,18 @@ body[data-layout-mode=dark] .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-o
 
 	.login-content {
 		display: flex;
-	  }
-	  
-	  .login-left {
-		order: 2; /* Inverte a ordem da div .login-left */
-	  }
-	  
-	  .login-right {
-		order: 1; /* Inverte a ordem da div .login-right */
-	  }
-	  
+	}
+
+	.login-left {
+		order: 2;
+		/* Inverte a ordem da div .login-left */
+	}
+
+	.login-right {
+		order: 1;
+		/* Inverte a ordem da div .login-right */
+	}
+
 
 
 	.login-wrapper .loginbox .login-left {

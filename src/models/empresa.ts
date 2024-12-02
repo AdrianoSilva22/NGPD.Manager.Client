@@ -3,7 +3,7 @@ import { Squad } from "./squad";
 export interface Empresa {
     id: string
     name: string
-    contact: string
+    email: string
     listSquad: Squad[] | null
     course: string;
     shift: string;
@@ -16,7 +16,7 @@ export interface Empresa {
 export const initialValueEmpresa: Empresa = {
     id: '',
     name: '',
-    contact: '',
+    email: '',
     listSquad: null,
     course: "",
     shift: "",
