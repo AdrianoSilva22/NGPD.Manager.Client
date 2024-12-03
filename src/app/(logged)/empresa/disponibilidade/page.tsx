@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react';
-import { Modal, Input, Button } from 'antd';
+import { Modal, Input, Button, message } from 'antd';
 import axios from 'axios';
 
 const horarios = Array.from({ length: 29 }, (_, i) => {
@@ -16,12 +16,13 @@ export default function Calendario() {
     const [titulo, setTitulo] = useState('');
     const [descricao, setDescricao] = useState('');
     const [empresaNome, setEmpresaNome] = useState('');
+    const [disponibilidadeId, setDisponibilidadeId] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchEmpresaNome = async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const empresaId = urlParams.get('Id');
-            if (empresaId) {    
+            if (empresaId) {
                 try {
                     const response = await axios.get(`http://localhost:5189/api/Empresa/${empresaId}`);
                     if (response.data && response.data.nome) {
@@ -38,45 +39,68 @@ export default function Calendario() {
         fetchEmpresaNome();
     }, []);
 
-    const handleSlotClick = (dia: string, hora: string) => {
-        setSelectedSlot({ dia, hora });
-        setIsModalVisible(true);
+    const handleSlotClick = async (dia: string, hora: string) => {
+        try {
+            // Busca o UUID da disponibilidade no banco de dados pelo dia e horário
+            const response = await axios.get(`http://localhost:5189/api/Disponibilidade`, {
+                params: { dia, hora }
+            });
+            if (response.data && response.data.length > 0) {
+                setDisponibilidadeId(response.data[0].id);
+                setSelectedSlot({ dia, hora });
+                setIsModalVisible(true);
+            } else {
+                message.error('Disponibilidade não encontrada para o horário selecionado.');
+            }
+        } catch (error) {
+            console.error('Erro ao buscar disponibilidade:', error);
+            message.error('Erro ao buscar disponibilidade.');
+        }
     };
 
     const handleOk = async () => {
-        if (selectedSlot) {
+        if (selectedSlot && disponibilidadeId) {
             const { dia, hora } = selectedSlot;
             const novoAgendamento = { hora, titulo, descricao };
-            setAgenda((prevAgenda) => {
-                const agendaDia = prevAgenda[dia] || [];
-                const novoHorario = agendaDia.some((item) => item.hora === hora)
-                    ? agendaDia.filter((item) => item.hora !== hora)
-                    : [...agendaDia, novoAgendamento];
-
-                return {
-                    ...prevAgenda,
-                    [dia]: novoHorario,
-                };
-            });
 
             try {
                 const urlParams = new URLSearchParams(window.location.search);
                 const empresaId = urlParams.get('Id');
-                const disponibilidadeId = 'your-disponibilidade-id'; // Substitua pelo valor real
-                await axios.post(`http://localhost:5189/api/Empresa/${empresaId}/assign-disponibilidade/${disponibilidadeId}`, {
+
+                const response = await axios.put(`http://localhost:5189/api/Disponibilidade/${disponibilidadeId}/reservar`, {
                     titulo,
                     descricao,
                     dia,
                     hora,
                 });
+
+                if (response.status === 200) {
+                    setAgenda((prevAgenda) => {
+                        const agendaDia = prevAgenda[dia] || [];
+                        const novoHorario = [...agendaDia, novoAgendamento];
+
+                        return {
+                            ...prevAgenda,
+                            [dia]: novoHorario,
+                        };
+                    });
+                    message.success('Agendamento realizado com sucesso!');
+                } else {
+                    message.error('Erro ao salvar agendamento. Tente novamente.');
+                }
             } catch (error) {
                 console.error('Erro ao salvar agendamento:', error);
+                message.error('Erro ao salvar agendamento.');
             }
+        } else {
+            message.error('Dados de disponibilidade inválidos.');
         }
+
         setIsModalVisible(false);
         setTitulo('');
         setDescricao('');
         setSelectedSlot(null);
+        setDisponibilidadeId(null);
     };
 
     const handleCancel = () => {
@@ -87,34 +111,6 @@ export default function Calendario() {
     };
 
     const diasSemana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
-
-    const handleUpdate = async () => {
-        try {
-            const selectedData = Object.entries(agenda).flatMap(([dia, slots]) =>
-                slots.map((slot) => ({ ...slot, dia }))
-            );
-            const urlParams = new URLSearchParams(window.location.search);
-            const empresaId = urlParams.get('Id');
-
-            const body = {
-                totalCount: selectedData.length,
-                totalPages: 1,
-                pageSize: selectedData.length,
-                currentPage: 1,
-                listAvailability: selectedData,
-            };
-
-            const url = `http://localhost:5293/api/v1/Empresa/AtualizarDisponibilidades?empresaId=${empresaId}`;
-            const response = await axios.put(url, body);
-            if (response.status === 200) {
-                console.log('Update successful');
-            } else {
-                console.error('Update failed', response.statusText);
-            }
-        } catch (error) {
-            console.error('Update error', error);
-        }
-    };
 
     return (
         <div className="container">
@@ -175,12 +171,9 @@ export default function Calendario() {
                         placeholder="Descrição"
                         value={descricao}
                         onChange={(e) => setDescricao(e.target.value)}
-                        style={{ marginTop: '10px' }}
                     />
                 </Modal>
-                <Button className="btn btn-primary" onClick={handleUpdate} style={{ marginTop: '20px' }}>
-                    Atualizar Disponibilidades
-                </Button>
+
                 <style jsx>{`
                     .container {
                         padding: 20px;
