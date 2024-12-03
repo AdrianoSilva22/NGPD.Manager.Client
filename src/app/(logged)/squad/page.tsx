@@ -120,7 +120,7 @@ export default function SquadsAndMentorsAllocation() {
 
     const assignSquadToMentor = async (loggedUserEmail: string, squadId: string) => {
         try {
-            const mentorId = mentors.filter((mentor) => {mentor.email == loggedUserEmail && mentor.id})
+            const mentorId = mentors.find((mentor) => mentor.email === loggedUserEmail)?.id
             await apiService.post(`/Mentor/${mentorId}/AssignSquad/${squadId}`);
             message.success("Squad alocado ao mentor com sucesso!");
         } catch (error) {
