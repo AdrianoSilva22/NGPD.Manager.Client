@@ -91,8 +91,8 @@ export default function EmpresaUpdate() {
                                                                 Email da Empresa <span className="login-danger">*</span>
                                                             </label>
                                                             <EmailInput
-                                                                value={empresa.contact}
-                                                                onChange={(value: string) => setEmpresa({ ...empresa, contact: value })}
+                                                                value={empresa.email}
+                                                                onChange={(value: string) => setEmpresa({ ...empresa, email: value })}
                                                             />
                                                         </div>
                                                     </div>
