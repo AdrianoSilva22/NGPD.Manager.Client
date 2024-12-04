@@ -60,7 +60,7 @@ const StudentUpdate = () => {
     const getValueSelectTurma = (selectedOption: SingleValue<PropsOption>) => {
         const selectedTurma = listClassIes.find(classIes => classIes.id === selectedOption?.value) || null;
         if (selectedTurma) {
-            setStudent({ ...student, contact: selectedTurma.id });
+            setStudent({ ...student, email: selectedTurma.id });
         }
     };
 
@@ -125,8 +125,8 @@ const StudentUpdate = () => {
                                 Email <span className="login-danger">*</span>
                             </label>
                             <EmailInput
-                                value={student.contact}
-                                onChange={(value: string) => setStudent({ ...student, contact: value })}
+                                value={student.email}
+                                onChange={(value: string) => setStudent({ ...student, email: value })}
                             />
                         </div>
                     </div>
