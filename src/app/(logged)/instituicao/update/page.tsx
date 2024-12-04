@@ -17,10 +17,10 @@ export default function InstitutionUpdate() {
             try {
                 // Acessando os parâmetros da URL usando window
                 const urlParams = new URLSearchParams(window.location.search);
-                const institutionId = urlParams.get('Id'); // 'Id' deve corresponder ao que está na URL
+                const instituticaoid = urlParams.get('Id'); // 'Id' deve corresponder ao que está na URL
 
-                if (institutionId) {
-                    const resultfetchInstitutionById = await getEntityById(institutionId);
+                if (instituticaoid) {
+                    const resultfetchInstitutionById = await getEntityById(instituticaoid);
                     setInstitution(resultfetchInstitutionById.data);
                 } else {
                     mensagemErro("ID da instituição não encontrado na URL.");

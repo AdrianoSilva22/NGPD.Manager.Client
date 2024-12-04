@@ -131,8 +131,8 @@ export default function InstitutionsPaginition() {
         setSelectedInstituion(null);
     };
 
-    const toggleDropdown = (institutionId: string) => {
-        setDropdownVisible(dropdownVisible === institutionId ? null : institutionId);
+    const toggleDropdown = (instituticaoid: string) => {
+        setDropdownVisible(dropdownVisible === instituticaoid ? null : instituticaoid);
     };
 
     const columTable = [
