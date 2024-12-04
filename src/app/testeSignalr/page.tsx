@@ -6,6 +6,14 @@ import * as signalR from '@microsoft/signalr';
 const PAGE_SIZE = 1; // Número de itens por página
 
 // Tipos das respostas e dos modelos
+
+interface Mentor {
+    id: string;
+    name: string | null;
+    email: string | null;
+    isActive: boolean;
+}
+
 interface Squad {
     id: string;
     name: string;
@@ -14,7 +22,7 @@ interface Squad {
         name: string | null;
     };
     Empresa: { name: string }[];
-    mentor: { id: string | null; name: string | null } | null;
+    mentor: Mentor | null;
 }
 
 interface SquadResponse {
@@ -82,7 +90,7 @@ const SquadsPage: React.FC = () => {
                     setSquads(prevSquads =>
                         prevSquads.map(squad =>
                             squad.id === squadId
-                                ? { ...squad, mentor: { id: mentorId, name: 'Mentor Atribuído' } }
+                                ? { ...squad, mentor: { id: mentorId, name: 'Mentor Atribuído', email:'',isActive: true } }
                                 : squad
                         )
                     );
