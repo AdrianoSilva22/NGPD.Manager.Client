@@ -83,8 +83,8 @@ export default function StudentRegister() {
                                                 <div className="form-group local-forms">
                                                     <label>Email <span className="login-danger">*</span></label>
                                                     <EmailInput
-                                                        value={student.contact}
-                                                        onChange={(value: string) => setStudent({ ...student, contact: value })}
+                                                        value={student.email}
+                                                        onChange={(value: string) => setStudent({ ...student, email: value })}
                                                     />
                                                 </div>
                                             </div>

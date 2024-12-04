@@ -57,7 +57,7 @@ export default function StudentsPaginition() {
         } catch (error) {
             console.log(error);
             mensagemErro('Erro ao excluir Estudante');
-            student.contact
+            student.email
             student.name
         }
     };
@@ -82,7 +82,7 @@ export default function StudentsPaginition() {
         },
         {
             title: 'Contato',
-            dataIndex: 'contact',
+            dataIndex: 'email',
         },
         {
             title: 'Instituição',

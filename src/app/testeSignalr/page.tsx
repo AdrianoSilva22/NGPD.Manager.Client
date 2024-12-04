@@ -1,22 +1,11 @@
 "use client"
 import React, { useEffect, useState } from 'react';
+import { Table, Button, Spin, message } from 'antd';
 import * as signalR from '@microsoft/signalr';
-import { Table, Spin } from 'antd';
+
+const PAGE_SIZE = 1; // Número de itens por página
 
 // Tipos das respostas e dos modelos
-interface Mentor {
-    id: string;
-    name: string | null;
-    email: string | null;
-    isActive: boolean;
-}
-interface Empresa {
-    id: string;
-    name: string | null;
-    email: string | null;
-};
-
-
 interface Squad {
     id: string;
     name: string;
@@ -24,23 +13,26 @@ interface Squad {
         id: string;
         name: string | null;
     };
-    Empresa: Empresa[]
-    mentor: Mentor | null;
-}   
+    Empresa: { name: string }[];
+    mentor: { id: string | null; name: string | null } | null;
+}
 
 interface SquadResponse {
     currentPage: number;
     pageSize: number;
     totalCount: number;
+    pageCount: number;
     list: Squad[];
 }
 
 const SquadsPage: React.FC = () => {
     const [squads, setSquads] = useState<Squad[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [connection, setConnection] = useState<signalR.HubConnection | null>(null); // Armazenando a conexão
+    const [pageNumber, setPage] = useState<number>(0); // Inicia na página 0
+    const [totalCount, setTotalCount] = useState<number>(0);
+    const [pageCount, setPageCount] = useState<number>(0);
+    const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
 
-    // Função para conectar ao SignalR e gerenciar os squads
     useEffect(() => {
         const connection = new signalR.HubConnectionBuilder()
             .withUrl('http://localhost:5189/squadhub') // URL do seu Hub SignalR
@@ -53,16 +45,18 @@ const SquadsPage: React.FC = () => {
                 setConnection(connection); // Armazena a conexão
 
                 // Invoca o método 'GetSquads' no SignalR
-                connection.invoke('GetSquads')
+                connection.invoke('GetSquads', pageNumber, PAGE_SIZE, "asc")
                     .catch(err => {
                         console.error('Erro ao invocar GetSquads:', err);
                         setLoading(false);
                     });
 
-                // Configura o recebimento de squads via SignalR
+                // Recebendo squads via SignalR
                 connection.on('ReceiveAllSquads', (data: SquadResponse) => {
                     if (data && data.list) {
                         setSquads(data.list);
+                        setTotalCount(data.totalCount);
+                        setPageCount(data.pageCount); // Define o total de páginas
                     } else {
                         setSquads([]);
                     }
@@ -74,32 +68,64 @@ const SquadsPage: React.FC = () => {
                 setLoading(false);
             });
 
-        // return () => {
-        //     connection.stop().then(() => console.log('Conexão SignalR encerrada.'));
-        // };
-    }, []);
+        return () => {
+            connection.stop().then(() => console.log('Conexão SignalR encerrada.'));
+        };
+    }, [pageNumber]);
 
-    // Função para atribuir mentor
+    // Função para atribuir um mentor
     const assignMentor = (squadId: string, mentorId: string) => {
-        if (connection?.state === signalR.HubConnectionState.Connected) {
+        if (connection) {
             connection.invoke('AssignMentor', squadId, mentorId)
-                .catch(err => console.error('Erro ao atribuir mentor:', err));
-        } else {
-            console.error('A conexão não está estabelecida.');
+                .then(() => {
+                    message.success('Mentor atribuído com sucesso!');
+                    setSquads(prevSquads =>
+                        prevSquads.map(squad =>
+                            squad.id === squadId
+                                ? { ...squad, mentor: { id: mentorId, name: 'Mentor Atribuído' } }
+                                : squad
+                        )
+                    );
+                })
+                .catch(err => {
+                    console.error('Erro ao atribuir mentor:', err);
+                    message.error('Erro ao atribuir mentor!');
+                });
         }
     };
 
-    // Função para desatribuir mentor
+    // Função para remover um mentor
     const unassignMentor = (squadId: string, mentorId: string) => {
-        if (connection?.state === signalR.HubConnectionState.Connected) {
+        if (connection) {
             connection.invoke('UnassignMentor', squadId, mentorId)
-                .catch(err => console.error('Erro ao desatribuir mentor:', err));
-        } else {
-            console.error('A conexão não está estabelecida.');
+                .then(() => {
+                    message.success('Mentor removido com sucesso!');
+                    setSquads(prevSquads =>
+                        prevSquads.map(squad =>
+                            squad.id === squadId
+                                ? { ...squad, mentor: null }
+                                : squad
+                        )
+                    );
+                })
+                .catch(err => {
+                    console.error('Erro ao remover mentor:', err);
+                    message.error('Erro ao remover mentor!');
+                });
         }
     };
 
-    // Definindo as colunas da tabela
+    // Configuração de paginação
+    const paginationConfig = {
+        current: pageNumber + 1, // Ant Design começa na página 1, mas a página lógica começa na 0
+        pageSize: PAGE_SIZE,
+        total: totalCount,
+        onChange: (page: number) => {
+            setPage(page - 1); // Ajusta a página para que a primeira página seja 0
+        },
+    };
+
+    // Colunas da tabela
     const columns = [
         {
             title: 'ID',
@@ -121,27 +147,29 @@ const SquadsPage: React.FC = () => {
             title: 'Empresa',
             dataIndex: 'empresa',
             key: 'empresa',
-            // render: (empresa: { name: string | null }) => empresa.name ?? 'Não informado',
+            // render: (empresa: { name: string }[]) => empresa.map(e => e.name).join(', ') ?? 'Não informado',
         },
         {
             title: 'Mentor',
             dataIndex: 'mentor',
             key: 'mentor',
-            render: (mentor: { name: string | null }) => mentor ? mentor.name : 'Não atribuído',
+            render: (mentor: { id: string | null; name: string | null }) => (
+                mentor ? mentor.name : 'Não atribuído'
+            ),
         },
         {
             title: 'Ações',
             key: 'actions',
             render: (_: any, record: Squad) => (
                 <div>
-                    {/* Botão para atribuir mentor */}
-                    {!record.mentor && (
-                        <button onClick={() => assignMentor(record.id, "985ea0c2-c4e6-42b5-a923-a188dc15d99e")}>Atribuir Mentor</button>
-                    )}
-
-                    {/* Botão para remover mentor */}
-                    {record.mentor && (
-                        <button onClick={() => unassignMentor(record.id, "985ea0c2-c4e6-42b5-a923-a188dc15d99e")}>Remover Mentor</button>
+                    {record.mentor ? (
+                        <Button onClick={() => unassignMentor(record.id, '985ea0c2-c4e6-42b5-a923-a188dc15d99e')} type="primary">
+                            Remover Mentor
+                        </Button>
+                    ) : (
+                        <Button onClick={() => assignMentor(record.id, '985ea0c2-c4e6-42b5-a923-a188dc15d99e')} type="primary">
+                            Atribuir Mentor
+                        </Button>
                     )}
                 </div>
             ),
@@ -157,8 +185,7 @@ const SquadsPage: React.FC = () => {
                 dataSource={squads}
                 columns={columns}
                 rowKey="id"
-                loading={loading}
-                pagination={false}
+                pagination={paginationConfig}
             />
         </div>
     );
