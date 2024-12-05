@@ -53,17 +53,26 @@ interface SquadResponse {
     list: Squad[];
 }
 
+interface Empresa {
+    id: string;
+    name: string;
+    email: string;
+    squads: any[];
+    disponibilidades: any[];
+}
 export default function SquadsAndMentorsAllocation() {
     const [squads, setSquads] = useState<Squad[]>([]);
     const [mentors, setMentors] = useState<Mentor[]>([]);
+    const [empresas, setEmpresas] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [loggedUser, setLoggedUser] = useState<UserSession>();
     const [loggedUserRole, setLoggedUserRole] = useState<any>(null);
-    const PAGE_SIZE = 1;
+    const PAGE_SIZE = 3;
     const [pageNumber, setPageNumber] = useState(0);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedSquad, setSelectedSquad] = useState<Squad | null>(null);
     const [squadSelected, setSquadSelected] = useState<Squad | null>(null);
+    const [SelectedEmpresa, setSelectedEmpresa] = useState<Empresa | null>(null);
     const [dropdownVisible, setDropdownVisible] = useState<string | null>(null);
     const { deleteEntity } = SquadServices;
     const [squadsFiltro, setSquadsFiltro] = useState<Squad[]>([]);
@@ -76,7 +85,7 @@ export default function SquadsAndMentorsAllocation() {
             try {
                 setIsLoading(true)
                 await Promise.all([
-                    fetchMentors(), fetchConnectionHub(), getPageInfoFilter(), fetchRole(), loadPerfil()
+                    fetchMentorsAndEmpresa(), fetchConnectionHub(), getPageInfoFilter(), fetchRole(), loadPerfil()
                 ])
             } catch (error) {
                 message.error("ERROR SERVER")
@@ -96,12 +105,19 @@ export default function SquadsAndMentorsAllocation() {
         }
     }
 
-    const fetchMentors = async () => {
+    const fetchMentorsAndEmpresa = async () => {
         try {
-            const response = await apiService.get<MentorResponse>(
+            const responseMentors = await apiService.get<MentorResponse>(
                 `/Mentor?PageSize=${9999999}&PageNumber=${0}&Sort=asc`
             );
-            setMentors(response.data.list);
+
+            const responseEmpresas = await apiService.get<MentorResponse>(
+                `/Empresa?PageSize=${9999999}&PageNumber=${0}&Sort=asc`
+            );
+
+            setEmpresas(responseEmpresas.data.list)
+            setMentors(responseMentors.data.list);
+
         } catch (error) {
             message.error("Erro ao buscar mentores");
         }
@@ -253,8 +269,6 @@ export default function SquadsAndMentorsAllocation() {
         });
     };
 
-
-
     const assignMentor = (squadId: string, loggedUserEmail: string) => {
         const mentorFound = mentors.find((mentor) => mentor.email || mentor.id === loggedUserEmail);
 
@@ -315,6 +329,24 @@ export default function SquadsAndMentorsAllocation() {
         }
     };
 
+    const assignEmpresaToSquad = (empresaId: string, squadId: string) => {
+        fetch(`http://localhost:5189/api/Empresa/${empresaId}/AssignSquad?squadId=${squadId}`, {
+            method: "POST",
+        })
+            .then(response => {
+                if (response.ok) {
+                    message.success("Empresa alocada com sucesso!");
+                } else {
+                    message.error("Erro ao alocar empresa");
+                }
+            })
+            .catch(err => {
+                message.error("Erro ao alocar empresa");
+                console.error(err);
+            });
+    };
+
+
     const showDeleteConfirm = (squad: Squad) => {
         setSelectedSquad(squad);
         setIsModalVisible(true);
@@ -356,7 +388,40 @@ export default function SquadsAndMentorsAllocation() {
         },
         {
             title: "Empresa",
-            dataIndex: ["empresa", "name"],
+            dataIndex: ["empresa"],
+            render: (empresa: Empresa, squad: Squad) => {
+                if (loggedUserRole === "gerente") {
+                    return !empresa ? (
+                        <div>
+                            <SelectAntd
+                                style={{ width: 200, marginLeft: "8px" }}
+                                placeholder="Alocar..."
+                                onChange={(selectedEmpresaId) => {
+                                    Modal.confirm({
+                                        title: "Alocar Empresa",
+                                        content: `Você tem certeza que deseja alocar a empresa ao squad?`,
+                                        okText: "Sim",
+                                        cancelText: "Não",
+                                        onOk: () => {
+                                            assignEmpresaToSquad(selectedEmpresaId, squad.id);
+                                        },
+                                    });
+                                }}
+                            >
+                                {empresas.map((empresaOption) => (
+                                    <SelectAntd.Option key={empresaOption.id} value={empresaOption.id}>
+                                        {empresaOption.name}
+                                    </SelectAntd.Option>
+                                ))}
+                            </SelectAntd>
+                        </div>
+                    ) : (
+                        <span>{empresa.name}</span>
+                    );
+                } else if (loggedUserRole === "mentor") {
+                    return <span>{empresa?.name}</span>
+                }
+            }
         },
         {
             title: "Mentor",
@@ -365,44 +430,74 @@ export default function SquadsAndMentorsAllocation() {
                 if (loggedUserRole === "gerente") {
                     return (
                         mentor ? (
+                            <SelectAntd
+                                style={{ width: 120 }}
+                                onChange={(value: any) => updateMentorAlocate(mentor, squad, value)}
+                                placeholder={!mentor ? "Selecione um mentor" : undefined}
+                                value={mentor?.id || undefined}
+                                dropdownRender={(menu) => (
+                                    <>
+                                        {mentor && (
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    padding: "8px",
+                                                    cursor: "pointer",
+                                                    color: "red",
+                                                    fontWeight: "bold",
+                                                    borderBottom: "1px solid #f0f0f0",
+                                                }}
+                                                onClick={() =>
+                                                    Modal.confirm({
+                                                        title: "Remover Mentor",
+                                                        content: `Tem certeza de que deseja remover o mentor ${mentor.name} deste squad?`,
+                                                        okText: "Sim",
+                                                        cancelText: "Não",
+                                                        onOk: () => unassignMentor(squad.id, mentor.email || ""),
+                                                    })
+                                                }
+                                            >
+                                                remover
+                                            </div>
+                                        )}
+                                        {menu}
+                                    </>
+                                )}
+                            >
+                                {mentors.map((mentorOption) => (
+                                    <SelectAntd.Option key={mentorOption.id} value={mentorOption.id}>
+                                        {mentorOption.name}
+                                    </SelectAntd.Option>
+                                ))}
+                            </SelectAntd>
 
-                        <SelectAntd
-                            style={{ width: 120 }}
-                            onChange={(value: any) => updateMentorAlocate(mentor, squad, value)}
-                            placeholder={!mentor ? "Selecione um mentor" : undefined}
-                            value={mentor?.name}
-                        >
-                            {mentors.map((mentorOption) => (
-                                <SelectAntd.Option key={mentorOption.id} value={mentorOption.id}>
-                                    {mentorOption.name}
-                                </SelectAntd.Option>
-                            ))}
-                        </SelectAntd>
-                    ): (
-                        <SelectAntd
-                        style={{ width: 120 }}
-                        onChange={(value: any) => {
-                            const selectedMentor = mentors.find((mentor) => mentor.id === value);
-                    
-                            Modal.confirm({
-                                title: "Atribuir Mentor",
-                                content: `Você tem certeza que deseja atribuir o mentor ${selectedMentor?.name} ao squad ${squad.name}?`,
-                                okText: "Sim",
-                                cancelText: "Não",
-                                onOk: () => assignMentor(squad.id, value),
-                            });
-                        }}
-                        placeholder={!mentor ? "Selecione um mentor" : undefined}
-                    >
-                        {mentors.map((mentorOption) => (
-                            <SelectAntd.Option key={mentorOption.id} value={mentorOption.id}>
-                                {mentorOption.name}
-                            </SelectAntd.Option>
-                        ))}
-                    </SelectAntd>
-                    
+                        ) : (
+                            <SelectAntd
+                                style={{ width: 120 }}
+                                onChange={(value: any) => {
+                                    const selectedMentor = mentors.find((mentor) => mentor.id === value);
+
+                                    Modal.confirm({
+                                        title: "Atribuir Mentor",
+                                        content: `Você tem certeza que deseja atribuir o mentor ${selectedMentor?.name} ao squad ${squad.name}?`,
+                                        okText: "Sim",
+                                        cancelText: "Não",
+                                        onOk: () => assignMentor(squad.id, value),
+                                    });
+                                }}
+                                placeholder={!mentor ? "Selecione um mentor" : undefined}
+                            >
+                                {mentors.map((mentorOption) => (
+                                    <SelectAntd.Option key={mentorOption.id} value={mentorOption.id}>
+                                        {mentorOption.name}
+                                    </SelectAntd.Option>
+                                ))}
+                            </SelectAntd>
+
+                        )
                     )
-                )
 
                 } else if (loggedUserRole === "mentor") {
                     return mentor ? (
