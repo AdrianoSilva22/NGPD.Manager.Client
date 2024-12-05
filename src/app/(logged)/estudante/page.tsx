@@ -90,7 +90,7 @@ export default function StudentsPaginition() {
             key: 'institutionName',
             render: (turmaIes: ClassIes) => (
                 <div>
-                    {turmaIes.institution ? turmaIes.institution.name : 'N/A'}
+                    {/* {turmaIes.institution ? turmaIes.institution.name : 'N/A'} */}
                 </div>
             ),
         },
@@ -100,7 +100,7 @@ export default function StudentsPaginition() {
             key: 'course',
             render: (turmaIes: ClassIes) => (
                 <div>
-                    {turmaIes.course || 'N/A'} - {turmaIes.shift || 'N/A'} - {turmaIes.period || 'N/A'}
+                    {/* {turmaIes.course || 'N/A'} - {turmaIes.shift || 'N/A'} - {turmaIes.period || 'N/A'} */}
                 </div>
             ),
         },
