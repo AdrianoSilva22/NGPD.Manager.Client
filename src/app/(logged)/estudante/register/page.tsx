@@ -28,7 +28,7 @@ export default function StudentRegister() {
 
     const turmaOptions = listClassIes.map(classIes => ({
         value: classIes.id,
-        label: `${classIes.course} - ${classIes.period} - ${classIes.shift}`,
+        // label: `${classIes.course} - ${classIes.period} - ${classIes.shift}`,
     }))
 
     const getValueSelectTurma = (selectedOption: SingleValue<PropsOption>) => {
@@ -96,7 +96,7 @@ export default function StudentRegister() {
 
                                                     <Select
                                                         className="w-100 local-forms select"
-                                                        onChange={getValueSelectTurma}
+                                                        // onChange={getValueSelectTurma}
                                                         options={turmaOptions}
                                                         placeholder="Selecione uma Turma"
                                                     />
