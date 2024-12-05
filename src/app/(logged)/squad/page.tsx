@@ -596,7 +596,7 @@ export default function SquadsAndMentorsAllocation() {
                                 </div>
                                 <div className="col-lg-2">
                                     <div className="search-student-btn">
-                                        <Link href="/squad/register">
+                                        <Link href="squad/register-squad">
                                             <button type="button" className="btn btn-primary">Incluir</button>
                                         </Link>
                                     </div>
