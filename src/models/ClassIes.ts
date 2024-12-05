@@ -1,29 +1,26 @@
+import { Squad } from './squad';
 import { Institution } from "./institution"
 import { Student } from "./student"
 
 export interface ClassIes {
     id: string
-    period: string
-    shift: string
-    course: string
+    name: string
     csvFile: File | null
-    institutionId: string | undefined
-    availabilityId: string | undefined
-    institution: Institution | null
+    instituticaoid: string 
+    availabilityId: string 
+    Squad: []
     availabilities: [] 
-    listStudant: Student[] | null
+    alunos: Student[] | null
 
 }
 
 export const initialValueClassIes: ClassIes = {
     id: '',
-    period: '',
-    shift: '',
-    course: '',
-    institutionId: '',
+    name: '',
+    instituticaoid: '',
     csvFile: null,
     availabilityId: '',
     availabilities: [],
-    institution: null,
-    listStudant: null
+    Squad: [],
+    alunos: null
 }

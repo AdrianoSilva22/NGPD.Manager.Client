@@ -55,19 +55,19 @@ export default function RegisterSquad() {
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col-12 col-sm-4">
+                                                
                                                 <div className="form-group local-forms">
                                                     <label>Módulo <span className="login-danger">*</span></label>
-                                                    <select
+                                                    {/* <select
                                                         className="form-control"
                                                         value={squadData.empresaId}
-                                                        onChange={(e) => setSquadData({ ...squadData, empresaId: e.target.value })} // Corrigido para empresaId
-                                                    >
+                                                        onChange={(e) => setSquadData({ ...squadData, empresaId: e.target.value })}
                                                         <option value="">Selecione um módulo</option>
                                                         <option value="Kick off">Kick off</option>
                                                         <option value="Grow up">Grow up</option>
                                                         <option value="Rise Up">Rise Up</option>
                                                         <option value="Final Up">Final Up</option>
-                                                    </select>
+                                                    </select> */}
                                                 </div>
                                             </div>
                                             <div className="col-12 col-sm-4">

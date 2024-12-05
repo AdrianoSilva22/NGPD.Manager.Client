@@ -8,7 +8,7 @@ export interface Availability {
     shift: string
     course: string
     csvFile: File | null
-    institutionId: string | undefined
+    instituticaoid: string | undefined
     availabilityId: string | undefined
     institution: Institution | null
     availability: AvailabilityClassIes | null
@@ -16,12 +16,12 @@ export interface Availability {
 
 }
 
-export const initialValueClassIes: Availability = {
+export const initialValueClassIesAvailability: Availability = {
     id: '',
     period: '',
     shift: '',
     course: '',
-    institutionId: '',
+    instituticaoid: '',
     csvFile: null,
     availabilityId: '',
     availability: null,

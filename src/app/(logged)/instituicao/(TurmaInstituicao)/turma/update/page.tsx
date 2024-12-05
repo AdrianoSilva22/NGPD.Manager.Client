@@ -57,7 +57,7 @@ export default function ClassUpdate() {
 
     const handleInstitutionSelect = (selectedOption: SingleValue<PropsOption>) => {
         const selectedInstitution = institutions.find(inst => inst.id === selectedOption?.value) || null;
-        setClassIes({ ...classIes, institutionId: selectedInstitution?.id });
+        setClassIes({ ...classIes });
     };
 
     const handleUpdate = async () => {
@@ -106,8 +106,8 @@ export default function ClassUpdate() {
                                                                 Curso <span className="login-danger">*</span>
                                                             </label>
                                                             <Input
-                                                                value={classIes.course}
-                                                                onChange={(value: string) => setClassIes({ ...classIes, course: value })}
+                                                                value={classIes.id}
+                                                                onChange={(value: string) => setClassIes({ ...classIes, id: value })}
                                                             />
                                                         </div>
                                                     </div>
@@ -116,10 +116,6 @@ export default function ClassUpdate() {
                                                             <label>
                                                                 Periodo <span className="login-danger">*</span>
                                                             </label>
-                                                            <Input
-                                                                value={classIes.period}
-                                                                onChange={(value: string) => setClassIes({ ...classIes, period: value })}
-                                                            />
                                                         </div>
                                                     </div>
                                                     <div className="col-12 col-sm-4">
@@ -128,8 +124,8 @@ export default function ClassUpdate() {
                                                                 Turno <span className="login-danger">*</span>
                                                             </label>
                                                             <Input
-                                                                value={classIes.shift}
-                                                                onChange={(value: string) => setClassIes({ ...classIes, shift: value })}
+                                                                value={classIes.id}
+                                                                onChange={(value: string) => setClassIes({ ...classIes, id: value })}
                                                             />
                                                         </div>
                                                     </div>

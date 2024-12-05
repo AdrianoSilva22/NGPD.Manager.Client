@@ -14,6 +14,7 @@ import { UserSession } from "@/models/UserSession";
 import { SquadServices } from "@/service/squad";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import * as signalR from '@microsoft/signalr';
 
 interface Mentor {
     id: string;
@@ -48,30 +49,43 @@ interface SquadResponse {
     currentPage: number;
     pageSize: number;
     totalCount: number;
+    pageCount: number;
     list: Squad[];
 }
 
+interface Empresa {
+    id: string;
+    name: string;
+    email: string;
+    squads: any[];
+    disponibilidades: any[];
+}
 export default function SquadsAndMentorsAllocation() {
     const [squads, setSquads] = useState<Squad[]>([]);
     const [mentors, setMentors] = useState<Mentor[]>([]);
+    const [empresas, setEmpresas] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [loggedUser, setLoggedUser] = useState<UserSession>();
     const [loggedUserRole, setLoggedUserRole] = useState<any>(null);
-    const PAGE_SIZE = 10;
+    const PAGE_SIZE = 3;
     const [pageNumber, setPageNumber] = useState(0);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedSquad, setSelectedSquad] = useState<Squad | null>(null);
     const [squadSelected, setSquadSelected] = useState<Squad | null>(null);
+    const [SelectedEmpresa, setSelectedEmpresa] = useState<Empresa | null>(null);
     const [dropdownVisible, setDropdownVisible] = useState<string | null>(null);
     const { deleteEntity } = SquadServices;
     const [squadsFiltro, setSquadsFiltro] = useState<Squad[]>([]);
+    const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
+    const [totalCount, setTotalCount] = useState<number>(0);
+    const [pageCount, setPageCount] = useState<number>(0);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setIsLoading(true)
                 await Promise.all([
-                    fetchMentors(), fetchSquads(), getPageInfoFilter(), fetchRole(), loadPerfil()
+                    fetchMentorsAndEmpresa(), fetchConnectionHub(), getPageInfoFilter(), fetchRole(), loadPerfil()
                 ])
             } catch (error) {
                 message.error("ERROR SERVER")
@@ -91,41 +105,67 @@ export default function SquadsAndMentorsAllocation() {
         }
     }
 
-    const fetchMentors = async () => {
+    const fetchMentorsAndEmpresa = async () => {
         try {
-            const response = await apiService.get<MentorResponse>(
-                `/Mentor?PageSize=${PAGE_SIZE}&PageNumber=${pageNumber}&Sort=asc`
+            const responseMentors = await apiService.get<MentorResponse>(
+                `/Mentor?PageSize=${9999999}&PageNumber=${0}&Sort=asc`
             );
-            setMentors(response.data.list);
+
+            const responseEmpresas = await apiService.get<MentorResponse>(
+                `/Empresa?PageSize=${9999999}&PageNumber=${0}&Sort=asc`
+            );
+
+            setEmpresas(responseEmpresas.data.list)
+            setMentors(responseMentors.data.list);
+
         } catch (error) {
             message.error("Erro ao buscar mentores");
         }
     };
 
-    const fetchSquads = async () => {
-        try {
-            const response = await apiService.get<SquadResponse>(
-                `/Squad?PageSize=${PAGE_SIZE}&PageNumber=${pageNumber}&Sort=asc`
-            );
-            setSquads(response.data.list);
-        } catch (error) {
-            message.error("Erro ao buscar squads");
-        }
-    };
+    const fetchConnectionHub = () => {
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl('http://localhost:5189/squadhub') // URL do seu Hub SignalR
+            .withAutomaticReconnect()
+            .build();
+
+        connection.start()
+            .then(() => {
+                console.log('Conectado ao SquadHub!');
+                setConnection(connection); // Armazena a conexão
+
+                // Invoca o método 'GetSquads' no SignalR
+                connection.invoke('GetSquads', pageNumber, PAGE_SIZE, "asc")
+                    .catch(err => {
+                        console.error('Erro ao invocar GetSquads:', err);
+                        setIsLoading(false);
+                    });
+
+                // Recebendo squads via SignalR
+                connection.on('ReceiveAllSquads', (data: SquadResponse) => {
+                    if (data && data.list) {
+                        setSquads(data.list);
+                        setTotalCount(data.totalCount);
+                        setPageCount(data.pageCount); // Define o total de páginas
+                    } else {
+                        setSquads([]);
+                    }
+                    setIsLoading(false);
+                });
+            })
+            .catch(err => {
+                console.error('Erro ao conectar ao SignalR:', err);
+                setIsLoading(false);
+            });
+
+        return () => {
+            connection.stop().then(() => console.log('Conexão SignalR encerrada.'));
+        };
+    }
 
     const loadPerfil = async () => {
         const session = await getSession();
         setLoggedUser(session?.user);
-    };
-
-    const assignSquadToMentor = async (loggedUserEmail: string, squadId: string) => {
-        try {
-            const mentorId = mentors.filter((mentor) => {mentor.email == loggedUserEmail && mentor.id})
-            await apiService.post(`/Mentor/${mentorId}/AssignSquad/${squadId}`);
-            message.success("Squad alocado ao mentor com sucesso!");
-        } catch (error) {
-            message.error("Erro ao alocar squad ao mentor");
-        }
     };
 
     const getPageInfoFilter = async () => {
@@ -172,36 +212,140 @@ export default function SquadsAndMentorsAllocation() {
             setSquadsFiltro(squadsRemaining)
             setSquadSelected(null)
             message.success("squad deletado com sucesso!");
+            setIsModalVisible(false);
         } catch (error) {
             console.log(error);
             message.error("Erro ao excluir squad");
         }
     };
 
-    const updateMentorAlocate = (mentor: Mentor, squad: Squad,newMentorId: string) => {
+    const updateMentorAlocate = (mentor: Mentor, squad: Squad, newMentorId: string) => {
         Modal.confirm({
-          title: "Alterar Mentor",
-          content: `Tem certeza de que deseja alterar o mentor atual para este novo mentor? 
-                    O mentor atual será desalocado antes da nova alocação.`,
-          okText: "Sim",
-          cancelText: "Não",
-          onOk: async () => {
-            try {
-              if (mentor?.id) {
-                await apiService.post(`/Mentor/${mentor.id}/UnassignSquad/${squad.id}`);
-              }
-              await apiService.post(`/Mentor/${newMentorId}/AssignSquad/${squad.id}`);
-              message.success("Mentor alterado com sucesso!");
-            } catch (error) {
-              message.error("Erro ao alterar o mentor. Tente novamente.");
-            }
-          },
-        });
-      };
+            title: "Alterar Mentor",
+            content: `Tem certeza de que deseja alterar o mentor atual para este novo mentor? 
+                        O mentor atual será desalocado antes da nova alocação.`,
+            okText: "Sim",
+            cancelText: "Não",
+            onOk: async () => {
+                try {
+                    if (mentor?.id) {
+                        if (connection) {
+                            await connection.invoke('UnassignMentor', squad.id, mentor.id);
+                        } else {
+                            console.error('Erro: A conexão SignalR não está disponível.');
+                            message.error('Erro: A conexão SignalR não está disponível.');
+                            return;
+                        }
+                    }
 
-    const removeMentorSquad = (loggedUserEmail:string, squadId: string) => {
-        // logica para desalocar meu mentor
-    }
+                    const newMentor = mentors.find((mentor) => mentor.id === newMentorId);
+                    if (!newMentor) {
+                        message.error('Novo mentor não encontrado!');
+                        return;
+                    }
+
+                    if (connection) {
+                        await connection.invoke('AssignMentor', squad.id, newMentor.id);
+                    } else {
+                        console.error('Erro: A conexão SignalR não está disponível.');
+                        message.error('Erro: A conexão SignalR não está disponível.');
+                        return;
+                    }
+
+                    setSquads(prevSquads =>
+                        prevSquads.map(squad =>
+                            squad.id === squad.id
+                                ? { ...squad, mentor: newMentor }
+                                : squad
+                        )
+                    );
+
+                    message.success("Mentor alterado com sucesso!");
+                } catch (error) {
+                    console.error('Erro ao alterar o mentor:', error);
+                    message.error("Erro ao alterar o mentor. Tente novamente.");
+                }
+            },
+        });
+    };
+
+    const assignMentor = (squadId: string, loggedUserEmail: string) => {
+        const mentorFound = mentors.find((mentor) => mentor.email || mentor.id === loggedUserEmail);
+
+        if (!mentorFound) {
+            message.error('Mentor não encontrado!');
+            return;
+        }
+
+        const mentorId = mentorFound.id;
+
+        if (connection) {
+            connection.invoke('AssignMentor', squadId, mentorId)
+                .then(() => {
+                    message.success('Mentor atribuído com sucesso!');
+                    setSquads(prevSquads =>
+                        prevSquads.map(squad =>
+                            squad.id === squadId
+                                ? { ...squad, mentor: mentorFound }
+                                : squad
+                        )
+                    );
+                })
+                .catch(err => {
+                    console.error('Erro ao atribuir mentor:', err);
+                    message.error('Erro ao atribuir mentor!');
+                });
+        }
+    };
+
+    const unassignMentor = (squadId: string, loggedUserEmail: string) => {
+
+        const mentorFound = mentors.find((mentor) => mentor.email === loggedUserEmail);
+        console.log(mentors);
+
+        if (!mentorFound) {
+            message.error('Mentor não encontrado!');
+            return;
+        }
+
+        const mentorId = mentorFound.id;
+
+        if (connection) {
+            connection.invoke('UnassignMentor', squadId, mentorId)
+                .then(() => {
+                    message.success('Mentor removido com sucesso!');
+                    setSquads(prevSquads =>
+                        prevSquads.map(squad =>
+                            squad.id === squadId
+                                ? { ...squad, mentor: null }
+                                : squad
+                        )
+                    );
+                })
+                .catch(err => {
+                    console.error('Erro ao remover mentor:', err);
+                    message.error('Erro ao remover mentor!');
+                });
+        }
+    };
+
+    const assignEmpresaToSquad = (empresaId: string, squadId: string) => {
+        fetch(`http://localhost:5189/api/Empresa/${empresaId}/AssignSquad?squadId=${squadId}`, {
+            method: "POST",
+        })
+            .then(response => {
+                if (response.ok) {
+                    message.success("Empresa alocada com sucesso!");
+                } else {
+                    message.error("Erro ao alocar empresa");
+                }
+            })
+            .catch(err => {
+                message.error("Erro ao alocar empresa");
+                console.error(err);
+            });
+    };
+
 
     const showDeleteConfirm = (squad: Squad) => {
         setSelectedSquad(squad);
@@ -229,7 +373,7 @@ export default function SquadsAndMentorsAllocation() {
     const paginationConfig: TablePaginationConfig = {
         current: pageNumber + 1,
         pageSize: PAGE_SIZE,
-        total: squads.length,
+        total: totalCount,
         onChange: (page) => setPageNumber(page - 1),
     };
 
@@ -244,34 +388,124 @@ export default function SquadsAndMentorsAllocation() {
         },
         {
             title: "Empresa",
-            dataIndex: ["empresa", "name"],
+            dataIndex: ["empresa"],
+            render: (empresa: Empresa, squad: Squad) => {
+                if (loggedUserRole === "gerente") {
+                    return !empresa ? (
+                        <div>
+                            <SelectAntd
+                                style={{ width: 200, marginLeft: "8px" }}
+                                placeholder="Alocar..."
+                                onChange={(selectedEmpresaId) => {
+                                    Modal.confirm({
+                                        title: "Alocar Empresa",
+                                        content: `Você tem certeza que deseja alocar a empresa ao squad?`,
+                                        okText: "Sim",
+                                        cancelText: "Não",
+                                        onOk: () => {
+                                            assignEmpresaToSquad(selectedEmpresaId, squad.id);
+                                        },
+                                    });
+                                }}
+                            >
+                                {empresas.map((empresaOption) => (
+                                    <SelectAntd.Option key={empresaOption.id} value={empresaOption.id}>
+                                        {empresaOption.name}
+                                    </SelectAntd.Option>
+                                ))}
+                            </SelectAntd>
+                        </div>
+                    ) : (
+                        <span>{empresa.name}</span>
+                    );
+                } else if (loggedUserRole === "mentor") {
+                    return <span>{empresa?.name}</span>
+                }
+            }
         },
         {
             title: "Mentor",
-            dataIndex: ["empresa", "name"],
-            render: (mentor: Mentor | null, squad: Squad) => {
+            dataIndex: 'mentor',
+            render: (mentor: Mentor, squad: Squad) => {
                 if (loggedUserRole === "gerente") {
-                    return mentor && (
-                        <SelectAntd
-                        style={{ width: 120 }}
-                        onChange={(value: any) => updateMentorAlocate(mentor, squad, value)}
-                        placeholder={!mentor ? "Selecione um mentor" : undefined}
-                        value={mentor?.name || 'ERROR SERVER MENTOR'}
-                      >
-                        {mentors.map((mentorOption) => (
-                          <SelectAntd.Option key={mentorOption.id} value={mentorOption.id}>
-                            {mentorOption.name}
-                          </SelectAntd.Option>
-                        ))}
-                      </SelectAntd>
+                    return (
+                        mentor ? (
+                            <SelectAntd
+                                style={{ width: 120 }}
+                                onChange={(value: any) => updateMentorAlocate(mentor, squad, value)}
+                                placeholder={!mentor ? "Selecione um mentor" : undefined}
+                                value={mentor?.id || undefined}
+                                dropdownRender={(menu) => (
+                                    <>
+                                        {mentor && (
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    padding: "8px",
+                                                    cursor: "pointer",
+                                                    color: "red",
+                                                    fontWeight: "bold",
+                                                    borderBottom: "1px solid #f0f0f0",
+                                                }}
+                                                onClick={() =>
+                                                    Modal.confirm({
+                                                        title: "Remover Mentor",
+                                                        content: `Tem certeza de que deseja remover o mentor ${mentor.name} deste squad?`,
+                                                        okText: "Sim",
+                                                        cancelText: "Não",
+                                                        onOk: () => unassignMentor(squad.id, mentor.email || ""),
+                                                    })
+                                                }
+                                            >
+                                                remover
+                                            </div>
+                                        )}
+                                        {menu}
+                                    </>
+                                )}
+                            >
+                                {mentors.map((mentorOption) => (
+                                    <SelectAntd.Option key={mentorOption.id} value={mentorOption.id}>
+                                        {mentorOption.name}
+                                    </SelectAntd.Option>
+                                ))}
+                            </SelectAntd>
+
+                        ) : (
+                            <SelectAntd
+                                style={{ width: 120 }}
+                                onChange={(value: any) => {
+                                    const selectedMentor = mentors.find((mentor) => mentor.id === value);
+
+                                    Modal.confirm({
+                                        title: "Atribuir Mentor",
+                                        content: `Você tem certeza que deseja atribuir o mentor ${selectedMentor?.name} ao squad ${squad.name}?`,
+                                        okText: "Sim",
+                                        cancelText: "Não",
+                                        onOk: () => assignMentor(squad.id, value),
+                                    });
+                                }}
+                                placeholder={!mentor ? "Selecione um mentor" : undefined}
+                            >
+                                {mentors.map((mentorOption) => (
+                                    <SelectAntd.Option key={mentorOption.id} value={mentorOption.id}>
+                                        {mentorOption.name}
+                                    </SelectAntd.Option>
+                                ))}
+                            </SelectAntd>
+
+                        )
                     )
+
                 } else if (loggedUserRole === "mentor") {
                     return mentor ? (
                         <span>
                             {mentor.name ? mentor.name : "Mentor ERROR SERVER"}
-                            {"adrianodesilva22@gmail.com" === loggedUser?.email && (
+                            {mentor.email === loggedUser?.email && (
                                 <span
-                                    onClick={() => removeMentorSquad(loggedUser?.email, squad.id)}
+                                    onClick={() => unassignMentor(squad.id, loggedUser?.email)}
                                     style={{ cursor: 'pointer', marginLeft: '5px', color: 'red' }}
                                 >
                                     <FeatherIcon icon="trash" size={14} />
@@ -280,7 +514,7 @@ export default function SquadsAndMentorsAllocation() {
                         </span>
                     ) : (
                         <span
-                            onClick={() => loggedUser && assignSquadToMentor(loggedUser.email, squad.id)}
+                            onClick={() => loggedUser && assignMentor(squad.id, loggedUser.email)}
                             style={{ cursor: 'pointer', color: 'blue' }}
                         >
                             Alocar-me ao Squad <FeatherIcon icon="plus" size={16} />
@@ -362,7 +596,7 @@ export default function SquadsAndMentorsAllocation() {
                                 </div>
                                 <div className="col-lg-2">
                                     <div className="search-student-btn">
-                                        <Link href="/squad/register">
+                                        <Link href="squad/register-squad">
                                             <button type="button" className="btn btn-primary">Incluir</button>
                                         </Link>
                                     </div>

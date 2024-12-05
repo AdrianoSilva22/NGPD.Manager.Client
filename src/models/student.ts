@@ -1,13 +1,13 @@
 
 export interface Student {
     id: string,
-    contact: string
+    email: string
     name: string
 }
 
 export const initialvalueStudent: Student = {
     id: '',
-    contact: '',
+    email: '',
     name: '',
 
 }

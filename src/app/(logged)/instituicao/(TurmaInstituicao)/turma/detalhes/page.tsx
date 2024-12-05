@@ -112,7 +112,7 @@ export default function ClassesPagination() {
                                             expandedRowKeys: expandedRowKeys,
                                             expandedRowRender: (record) => (
                                                 <div style={{ margin: '20px 0' }}>
-                                                    {expandedSection === 'institution' && record.institution && (
+                                                    {expandedSection === 'institution' && (
                                                         <div>
                                                             <h4>Instituição</h4>
                                                             <table className="table table-bordered">
@@ -123,10 +123,10 @@ export default function ClassesPagination() {
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    <tr key={record.institution.id}>
+                                                                    {/* <tr key={record.institution.id}>
                                                                         <td>{record.institution.name}</td>
-                                                                        <td>{record.institution.email}</td>
-                                                                    </tr>
+                                                                        <td>{record.Squad.email}</td>
+                                                                    </tr> */}
                                                                 </tbody>
                                                             </table>
                                                         </div>
@@ -134,7 +134,7 @@ export default function ClassesPagination() {
                                                     {expandedSection === 'students' && (
                                                         <div>
                                                             <h4>Estudantes</h4>
-                                                            {Array.isArray(record.listStudant) && record.listStudant.length > 0 ? (
+                                                            {Array.isArray(record.Squad) && record.Squad.length > 0 ? (
                                                                 <table className="table table-bordered">
                                                                     <thead>
                                                                         <tr>
@@ -143,10 +143,10 @@ export default function ClassesPagination() {
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        {record.listStudant.map((student: Student) => (
+                                                                        {record.Squad.map((student: Student) => (
                                                                             <tr key={student.id}>
                                                                                 <td>{student.name}</td>
-                                                                                <td>{student.contact}</td>
+                                                                                <td>{student.email}</td>
                                                                             </tr>
                                                                         ))}
                                                                     </tbody>

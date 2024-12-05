@@ -13,6 +13,7 @@
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",
+    "@microsoft/signalr": "^8.0.7",
     "@nextui-org/dropdown": "^2.1.25",
     "@nextui-org/react": "^2.4.1",
     "antd": "^5.17.0",

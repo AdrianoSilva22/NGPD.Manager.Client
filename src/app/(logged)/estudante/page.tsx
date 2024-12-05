@@ -57,7 +57,7 @@ export default function StudentsPaginition() {
         } catch (error) {
             console.log(error);
             mensagemErro('Erro ao excluir Estudante');
-            student.contact
+            student.email
             student.name
         }
     };
@@ -82,7 +82,7 @@ export default function StudentsPaginition() {
         },
         {
             title: 'Contato',
-            dataIndex: 'contact',
+            dataIndex: 'email',
         },
         {
             title: 'Instituição',
@@ -90,7 +90,7 @@ export default function StudentsPaginition() {
             key: 'institutionName',
             render: (turmaIes: ClassIes) => (
                 <div>
-                    {turmaIes.institution ? turmaIes.institution.name : 'N/A'}
+                    {/* {turmaIes.institution ? turmaIes.institution.name : 'N/A'} */}
                 </div>
             ),
         },
@@ -100,7 +100,7 @@ export default function StudentsPaginition() {
             key: 'course',
             render: (turmaIes: ClassIes) => (
                 <div>
-                    {turmaIes.course || 'N/A'} - {turmaIes.shift || 'N/A'} - {turmaIes.period || 'N/A'}
+                    {/* {turmaIes.course || 'N/A'} - {turmaIes.shift || 'N/A'} - {turmaIes.period || 'N/A'} */}
                 </div>
             ),
         },
